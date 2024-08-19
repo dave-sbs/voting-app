@@ -1,0 +1,12 @@
+Project Notes
+TO DO
+[] Not sure if its tallyVotes() or TallyTable but the tallies aren't properly displayed
+[] Users are not removed from the Tally table after being deleted which makes me think the Tally vote doesn't re-render properly
+[] Add Minimum Choice input in admin, add image upload in admin
+[] Implement proper UI for admin page
+[] Implement SignIn and SignUp pages
+
+DONE
+[] App is borderline functional
+[] Voter page UI is more or less there. Need to implement the picture part
+[] Admin page has most functionalities set up

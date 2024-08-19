@@ -1,4 +1,3 @@
-// src/components/CandidateList.tsx
 import React, { useContext } from 'react';
 import { View, Text, Button, FlatList } from 'react-native';
 import { CandidatesContext } from '@/app/(context)/CandidatesContext';
