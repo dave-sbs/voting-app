@@ -1,12 +1,20 @@
 Project Notes
+DONE
+[D] App is borderline functional
+[D] Voter page UI is more or less there. Need to implement the picture part
+[D] Admin page has most functionalities set up
+[D] Add Minimum Choice input in admin, add image upload in admin
+[D] Users are not removed from the Tally table after being deleted which makes me think the Tally vote doesn't re-render properly
+[D] Not sure if its tallyVotes() or TallyTable but the tallies aren't properly displayed
+
+
 TO DO
-[] Not sure if its tallyVotes() or TallyTable but the tallies aren't properly displayed
-[] Users are not removed from the Tally table after being deleted which makes me think the Tally vote doesn't re-render properly
-[] Add Minimum Choice input in admin, add image upload in admin
 [] Implement proper UI for admin page
 [] Implement SignIn and SignUp pages
 
-DONE
-[] App is borderline functional
-[] Voter page UI is more or less there. Need to implement the picture part
-[] Admin page has most functionalities set up
+
+QUESTIONS
+[] People with the same name?
+    [] It currently resets the tally, even if both appear on the voter page and on the current candidates list
+    [] On the voter page, they share the same name so they will both activate and deactivate
+
