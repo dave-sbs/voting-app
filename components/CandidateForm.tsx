@@ -5,6 +5,7 @@ import { styled } from 'nativewind';
 import * as ImagePicker from 'expo-image-picker';
 import CardHeader from './CardHeader';
 import SecondaryButton from './SecondaryButton';
+import LineBreak from './LineBreak';
 
 const CandidateForm = () => {
   const [name, setName] = useState('');
@@ -53,7 +54,6 @@ const CandidateForm = () => {
 
   return (
     <View className="bg-white w-full">
-    
       <CardHeader title={'Add New Candidate'} />
       <View className={`${image ? 'display' : 'hidden' }`}>
         <View className='w-[30%] p-4 pt-6 flex-row items-baseline'>
@@ -72,16 +72,16 @@ const CandidateForm = () => {
 
           <Text className='text-xl font-bold pb-2 pl-4'>{name}</Text>
         </View>
-        <View className='border-b w-full border-gray-300 border-s-8' />
+        <LineBreak />
       </View>
 
       <View className='p-4 flex-row gap-6 items-center'>
-        <Text className='text-md font-bold'>Full Name</Text>
+        <Text className='text-base font-bold'>Full Name</Text>
         <TextInput
           placeholder=""
           value={name}
           onChangeText={setName}
-          className="border-b-0.5 border-gray-400 text-black py-1 px-1 w-[200px]"
+          className="border-b-0.5 border-gray-400 text-base text-black py-1 px-1 w-[200px]"
         />
       </View>
 
@@ -94,7 +94,7 @@ const CandidateForm = () => {
           <Text className='font-medium'>{image ? 'Change Candidate Picture' : 'Upload Candidate Picture'}</Text>
         </TouchableOpacity>
       
-      <SecondaryButton title="Save Candidate" handlePress={handleSubmit} />
+      <SecondaryButton title="Add Candidate" handlePress={handleSubmit} />
       </View>
     </View>
   );
