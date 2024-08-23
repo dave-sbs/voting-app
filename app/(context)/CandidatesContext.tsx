@@ -1,5 +1,6 @@
 import React, { createContext, useState, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-native';
 
 interface Candidate {
   id: number;
@@ -47,21 +48,41 @@ export const CandidatesProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const removeCandidate = async (indexOrName: string) => {
-    let updatedCandidates;
-    let updatedVotes = { ...votes };
+    const confirmed = await new Promise<boolean>((resolve) =>
+      Alert.alert(
+        `Are you sure you want to remove ${indexOrName}`,
+        'This action is permanent',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+            onPress: () => resolve(false),
+          },
+          {
+            text: 'Confirm',
+            onPress: () => resolve(true),
+          },
+        ],
+      ),
+    );
 
-    delete updatedVotes[indexOrName];
-    setVotes(updatedVotes);
+    if (confirmed) {
+      let updatedCandidates;
+      let updatedVotes = { ...votes };
 
-    if (isNaN(Number(indexOrName))) {
-      updatedCandidates = candidates.filter(candidate => candidate.name !== indexOrName);
-    } else {
-      updatedCandidates = candidates.filter((_, index) => index !== Number(indexOrName));
+      delete updatedVotes[indexOrName];
+      setVotes(updatedVotes);
+
+      if (isNaN(Number(indexOrName))) {
+        updatedCandidates = candidates.filter(candidate => candidate.name !== indexOrName);
+      } else {
+        updatedCandidates = candidates.filter((_, index) => index !== Number(indexOrName));
+      }
+
+      setCandidates(updatedCandidates);
+      await AsyncStorage.setItem('candidates', JSON.stringify(updatedCandidates));
+      await AsyncStorage.setItem('votes', JSON.stringify(updatedVotes));
     }
-
-    setCandidates(updatedCandidates);
-    await AsyncStorage.setItem('candidates', JSON.stringify(updatedCandidates));
-    await AsyncStorage.setItem('votes', JSON.stringify(updatedVotes));
   };
 
   const setMinChoice = async (choice: number) => {
@@ -70,7 +91,6 @@ export const CandidatesProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const tallyVote = async ({ updatedVotes }: { updatedVotes: {  [x: string]: number } }) => {
-    // const updatedVotes = { ...votes, [name]: (votes[name] || 0) + 1 };
     setVotes(updatedVotes);
     await AsyncStorage.setItem('votes', JSON.stringify(updatedVotes));
   };
