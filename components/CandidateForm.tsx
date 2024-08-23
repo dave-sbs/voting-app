@@ -56,7 +56,7 @@ const CandidateForm = () => {
     <View className="bg-white w-full">
       <CardHeader title={'Add New Candidate'} />
       <View className={`${image ? 'display' : 'hidden' }`}>
-        <View className='w-[30%] p-4 pt-6 flex-row items-baseline'>
+        <View className='p-4 pt-6 flex-row items-baseline'>
           {image && (
             <View
               style={{
@@ -72,7 +72,7 @@ const CandidateForm = () => {
 
           <Text className='text-xl font-bold pb-2 pl-4'>{name}</Text>
         </View>
-        <LineBreak />
+        <View className='border-b w-full border-gray-300 border-s-8' />
       </View>
 
       <View className='p-4 flex-row gap-6 items-center'>
@@ -81,7 +81,7 @@ const CandidateForm = () => {
           placeholder=""
           value={name}
           onChangeText={setName}
-          className="border-b-0.5 border-gray-400 text-base text-black py-1 px-1 w-[200px]"
+          className="border-b-0.5 border-gray-400 text-black py-1 px-1 w-[200px]"
         />
       </View>
 

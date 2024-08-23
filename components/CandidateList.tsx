@@ -15,7 +15,7 @@ const CandidateList = () => {
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item, index }) => (
           <View className="px-4 flex-row items-center mb-2">
-            <View className='w-[35%]'>
+            <View className='w-[50%] md:w-[35%]'>
               <Text className='text-lg font-semibold'>{item.name}</Text>
             </View>
             <Button title="Remove" onPress={() => removeCandidate(item.name)} />

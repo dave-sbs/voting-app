@@ -7,6 +7,7 @@ import TallyTable from '../../components/TallyTable';
 import { styled } from 'nativewind';
 import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import UniqueVoteCount from '@/components/UniqueVoteCount';
 
 const AdminScreen = () => {
   return (
@@ -16,6 +17,7 @@ const AdminScreen = () => {
           <View className="flex-1">
             <CandidateForm />
             <MinimumChoiceInput />
+            <UniqueVoteCount />
             <CandidateList />
             <TallyTable />
           </View>

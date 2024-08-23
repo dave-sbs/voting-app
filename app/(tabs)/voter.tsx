@@ -10,7 +10,7 @@ import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const VoterScreen = () => {
-  const { candidates, votes, tallyVote, minChoice } = useContext(CandidatesContext)!;
+  const { candidates, votes, tallyVote, minChoice, uniqueVotes, setUniqueVotes } = useContext(CandidatesContext)!;
   const [selectedCandidates, setSelectedCandidates] = useState<string[]>([]);
 
   const toggleSelection = (name: string) => {
@@ -21,11 +21,14 @@ const VoterScreen = () => {
 
   const submitVote = async () => {
     if (selectedCandidates.length >= minChoice) {
+      let newUniqueChoice = uniqueVotes + 1;
       let newVotes = { ...votes };
+
       for (const name of selectedCandidates) {
         newVotes = { ...newVotes, [name]: (newVotes[name] || 0) + 1 };
       }  
 
+      setUniqueVotes(newUniqueChoice);
       tallyVote({ updatedVotes: newVotes });
       await AsyncStorage.setItem('votes', JSON.stringify(newVotes));
 
@@ -67,9 +70,9 @@ const VoterScreen = () => {
                 <TouchableOpacity
                     onPress={submitVote}
                     activeOpacity={0.8}
-                    className={`bg-blue-500 p-4 rounded-md w-[240px] justify-center items-center mt-4`}
+                    className={`bg-black py-3 px-2 rounded-md w-[240px] justify-center items-center mt-4`}
                 >
-                  <Text className='text-white font-medium text-xl'>Submit Votes</Text>
+                  <Text className='text-white font-medium text-xl'>Submit Selections</Text>
               </TouchableOpacity>
             </View>
           <StatusBar backgroundColor="transparent" style="dark" />

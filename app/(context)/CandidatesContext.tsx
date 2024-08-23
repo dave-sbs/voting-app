@@ -11,11 +11,13 @@ interface Candidate {
 interface CandidatesContextType {
   candidates: Candidate[];
   minChoice: number;
+  votes: { [key: string]: number };
+  uniqueVotes: number;
   addCandidate: (name: string, image: string) => void;
   removeCandidate: (indexOrName: string) => void;
   setMinChoice: (choice: number) => void;
-  votes: { [key: string]: number };
   tallyVote: ({ updatedVotes }: { updatedVotes: {  [x: string]: number } }) => Promise<void>;
+  setUniqueVotes: (choice: number) => void;
 }
 
 export const CandidatesContext = createContext<CandidatesContextType | undefined>(undefined);
@@ -24,6 +26,7 @@ export const CandidatesProvider = ({ children }: { children: ReactNode }) => {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [votes, setVotes] = useState<{ [key: string]: number }>({});
   const [minChoice, setMinChoiceState] = useState<number>(2);
+  const [uniqueVotes, setUniqueVotesState] = useState<number>(0);
 
   const loadCandidates = async () => {
     const storedCandidates = await AsyncStorage.getItem('candidates');
@@ -95,8 +98,13 @@ export const CandidatesProvider = ({ children }: { children: ReactNode }) => {
     await AsyncStorage.setItem('votes', JSON.stringify(updatedVotes));
   };
 
+  const setUniqueVotes = async (choice: number) => {
+    setUniqueVotesState(choice);
+    await AsyncStorage.setItem('uniqueVotes', choice.toString());
+  };
+
   return (
-    <CandidatesContext.Provider value={{ candidates, minChoice, addCandidate, removeCandidate, setMinChoice, votes, tallyVote }}>
+    <CandidatesContext.Provider value={{ candidates, minChoice, votes, uniqueVotes, addCandidate, removeCandidate, setMinChoice, tallyVote, setUniqueVotes }}>
       {children}
     </CandidatesContext.Provider>
   );
