@@ -11,9 +11,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const AdminScreen = () => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaView className='h-full bg-slate-100'>
+      <SafeAreaView className='h-full bg-slate-200'>
         <ScrollView>
-          <View className="flex-1 p-4">
+          <View className="flex-1">
             <CandidateForm />
             <MinimumChoiceInput />
             <CandidateList />

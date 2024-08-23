@@ -3,6 +3,8 @@ import { View, TextInput, Image, TouchableOpacity, Text, Alert, ImageComponent }
 import { CandidatesContext } from '@/app/(context)/CandidatesContext';
 import { styled } from 'nativewind';
 import * as ImagePicker from 'expo-image-picker';
+import CardHeader from './CardHeader';
+import SecondaryButton from './SecondaryButton';
 
 const CandidateForm = () => {
   const [name, setName] = useState('');
@@ -50,33 +52,50 @@ const CandidateForm = () => {
   };
 
   return (
-    <View className="p-4">
-      <Text className="text-xl font-bold mb-4">Enter New Candidate</Text>
-      <View className={`${image ? 'display' : 'hidden' } p-2 mb-4 border items-center justify-center rounded-md`}>
-        {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+    <View className="bg-white w-full">
+    
+      <CardHeader title={'Add New Candidate'} />
+      <View className={`${image ? 'display' : 'hidden' }`}>
+        <View className='w-[30%] p-4 pt-6 flex-row items-baseline'>
+          {image && (
+            <View
+              style={{
+                width: 80,
+                height: 80,
+                borderRadius: 40,
+                overflow: 'hidden',
+              }}
+            >
+              <Image source={{ uri: image }} style={{ width: 80, height: 80 }} />
+            </View>
+          )}
+
+          <Text className='text-xl font-bold pb-2 pl-4'>{name}</Text>
+        </View>
+        <View className='border-b w-full border-gray-300 border-s-8' />
       </View>
-      <TextInput
-        placeholder="Enter Full Name"
-        value={name}
-        onChangeText={setName}
-        className="border p-3 min-w-[50%] max-w-[70%] rounded-md"
-      />
-      <View className='w-full mt-1'>
+
+      <View className='p-4 flex-row gap-6 items-center'>
+        <Text className='text-md font-bold'>Full Name</Text>
+        <TextInput
+          placeholder=""
+          value={name}
+          onChangeText={setName}
+          className="border-b-0.5 border-gray-400 text-black py-1 px-1 w-[200px]"
+        />
+      </View>
+
+      <View className='w-full mt-1 px-4'>
         <TouchableOpacity 
           onPress={pickImage}
           activeOpacity={0.8}
-          className={`${image ? 'bg-green-500' :'bg-gray-300'} p-1 rounded-md h-[40px] w-[120px] justify-center items-center`}
+          className={`bg-gray-300 p-1 rounded-md h-[40px] w-[200px] justify-center items-center`}
         >
-          <Text className='font-medium'>{image ? 'Image Uploaded' : 'Upload Image'}</Text>
+          <Text className='font-medium'>{image ? 'Change Candidate Picture' : 'Upload Candidate Picture'}</Text>
         </TouchableOpacity>
+      
+      <SecondaryButton title="Save Candidate" handlePress={handleSubmit} />
       </View>
-      <TouchableOpacity
-            onPress={handleSubmit}
-            activeOpacity={0.8}
-            className={`bg-blue-500 p-1 rounded-md h-[40px] w-[160px] justify-center items-center mt-4`}
-        >
-            <Text className='text-white font-normal text-lg'>Add Candidate</Text>
-      </TouchableOpacity>
     </View>
   );
 };

@@ -36,8 +36,6 @@ const VoterScreen = () => {
     }
   };
 
-  console.log(votes);
-
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView className='h-full bg-slate-100'>
