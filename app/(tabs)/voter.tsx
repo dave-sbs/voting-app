@@ -9,6 +9,7 @@ import CandidateButton from '@/components/CandidateButton';
 import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CardHeader from '@/components/CardHeader';
+import HamburgerMenu from '@/components/HamburgerMenu';
 
 const VoterScreen = () => {
   const { candidates, votes, tallyVote, minChoice, uniqueVotes, setUniqueVotes } = useContext(CandidatesContext)!;
@@ -58,6 +59,7 @@ const VoterScreen = () => {
       <SafeAreaView className='h-full bg-white'>
         <ScrollView>
             <CardHeader title={'Voting Page'} />
+            <HamburgerMenu />
             <Text className={`pt-8 pb-4 ${ numColumns === 3 ? 'px-12' : 'px-24'} text-lg font-bold`}>Reminder:
               <Text className='font-normal'> You have to select at least {minChoice} {minChoice === 1 ? 'candidate' : 'candidates'}</Text>
             </Text>

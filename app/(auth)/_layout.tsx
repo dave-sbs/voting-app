@@ -8,13 +8,13 @@ const AuthLayout = () => {
       <Stack.Screen
         name="SignIn"
         options={{
-          title: "Sign In",
+          title: "",
         }}
       />
       <Stack.Screen
         name="SignUp"
         options={{
-          title: "Sign Up",
+          title: "",
         }}
       />
       <Slot />
