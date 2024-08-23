@@ -7,6 +7,8 @@ DONE
 [D] Users are not removed from the Tally table after being deleted which makes me think the Tally vote doesn't re-render properly
 [D] Not sure if its tallyVotes() or TallyTable but the tallies aren't properly displayed
 [D] Implement proper UI for admin page
+[D] Fix voter page card layout
+[D] Profile display section in Add Candidates behaves weirdly on phone.
 
 
 TO DO
@@ -18,4 +20,4 @@ QUESTIONS
     [] It currently resets the tally, even if both appear on the voter page and on the current candidates list
     [] On the voter page, they share the same name so they will both activate and deactivate
 [] What happens with Unique Vote Count when all people have been removed?
-[] Profile display section in Add Candidates behaves weirdly on phone.
+    [] I think it doesn't store state in a conventional way either. I think it resets on some instances - test more tomorrow!

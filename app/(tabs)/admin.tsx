@@ -12,14 +12,16 @@ import UniqueVoteCount from '@/components/UniqueVoteCount';
 const AdminScreen = () => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaView className='h-full bg-slate-200'>
+      <SafeAreaView className='h-full bg-white'>
         <ScrollView>
           <View className="flex-1">
-            <CandidateForm />
-            <MinimumChoiceInput />
-            <UniqueVoteCount />
-            <CandidateList />
-            <TallyTable />
+            <View className='bg-slate-200'>
+              <CandidateForm />
+              <MinimumChoiceInput />
+              <UniqueVoteCount />
+              <CandidateList />
+              <TallyTable />
+            </View>
           </View>
         </ScrollView>
       </SafeAreaView>
