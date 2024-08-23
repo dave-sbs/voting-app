@@ -18,3 +18,4 @@ QUESTIONS
     [] It currently resets the tally, even if both appear on the voter page and on the current candidates list
     [] On the voter page, they share the same name so they will both activate and deactivate
 [] What happens with Unique Vote Count when all people have been removed?
+[] Profile display section in Add Candidates behaves weirdly on phone.
