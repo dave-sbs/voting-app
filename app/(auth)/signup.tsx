@@ -1,6 +1,6 @@
 // src/screens/Auth/SignUp.tsx
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text } from 'react-native';
+import { View, TextInput, Button, Text, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styled } from 'nativewind';
 
@@ -22,22 +22,55 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp<any> }) => {
   };
 
   return (
-    <View className="flex-1 justify-center p-4">
-      <Text className="text-lg font-bold mb-4">Sign Up</Text>
+    // <View className="flex-1 justify-center p-4">
+    //   <Text className="text-lg font-bold mb-4">Sign Up</Text>
+    //   <TextInput
+    //     placeholder="Username"
+    //     value={username}
+    //     onChangeText={setUsername}
+    //     className="border p-2 mb-4"
+    //   />
+    //   <TextInput
+    //     placeholder="Password"
+    //     value={password}
+    //     onChangeText={setPassword}
+    //     secureTextEntry
+    //     className="border p-2 mb-4"
+    //   />
+    //   <Button title="Sign Up" onPress={signUp} />
+    // </View>
+
+    <View className="bg-white flex-1 items-center justify-center p-4">
+    <Text className="text-2xl font-bold mb-4">Sign Up</Text>
+    <View className='p-4 flex-row gap-6 items-center'>
+      <Text className='text-base font-bold'>Username</Text>
       <TextInput
-        placeholder="Username"
+        placeholder=""
         value={username}
         onChangeText={setUsername}
-        className="border p-2 mb-4"
+        className="border-b-0.5 border-gray-400 text-black py-1 px-1 w-[200px]"
       />
+    </View>
+
+    <View className='p-4 flex-row gap-6 items-center'>
+    <Text className='text-base font-bold'>Password</Text>
       <TextInput
-        placeholder="Password"
+        placeholder=""
         value={password}
         onChangeText={setPassword}
         secureTextEntry
-        className="border p-2 mb-4"
+        className="border-b-0.5 border-gray-400 text-black py-1 px-1 w-[200px]"
       />
-      <Button title="Sign Up" onPress={signUp} />
+    </View>
+
+    <TouchableOpacity
+          onPress={signUp}
+          activeOpacity={0.8}
+          className={`bg-black py-3 px-2 rounded-md w-[140px] justify-center items-center mt-6`}
+      >
+        <Text className='text-white font-medium text-lg'>Sign Up</Text>
+    </TouchableOpacity>
+
     </View>
   );
 };

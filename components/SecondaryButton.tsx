@@ -12,9 +12,9 @@ const SecondaryButton = ({ title, handlePress, isLoading = false }: SecondaryBut
     <TouchableOpacity
             onPress={handlePress}
             activeOpacity={0.8}
-            className={`bg-black p-1 rounded-md h-[40px] w-[120px] justify-center items-center mt-3 mb-4 ${isLoading ? 'opacity-50' : ''}`}
+            className={`bg-green-800 p-1 rounded-md h-[40px] w-[160px] justify-center items-center mt-3 mb-4 ${isLoading ? 'opacity-50' : ''}`}
         >
-        <Text className='text-white font-semibold text-md'>
+        <Text className='text-orange-500 font-semibold text-lg'>
             {title}
         </Text>
     </TouchableOpacity>

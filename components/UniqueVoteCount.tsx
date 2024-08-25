@@ -9,16 +9,15 @@ const UniqueVoteCount = () => {
 
   return (
     <View className="bg-white w-full mt-2">
-        <CardHeader title={'Number of Voters'} />
-        <View className='p-4'>
-            <Text className="text-base">Number of people that have voted:   
-                <Text className="font-semibold"> {uniqueVotes}</Text>
-            </Text>
+      <CardHeader title={'Voter Count'} />
+      <View className='p-4 flex-row gap-16'>
+        <Text className='pt-2 text-xl font-bold'>Number of people that have voted:</Text>
+        <View className='border rounded-md items-center'>
+          <Text className="font-semibold text-2xl py-2 px-4 text-green-600">{uniqueVotes}</Text>
         </View>
+      </View>
     </View>
   )
 }
 
 export default UniqueVoteCount
-
-const styles = StyleSheet.create({})

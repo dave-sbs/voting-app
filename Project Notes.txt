@@ -9,10 +9,15 @@ DONE
 [D] Implement proper UI for admin page
 [D] Fix voter page card layout
 [D] Profile display section in Add Candidates behaves weirdly on phone.
+[D] Implement SignIn and SignUp pages
+[D] Remove username in Sign In
 
 
 TO DO
-[] Implement SignIn and SignUp pages
+[D] Have Voter Count reset if all candidates have been removed
+[D] Refine flow
+[D] Make hamburger menu collapsable when user touches other areas of screen
+[D] Remove the navigation tab on voting and admin pages
 
 
 QUESTIONS
@@ -21,3 +26,10 @@ QUESTIONS
     [] On the voter page, they share the same name so they will both activate and deactivate
 [] What happens with Unique Vote Count when all people have been removed?
     [] I think it doesn't store state in a conventional way either. I think it resets on some instances - test more tomorrow!
+[] Do we want Sign up
+    [] There is no way to protect it
+    [] What if someone forgets the username or password?
+    
+    admin
+    081224
+

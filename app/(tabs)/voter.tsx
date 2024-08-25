@@ -1,6 +1,6 @@
 // src/screens/Tabs/Voter.tsx
 import React, { useState, useContext, useEffect } from 'react';
-import { View, Text, Button, FlatList, TouchableOpacity, Image } from 'react-native';
+import { View, Text, Button, FlatList, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { CandidatesContext } from '@/app/(context)/CandidatesContext';
 import { styled } from 'nativewind';
 import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler';
@@ -47,9 +47,12 @@ const VoterScreen = () => {
   };
 
   const setColumnSize = () => {
-    if (candidates.length <= 6) {
+    const screenWidth = Dimensions.get('window').width;
+    if (screenWidth < 500) {
+      setNumColumns(1);
+    } else if (candidates.length < 6 && screenWidth > 500) {
       setNumColumns(2);
-    } else {
+    } else if (candidates.length >= 6 && screenWidth > 650) {
       setNumColumns(3);
     }
   }
@@ -59,18 +62,19 @@ const VoterScreen = () => {
       <SafeAreaView className='h-full bg-white'>
         <ScrollView>
             <CardHeader title={'Voting Page'} />
-            <HamburgerMenu />
-            <Text className={`pt-8 pb-4 ${ numColumns === 3 ? 'px-12' : 'px-24'} text-lg font-bold`}>Reminder:
-              <Text className='font-normal'> You have to select at least {minChoice} {minChoice === 1 ? 'candidate' : 'candidates'}</Text>
+            <Text className={`pt-8 pb-2 px-12 text-2xl font-bold text-red-500`}>Reminder:
+              <Text className='text-2xl text-blue-600 font-normal'> You have to select at least {minChoice} {minChoice === 1 ? 'candidate' : 'candidates'}</Text>
             </Text>
-            <View className={`w-full ${ numColumns === 3 ? 'px-12' : 'px-24'}`}>
+            <HamburgerMenu />
+              <Text className={`pb-6 px-12 text-2xl text-blue-600 font-normal`}>Press the button under the corresponding candidate of your choice. </Text>
+            <View className={`w-full px-12`}>
               <FlatList
                 key={`flatlist-${numColumns}`}
                 data={candidates}
                 keyExtractor={(item) => item.id.toString()}
                 numColumns={numColumns}
                 renderItem={({ item }) => (
-                  <View className={` ${ numColumns === 3 ? 'w-[200px] h-[260px] mr-12' :  'w-[270px] h-90 mr-16'} mt-3 mb-6 rounded-md border border-slate-500 bg-white`}>
+                  <View className={` ${ numColumns === 3 ? 'w-[200px] h-[360px] mr-8' :  'w-[260px] h-90 mr-16'} mt-3 mb-6 rounded-md border border-slate-500 bg-white`}>
                     <View className='rounded-t-md bg-gray-300 w-full h-60 overflow-hidden'>
                       <Image source={{ uri: item.image }} className='w-full h-full' />
                     </View>
@@ -84,7 +88,7 @@ const VoterScreen = () => {
                       <CandidateButton 
                         title={selectedCandidates.includes(item.name) ? "Candidate Selected" : "Select Candidate"}
                         handlePress={() => {toggleSelection(item.name)}}
-                        color={selectedCandidates.includes(item.name) ? 'bg-indigo-500' : 'bg-gray-300'}
+                        color={selectedCandidates.includes(item.name) ? 'bg-green-800' : 'bg-black'}
                         otherProps="mb-4"
                         isLoading={false}
                       />
@@ -97,9 +101,9 @@ const VoterScreen = () => {
                 <TouchableOpacity
                     onPress={submitVote}
                     activeOpacity={0.8}
-                    className={`bg-black py-3 px-2 rounded-md w-[240px] justify-center items-center mt-4`}
+                    className={`bg-green-800 py-3 px-2 rounded-md w-[240px] justify-center items-center mt-4`}
                 >
-                  <Text className='text-white font-medium text-xl'>Submit Selections</Text>
+                  <Text className='text-orange-500 font-bold text-xl'>Submit Selections</Text>
               </TouchableOpacity>
             </View>
           <StatusBar backgroundColor="transparent" style="dark" />

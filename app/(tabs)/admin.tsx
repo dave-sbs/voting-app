@@ -18,8 +18,8 @@ const AdminScreen = () => {
             <View className='bg-slate-200'>
               <CandidateForm />
               <MinimumChoiceInput />
-              <UniqueVoteCount />
               <CandidateList />
+              <UniqueVoteCount />
               <TallyTable />
             </View>
           </View>

@@ -85,7 +85,12 @@ export const CandidatesProvider = ({ children }: { children: ReactNode }) => {
       setCandidates(updatedCandidates);
       await AsyncStorage.setItem('candidates', JSON.stringify(updatedCandidates));
       await AsyncStorage.setItem('votes', JSON.stringify(updatedVotes));
-    }
+
+      if (updatedCandidates.length === 0) {
+        setUniqueVotesState(0);
+        await AsyncStorage.setItem('uniqueVotes', '0');
+      }
+    };
   };
 
   const setMinChoice = async (choice: number) => {

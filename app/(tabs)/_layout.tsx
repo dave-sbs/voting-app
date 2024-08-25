@@ -3,20 +3,7 @@ import { Tabs } from "expo-router";
 
 const TabsLayout = () => {
   return (
-    <Tabs>
-      <Tabs.Screen
-        name="Admin"
-        options={{
-          title: "Admin",
-        }}
-      />
-      <Tabs.Screen
-        name="Voter"
-        options={{
-          title: "Voter",
-        }}
-      />
-    </Tabs>
+    <Tabs screenOptions={{ headerShown: false, tabBarStyle: { display: 'none' } }} />
   );
 };
 

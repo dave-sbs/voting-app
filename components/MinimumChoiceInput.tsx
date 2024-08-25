@@ -23,21 +23,24 @@ const MinimumChoiceInput = () => {
         <CardHeader title={'Minimum Candidates Selection Choice'} />
         <View className='p-4'>
             <Text className="text-base">Please specify the minimum number of candidates the voters should choose to make a valid submission </Text>
-            <Text className="pt-4 text-base">Current Minimum Selection Choice: 
-                <Text className="font-semibold"> {minChoice}</Text>
-            </Text>
+            <View className='flex-row w-[440] mt-4 justify-between items-center'>
+                <Text className="text-lg font-bold">Current Minimum Selection Choice:</Text>
+                <View className='border rounded-md items-center justify-center'>
+                    <Text className="font-semibold mt-2 text-2xl pb-2 px-4 text-green-600">{minChoice}</Text>
+                </View>
+            </View>
         </View>
-        <LineBreak />
-        <View className='px-4 pt-4 flex-row gap-6 items-center'>
-            <Text className='text-base font-bold'>Change Value</Text>  
+        <View className='border-b w-full border-gray-300 shadow-md' />
+        <View className='px-4 pt-6 flex-row gap-16 items-center'>
+            <Text className='text-xl font-bold'>Change Minimum Selection Choice</Text>  
             <TextInput
                 placeholder="Set Minimum Candidates Choice"
                 value={newMinChoice.toString()}
                 onChangeText={(text) => setMinChoiceState(Number(text))}
-                className="border-b-0.5 border-gray-400 text-black py-1 px-1 w-[30px]"
+                className="border rounded-md text-2xl text-black py-2 px-4"
             />
         </View>
-        <View className='px-4'>
+        <View className='px-4 mt-1'>
             <SecondaryButton title="Save Changes" handlePress={handleSubmit} />
         </View>
     </View>

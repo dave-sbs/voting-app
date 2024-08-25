@@ -3,25 +3,30 @@ import { View, Text, FlatList } from 'react-native';
 import { CandidatesContext } from '@/app/(context)/CandidatesContext';
 import { styled } from 'nativewind';
 import CardHeader from './CardHeader';
+import LineBreak from './LineBreak';
 
 const TallyTable = () => {
   const { votes } = useContext(CandidatesContext)!;
 
   return (
     <View className="w-full bg-white mt-2">
-      <CardHeader title={'Vote Tally'} />
+      {/* <CardHeader title={'Vote Tally'} /> */}
+      <View className='w-full'>
+        <Text className="text-2xl font-bold px-4 pt-4 pb-2 text-red-600">Vote Tally</Text>
+        <LineBreak />
+      </View>
       <View className='p-4'>
-        <View className='border-b w-[60%] md:w-[45%] border-black' />
+        <View className='border-b-2 w-[60%] md:w-[45%] border-black' />
         <FlatList
           data={Object.entries(votes)}
           keyExtractor={(item) => item[0]}
           renderItem={({ item }) => (
             <View className="flex-row">
-              <View className='border-l border-b w-[50%] md:w-[35%] h-10 pl-4 justify-center'>
+              <View className='border-l-2 border-b-2 w-[50%] md:w-[35%] h-10 pl-4 justify-center'>
                 <Text className='text-lg font-semibold'>{item[0]}</Text>
               </View>
-              <View className='border-l border-b border-r w-[10%] items-center justify-center'>
-                <Text className='text-lg'>{item[1]}</Text>
+              <View className='border-l-2 border-b-2 border-r-2 w-[10%] items-center justify-center'>
+                <Text className='text-xl font-bold text-blue-600'>{item[1]}</Text>
               </View>
             </View>
           )}
