@@ -29,6 +29,7 @@ interface CandidatesContextType {
   setMinChoice: (choice: number) => void;
   tallyVote: ({ updatedVotes }: { updatedVotes: {  [x: string]: number } }) => Promise<void>;
   setUniqueVotes: (choice: number) => void;
+  resetVotersArr: () => void;
 }
 
 export const CandidatesContext = createContext<CandidatesContextType | undefined>(undefined);
@@ -139,13 +140,47 @@ export const CandidatesProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const setUniqueVotes = async (choice: number) => {
-    const voterArrLength = voters.length;
-    setUniqueVotesState(voterArrLength);
-    await AsyncStorage.setItem('uniqueVotes', voterArrLength.toString());
+    let votesCasted = 0;
+
+    voters.map(voter => {
+      if (voter.hasVoted) {
+        votesCasted++;
+      }
+    });
+
+    setUniqueVotesState(votesCasted);
+    await AsyncStorage.setItem('uniqueVotes', votesCasted.toString());
+  };
+
+  const resetVotersArr = async () => {
+    const confirmed = await new Promise<boolean>((resolve) =>
+      Alert.alert(
+        `Are you sure you want to clear the voter data?`,
+        'This action is permanent',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+            onPress: () => resolve(false),
+          },
+          {
+            text: 'Confirm',
+            onPress: () => resolve(true),
+          },
+        ],
+      ),
+    );
+
+    if (confirmed) {
+      setVoters([]);
+      setCurrVoter(0);
+      setUniqueVotes(0);
+      await AsyncStorage.setItem('voters', JSON.stringify([]));
+    };
   };
 
   return (
-    <CandidatesContext.Provider value={{ voters, candidates, minChoice, votes, currVoter, uniqueVotes, addCandidate, addVoter, updateVoter, setCurrVoter, removeCandidate, setMinChoice, tallyVote, setUniqueVotes }}>
+    <CandidatesContext.Provider value={{ voters, candidates, minChoice, votes, currVoter, uniqueVotes, addCandidate, addVoter, updateVoter, setCurrVoter, removeCandidate, setMinChoice, tallyVote, setUniqueVotes, resetVotersArr }}>
       {children}
     </CandidatesContext.Provider>
   );

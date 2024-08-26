@@ -12,15 +12,20 @@ const CheckInScreen = () => {
   const [ voterId, setVoterId ] = useState('');
 
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     const numVoterId = Number(voterId);
+    const newVoter = voters.find(voter => voter.id === numVoterId);
+    console.log(newVoter !== undefined);
 
     if (numVoterId) {
-      if (numVoterId in voters) {
+      // If Voter ID already exists, set current voter and navigate to voter screen
+      if (newVoter !== undefined) {
         setVoterId(voterId);
         setCurrVoter(numVoterId);
         navigation.navigate('(tabs)', { screen: 'voter' });
-      } else if (!(numVoterId in voters)){
+      } 
+      // If Voter ID doesn't exist, add new voter and navigate to voter screen
+      else if (!(newVoter !== undefined)){
         setVoterId(voterId);
         setCurrVoter(numVoterId);
         addVoter(numVoterId);
@@ -28,7 +33,9 @@ const CheckInScreen = () => {
       } else {
         alert('Invalid credentials');
       }
-    } else {
+    } 
+    // If Voter ID is empty, show alert
+    else {
       alert('Please enter your Voter ID');
     }
   };

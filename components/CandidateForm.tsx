@@ -41,6 +41,7 @@ const CandidateForm = () => {
       addCandidate(name, image);
       setName('');
       setImage('');
+      alert("Candidate added successfully!");
     }
 
     if (!name) {

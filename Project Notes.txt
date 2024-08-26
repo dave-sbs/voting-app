@@ -15,11 +15,13 @@ DONE
 [D] Refine flow
 [D] Make hamburger menu collapsable when user touches other areas of screen
 [D] Remove the navigation tab on voting and admin pages
+[D] New Voter Registration feature
 
 
 TO DO
-[] New Voter Registration feature
 [] Add date to vote tally table
+[] Unique Voter count acting somewhat weirdly
+[] Should I reset vote tally if voter data gets reset? 
 
 
 QUESTIONS

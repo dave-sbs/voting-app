@@ -21,7 +21,6 @@ const VoterScreen = () => {
 
   useEffect(() => {
     setColumnSize();
-    console.log(voters);
   })
 
   const toggleSelection = (name: string) => {

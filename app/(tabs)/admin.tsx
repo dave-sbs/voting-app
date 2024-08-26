@@ -8,6 +8,7 @@ import { styled } from 'nativewind';
 import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import UniqueVoteCount from '@/components/UniqueVoteCount';
+import SummaryComponent from '@/components/SummaryComponent';
 
 const AdminScreen = () => {
   return (
@@ -21,6 +22,7 @@ const AdminScreen = () => {
               <CandidateList />
               <UniqueVoteCount />
               <TallyTable />
+              <SummaryComponent />
             </View>
           </View>
         </ScrollView>
