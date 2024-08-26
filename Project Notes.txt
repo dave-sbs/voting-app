@@ -11,13 +11,15 @@ DONE
 [D] Profile display section in Add Candidates behaves weirdly on phone.
 [D] Implement SignIn and SignUp pages
 [D] Remove username in Sign In
-
-
-TO DO
 [D] Have Voter Count reset if all candidates have been removed
 [D] Refine flow
 [D] Make hamburger menu collapsable when user touches other areas of screen
 [D] Remove the navigation tab on voting and admin pages
+
+
+TO DO
+[] New Voter Registration feature
+[] Add date to vote tally table
 
 
 QUESTIONS
@@ -32,4 +34,32 @@ QUESTIONS
     
     admin
     081224
+
+
+
+so I was thinking we could implement this feature by first creating an object array - let's call it votersArray - in CandidatesContext. This array gets populated when voters register, and is also used to check in voters that are already in the array. I am not sure what exact props we want each voter object to have though. So far I'm thinking registration date, name, unique ID, and voting status
+
+Once registered and checked in, voters then go to voting page and cast their vote which will then be logged by changing the voting status.
+
+While that is happening on the backend, we will create some new screens on the front end.
+Registration and Check In pages will now be the default pages to show on index.tsx. 
+
+Both of them will lead to a landing page welcoming them (Currently the content in index.tsx), and then lead to the voting screen. During this process the voter ID will be somehow remembered so that the voting status can be changed if the vote is cast.
+
+The voter ID will be removed/reset, under the following conditions:
+1. Voter Signs Out (new feature that needs to be implemented)
+2. Voter casts vote
+
+Both options should redirect voters back to index.tsx which will show them the option of either Registering to vote or Checking in.
+
+Then we will also implement a final screen - SummaryPage.tsx.
+This screen will essentially display the essential details of each voter such as their ID, name, and voting status
+
+Now some follow up questions that I still need to think about are:
+1. Do we disable second-time voting for people that have already voted?
+2. Do we want to log the time and frequency of check ins for each voter?
+3. What should the register and check in process look like? 
+    - Just Name?
+    - Name and ID
+
 

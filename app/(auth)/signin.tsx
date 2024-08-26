@@ -12,7 +12,6 @@ const SignInScreen = () => {
   const [password, setPassword] = useState('');
 
   const signIn = async () => {
-    // const storedUsername = await AsyncStorage.getItem('username');
     const storedPassword = await AsyncStorage.getItem('password');
     console.log(password)
     
@@ -28,7 +27,6 @@ const SignInScreen = () => {
     <View className="bg-white flex-1 items-center justify-center p-4">
       <View className='w-1/2 p-8 border border-gray-300 items-start rounded-md'>
         <Text className="text-3xl font-semibold mb-4">Sign In</Text>
-        {/* <View className='flex-row gap-6 items-center'> */}
         <Text className='py-2 text-lg font-semibold'>Password</Text>
           <TextInput
             placeholder="Your Password"
@@ -38,7 +36,6 @@ const SignInScreen = () => {
             secureTextEntry
             className="border border-gray-400 text-black py-3 px-2 w-full rounded-md"
           />
-        {/* </View> */}
         
         <TouchableOpacity
               onPress={signIn}
@@ -48,13 +45,6 @@ const SignInScreen = () => {
             <Text className='text-orange-500 font-medium text-lg'>Sign In</Text>
         </TouchableOpacity>
       </View>
-
-      {/* Disable Sign Up function for the time being */}
-      {/* Passowrd is still 1234 */}
-      {/* <Button
-        title="Sign Up"
-        onPress={() => navigation.navigate('(auth)', { screen: 'SignUp' })}
-      /> */}
     </View>
   );
 };

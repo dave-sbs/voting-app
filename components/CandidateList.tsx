@@ -10,11 +10,7 @@ const CandidateList = () => {
 
   return (
     <View className="bg-white w-full mt-2 flex-1">
-      {/* <CardHeader title={'Current Candidates'} /> */}
-      <View className='w-full'>
-        <Text className="text-2xl font-bold px-4 pt-4 pb-2 text-red-600">Current Candidates</Text>
-        <LineBreak />
-      </View>
+      <CardHeader title={'Current Candidates'} />
       <FlatList
         data={candidates}
         keyExtractor={(item) => item.id.toString()}

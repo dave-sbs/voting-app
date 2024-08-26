@@ -4,8 +4,10 @@ import { useRouter } from "expo-router";
 import React from 'react'
 
 import PrimaryButton from '@/components/PrimaryButton';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 const App = () => {
+  const navigation = useNavigation<NavigationProp<any>>();
   const router = useRouter();
 
   return (
@@ -18,11 +20,11 @@ const App = () => {
           <Text className="text-4xl font-bold mb-4 text-blue-600">Welcome to the Voting App</Text>
           <View className='mt-40'>
             <TouchableOpacity
-            onPress={() => router.push('/voter')}
+            onPress={() => navigation.navigate('(auth)', { screen: 'CheckIn' })}
             activeOpacity={0.8}
-            className={`bg-green-800  p-4 rounded-md min-h-[48px] min-w-[48px] justify-center items-center`}
+            className={`bg-orange-400  p-4 rounded-md min-h-[48px] min-w-[48px] justify-center items-center`}
             >
-                <Text className='text-orange-500 font-bold text-3xl'>
+                <Text className='text-green-800 font-bold text-3xl'>
                     Click here to vote →
                 </Text>
             </TouchableOpacity>

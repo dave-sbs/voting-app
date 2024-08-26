@@ -8,12 +8,23 @@ interface Candidate {
   image: string;
 }
 
+interface Voters {
+  id: number;
+  hasVoted: boolean;
+}
+
+
 interface CandidatesContextType {
   candidates: Candidate[];
+  voters: Voters[];
   minChoice: number;
   votes: { [key: string]: number };
+  currVoter: number;
   uniqueVotes: number;
   addCandidate: (name: string, image: string) => void;
+  addVoter: (id: number) => void;
+  setCurrVoter: (choice: number) => void;
+  updateVoter: (id: number, hasVoted: boolean) => void;
   removeCandidate: (indexOrName: string) => void;
   setMinChoice: (choice: number) => void;
   tallyVote: ({ updatedVotes }: { updatedVotes: {  [x: string]: number } }) => Promise<void>;
@@ -23,18 +34,24 @@ interface CandidatesContextType {
 export const CandidatesContext = createContext<CandidatesContextType | undefined>(undefined);
 
 export const CandidatesProvider = ({ children }: { children: ReactNode }) => {
+  const [voters, setVoters] = useState<Voters[]>([]);
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [votes, setVotes] = useState<{ [key: string]: number }>({});
   const [minChoice, setMinChoiceState] = useState<number>(2);
   const [uniqueVotes, setUniqueVotesState] = useState<number>(0);
+  const [currVoter, setCurrVoterState] = useState<number>(0);
 
   const loadCandidates = async () => {
+    const storedVoters = await AsyncStorage.getItem('voters');
+    const uniqueVoters = await AsyncStorage.getItem('uniqueVotes');
     const storedCandidates = await AsyncStorage.getItem('candidates');
     const storedVotes = await AsyncStorage.getItem('votes');
     const storedMinChoice = await AsyncStorage.getItem('minChoice');
     if (storedCandidates) setCandidates(JSON.parse(storedCandidates));
+    if (uniqueVoters) setUniqueVotesState(parseInt(uniqueVoters));
     if (storedVotes) setVotes(JSON.parse(storedVotes));
     if (storedMinChoice) setMinChoiceState(parseInt(storedMinChoice));
+    if (storedVoters) setVoters(JSON.parse(storedVoters));
   };
 
   React.useEffect(() => {
@@ -48,6 +65,24 @@ export const CandidatesProvider = ({ children }: { children: ReactNode }) => {
     setVotes({ ...votes, [name]: 0 });
     await AsyncStorage.setItem('candidates', JSON.stringify(updatedCandidates));
     await AsyncStorage.setItem('votes', JSON.stringify({ ...votes, [name]: 0 }));
+  };
+
+  const addVoter = async (id: number) => {
+    const newVoter = { id, hasVoted: false };
+    const updatedVoters = [...voters, newVoter];
+    setVoters(updatedVoters);
+    await AsyncStorage.setItem('voters', JSON.stringify(updatedVoters));
+  };
+
+  const updateVoter = async (id: number, hasVoted: boolean) => {
+    const updatedVoters = voters.map(voter => {
+      if (voter.id === id) {
+        return { ...voter, hasVoted };
+      }
+      return voter;
+    });
+    setVoters(updatedVoters);
+    await AsyncStorage.setItem('voters', JSON.stringify(updatedVoters));
   };
 
   const removeCandidate = async (indexOrName: string) => {
@@ -85,13 +120,13 @@ export const CandidatesProvider = ({ children }: { children: ReactNode }) => {
       setCandidates(updatedCandidates);
       await AsyncStorage.setItem('candidates', JSON.stringify(updatedCandidates));
       await AsyncStorage.setItem('votes', JSON.stringify(updatedVotes));
-
-      if (updatedCandidates.length === 0) {
-        setUniqueVotesState(0);
-        await AsyncStorage.setItem('uniqueVotes', '0');
-      }
     };
   };
+
+  const setCurrVoter = async (choice: number) => {
+    setCurrVoterState(choice);
+    await AsyncStorage.setItem('currVoter', choice.toString());
+  }
 
   const setMinChoice = async (choice: number) => {
     setMinChoiceState(choice);
@@ -104,12 +139,13 @@ export const CandidatesProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const setUniqueVotes = async (choice: number) => {
-    setUniqueVotesState(choice);
-    await AsyncStorage.setItem('uniqueVotes', choice.toString());
+    const voterArrLength = voters.length;
+    setUniqueVotesState(voterArrLength);
+    await AsyncStorage.setItem('uniqueVotes', voterArrLength.toString());
   };
 
   return (
-    <CandidatesContext.Provider value={{ candidates, minChoice, votes, uniqueVotes, addCandidate, removeCandidate, setMinChoice, tallyVote, setUniqueVotes }}>
+    <CandidatesContext.Provider value={{ voters, candidates, minChoice, votes, currVoter, uniqueVotes, addCandidate, addVoter, updateVoter, setCurrVoter, removeCandidate, setMinChoice, tallyVote, setUniqueVotes }}>
       {children}
     </CandidatesContext.Provider>
   );

@@ -10,14 +10,18 @@ import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CardHeader from '@/components/CardHeader';
 import HamburgerMenu from '@/components/HamburgerMenu';
+import { useRouter } from 'expo-router';
 
 const VoterScreen = () => {
-  const { candidates, votes, tallyVote, minChoice, uniqueVotes, setUniqueVotes } = useContext(CandidatesContext)!;
+  const { candidates, votes, voters, currVoter, updateVoter, tallyVote, minChoice, uniqueVotes, setUniqueVotes } = useContext(CandidatesContext)!;
   const [selectedCandidates, setSelectedCandidates] = useState<string[]>([]);
   const [numColumns, setNumColumns] = useState(3);
+  
+  const router = useRouter();
 
   useEffect(() => {
     setColumnSize();
+    console.log(voters);
   })
 
   const toggleSelection = (name: string) => {
@@ -27,7 +31,8 @@ const VoterScreen = () => {
   };
 
   const submitVote = async () => {
-    if (selectedCandidates.length >= minChoice) {
+    const currentVoter = voters.find(voter => voter.id === currVoter);
+    if (selectedCandidates.length >= minChoice && currentVoter && !currentVoter.hasVoted) {
       let newUniqueChoice = uniqueVotes + 1;
       let newVotes = { ...votes };
 
@@ -38,9 +43,13 @@ const VoterScreen = () => {
       setUniqueVotes(newUniqueChoice);
       tallyVote({ updatedVotes: newVotes });
       await AsyncStorage.setItem('votes', JSON.stringify(newVotes));
+      updateVoter(currVoter, true);
 
       setSelectedCandidates([]);
       alert("Vote submitted successfully!");
+      router.push('/');
+    } else if (currentVoter && currentVoter.hasVoted) {
+      alert('You have already voted!');
     } else {
       alert(`Please select at least ${minChoice} candidates.`);
     }
@@ -48,11 +57,11 @@ const VoterScreen = () => {
 
   const setColumnSize = () => {
     const screenWidth = Dimensions.get('window').width;
-    if (screenWidth < 500) {
+    if (screenWidth < 700) {
       setNumColumns(1);
-    } else if (candidates.length < 6 && screenWidth > 500) {
+    } else if (candidates.length < 6 && screenWidth > 700) {
       setNumColumns(2);
-    } else if (candidates.length >= 6 && screenWidth > 650) {
+    } else if (candidates.length >= 6 && screenWidth > 750) {
       setNumColumns(3);
     }
   }

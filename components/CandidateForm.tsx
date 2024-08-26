@@ -91,7 +91,7 @@ const CandidateForm = () => {
         <TouchableOpacity 
           onPress={pickImage}
           activeOpacity={0.8}
-          className={`bg-blue-400 p-1 rounded-md h-[40px] w-[200px] justify-center items-center`}
+          className={`bg-blue-600 p-1 rounded-md h-[40px] w-[200px] justify-center items-center`}
         >
           <Text className='text-white font-bold'>{image ? 'Change Candidate Picture' : 'Upload Candidate Picture'}</Text>
         </TouchableOpacity>

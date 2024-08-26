@@ -10,11 +10,7 @@ const TallyTable = () => {
 
   return (
     <View className="w-full bg-white mt-2">
-      {/* <CardHeader title={'Vote Tally'} /> */}
-      <View className='w-full'>
-        <Text className="text-2xl font-bold px-4 pt-4 pb-2 text-red-600">Vote Tally</Text>
-        <LineBreak />
-      </View>
+      <CardHeader title={'Vote Tally'} />
       <View className='p-4'>
         <View className='border-b-2 w-[60%] md:w-[45%] border-black' />
         <FlatList

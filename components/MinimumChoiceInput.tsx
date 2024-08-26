@@ -33,12 +33,14 @@ const MinimumChoiceInput = () => {
         <View className='border-b w-full border-gray-300 shadow-md' />
         <View className='px-4 pt-6 flex-row gap-16 items-center'>
             <Text className='text-xl font-bold'>Change Minimum Selection Choice</Text>  
-            <TextInput
-                placeholder="Set Minimum Candidates Choice"
-                value={newMinChoice.toString()}
-                onChangeText={(text) => setMinChoiceState(Number(text))}
-                className="border rounded-md text-2xl text-black py-2 px-4"
-            />
+            <View className='border rounded-md py-2 px-4'>
+                <TextInput
+                    placeholder="Set Minimum Candidates Choice"
+                    value={newMinChoice.toString()}
+                    onChangeText={(text) => setMinChoiceState(Number(text))}
+                    className="text-2xl text-black"
+                />
+            </View>
         </View>
         <View className='px-4 mt-1'>
             <SecondaryButton title="Save Changes" handlePress={handleSubmit} />
