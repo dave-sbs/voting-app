@@ -31,7 +31,7 @@ const MinimumChoiceInput = () => {
             </View>
         </View>
         <View className='border-b w-full border-gray-300 shadow-md' />
-        <View className='px-4 pt-6 flex-row gap-16 items-center'>
+        <View className='px-4 pt-6 flex-row gap-[68px] items-center'>
             <Text className='text-xl font-bold'>Change Minimum Selection Choice</Text>  
             <View className='border rounded-md py-2 px-4'>
                 <TextInput

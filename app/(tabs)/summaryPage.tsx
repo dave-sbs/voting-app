@@ -16,6 +16,9 @@ const summaryPage = () => {
         <ScrollView>
             <CardHeader title={'Voter Summary'} />
             <View className='p-4'>
+                <Text className='text-xl font-medium mb-4 text-blue-600'>Date of Vote:
+                    <Text className='text-xl font-semibold'>  {new Date().toLocaleDateString()}</Text>
+                </Text>
                 <View className='border-b-2 w-[60%] border-black' />
                 <View className='flex-row'>
                     <View className='border-l-2 border-b-2 w-[30%] h-10 items-center justify-center'>

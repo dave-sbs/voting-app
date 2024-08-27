@@ -12,6 +12,9 @@ const TallyTable = () => {
     <View className="w-full bg-white mt-2">
       <CardHeader title={'Vote Tally'} />
       <View className='p-4'>
+        <Text className='text-xl font-medium mb-4 text-blue-600'>Date of Vote:
+          <Text className='text-xl font-semibold'>  {new Date().toLocaleDateString()}</Text>
+        </Text>
         <View className='border-b-2 w-[60%] md:w-[45%] border-black' />
         <FlatList
           data={Object.entries(votes)}

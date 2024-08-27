@@ -23,27 +23,44 @@ const VoterScreen = () => {
     setColumnSize();
   })
 
+  /**
+   * Toggles the selection of a candidate. If the candidate is already selected,
+   * remove them from the selection. Otherwise, add them to the selection.
+   * @param {string} name the name of the candidate to toggle
+   */
   const toggleSelection = (name: string) => {
     setSelectedCandidates(prev =>
       prev.includes(name) ? prev.filter(n => n !== name) : [...prev, name]
     );
   };
 
+  /**
+   * Submits the user's vote. If the user has not already voted and has selected
+   * at least minChoice candidates, the vote is submitted and the user is
+   * redirected to the home page.
+   */
   const submitVote = async () => {
     const currentVoter = voters.find(voter => voter.id === currVoter);
+
+    // Check if the user has already voted and has selected at least minChoice candidates, then submit the vote
     if (selectedCandidates.length >= minChoice && currentVoter && !currentVoter.hasVoted) {
       let newUniqueChoice = uniqueVotes + 1;
       let newVotes = { ...votes };
 
+      // Increment the vote count for each selected candidate
       for (const name of selectedCandidates) {
         newVotes = { ...newVotes, [name]: (newVotes[name] || 0) + 1 };
       }  
 
+      // Update the unique votes and votes in storage
       setUniqueVotes(newUniqueChoice);
       tallyVote({ updatedVotes: newVotes });
       await AsyncStorage.setItem('votes', JSON.stringify(newVotes));
+
+      // Update the user's hasVoted property in storage
       updateVoter(currVoter, true);
 
+      // Reset the selected candidates and redirect to the home page
       setSelectedCandidates([]);
       alert("Vote submitted successfully!");
       router.push('/');
@@ -96,7 +113,7 @@ const VoterScreen = () => {
                       <CandidateButton 
                         title={selectedCandidates.includes(item.name) ? "Candidate Selected" : "Select Candidate"}
                         handlePress={() => {toggleSelection(item.name)}}
-                        color={selectedCandidates.includes(item.name) ? 'bg-green-800' : 'bg-black'}
+                        color={selectedCandidates.includes(item.name) ? 'bg-orange-400' : 'bg-black'}
                         otherProps="mb-4"
                         isLoading={false}
                       />
@@ -111,7 +128,7 @@ const VoterScreen = () => {
                     activeOpacity={0.8}
                     className={`bg-green-800 py-3 px-2 rounded-md w-[240px] justify-center items-center mt-4`}
                 >
-                  <Text className='text-orange-500 font-bold text-xl'>Submit Selections</Text>
+                  <Text className='text-white font-bold text-xl'>Submit Selections</Text>
               </TouchableOpacity>
             </View>
           <StatusBar backgroundColor="transparent" style="dark" />

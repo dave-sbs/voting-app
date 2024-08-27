@@ -48,9 +48,9 @@ const HamburgerMenu = () => {
                             router.push('/SignIn');
                         }}
                         activeOpacity={0.8}
-                        className={`bg-green-800 py-3 px-2 rounded-md w-[240px] justify-center items-center`}
+                        className={`bg-orange-400 py-3 px-2 rounded-md w-[240px] justify-center items-center`}
                     >
-                        <Text className='text-orange-500 font-medium text-xl'>Go to admin page</Text>
+                        <Text className='text-green-800 font-medium text-xl'>Go to admin page</Text>
                     </TouchableOpacity>
                 </View>
             </View>

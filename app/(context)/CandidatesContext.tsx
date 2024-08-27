@@ -108,19 +108,21 @@ export const CandidatesProvider = ({ children }: { children: ReactNode }) => {
     if (confirmed) {
       let updatedCandidates;
       let updatedVotes = { ...votes };
-
       delete updatedVotes[indexOrName];
       setVotes(updatedVotes);
-
       if (isNaN(Number(indexOrName))) {
         updatedCandidates = candidates.filter(candidate => candidate.name !== indexOrName);
       } else {
         updatedCandidates = candidates.filter((_, index) => index !== Number(indexOrName));
       }
-
       setCandidates(updatedCandidates);
       await AsyncStorage.setItem('candidates', JSON.stringify(updatedCandidates));
       await AsyncStorage.setItem('votes', JSON.stringify(updatedVotes));
+
+      if (updatedCandidates.length === 0) {
+        setUniqueVotesState(0);
+        await AsyncStorage.setItem('uniqueVotes', '0');
+      }
     };
   };
 
@@ -140,16 +142,8 @@ export const CandidatesProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const setUniqueVotes = async (choice: number) => {
-    let votesCasted = 0;
-
-    voters.map(voter => {
-      if (voter.hasVoted) {
-        votesCasted++;
-      }
-    });
-
-    setUniqueVotesState(votesCasted);
-    await AsyncStorage.setItem('uniqueVotes', votesCasted.toString());
+    setUniqueVotesState(choice);
+    await AsyncStorage.setItem('uniqueVotes', choice.toString());
   };
 
   const resetVotersArr = async () => {
@@ -173,9 +167,12 @@ export const CandidatesProvider = ({ children }: { children: ReactNode }) => {
 
     if (confirmed) {
       setVoters([]);
-      setCurrVoter(0);
-      setUniqueVotes(0);
+      setCurrVoterState(0);
+      setUniqueVotesState(0);
+      
       await AsyncStorage.setItem('voters', JSON.stringify([]));
+      await AsyncStorage.setItem('currVoter', '0');
+      await AsyncStorage.setItem('uniqueVotes', '0');
     };
   };
 
