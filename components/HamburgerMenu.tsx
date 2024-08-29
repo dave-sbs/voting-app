@@ -1,22 +1,13 @@
-import { Text, View, TouchableWithoutFeedback } from 'react-native';
+import { Text, View, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import React, { useState } from 'react';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useRouter } from 'expo-router';
 
-const HamburgerMenu = () => {
+const HamburgerMenu = ( { sideChoice }: { sideChoice: 'left' | 'right' } ) => {
     const [showMenu, setShowMenu] = useState(false);
     const router = useRouter();
 
-    // Function to close the menu when clicking outside
-    const handleOutsidePress = () => {
-        console.log('test')
-        if (showMenu) {
-            setShowMenu(false);
-        }
-    };
-
     return (
-        <View className='absolute right-0 top-0'>
+        <View className={`absolute ${sideChoice === 'left' ? 'left-0' : 'right-0'} top-0`}>
             <View className={`${!showMenu ? 'block' : 'hidden'}`}>
                 <TouchableOpacity
                     onPress={() => setShowMenu(true)}
@@ -29,9 +20,9 @@ const HamburgerMenu = () => {
                 </TouchableOpacity>
             </View>
 
-            <View className={`${showMenu ? 'block' : 'hidden'} w-[300px] h-[120px] bg-white rounded-b-md shadow shadow-gray-200`}>
+            <View className={`${showMenu ? 'block' : 'hidden'} py-2 w-[300px] h-[190px] bg-white rounded-b-md shadow shadow-gray-200`}>
                 {/* Close button */}
-                <View className='items-end justify-center px-8'>
+                <View className={`items-end justify-center px-8`}>
                     <TouchableOpacity
                         onPress={() => setShowMenu(false)}
                         activeOpacity={0.8}
@@ -50,7 +41,20 @@ const HamburgerMenu = () => {
                         activeOpacity={0.8}
                         className={`bg-orange-400 py-3 px-2 rounded-md w-[240px] justify-center items-center`}
                     >
-                        <Text className='text-green-800 font-medium text-xl'>Go to admin page</Text>
+                        <Text className='text-green-800 font-medium text-xl'>Go to Admin Page</Text>
+                    </TouchableOpacity>
+                </View>
+
+                <View className='items-center justify-center mt-4'>
+                    <TouchableOpacity
+                        onPress={() => {
+                            setShowMenu(false); 
+                            router.push('/SummaryPageAuth');
+                        }}
+                        activeOpacity={0.8}
+                        className={`bg-orange-400 py-3 px-2 rounded-md w-[240px] justify-center items-center`}
+                    >
+                        <Text className='text-green-800 font-medium text-xl'>Go to Summary Page</Text>
                     </TouchableOpacity>
                 </View>
             </View>

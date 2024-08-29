@@ -4,7 +4,7 @@
     "slug": "taye-project",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/ballotBox.png",
+    "icon": "./assets/images/icon.png",
     "scheme": "taye-project",
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -17,7 +17,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/ballowBox.png",
+        "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.daveboku.tayeproject"
