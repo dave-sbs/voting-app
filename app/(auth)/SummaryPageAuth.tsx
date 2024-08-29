@@ -35,9 +35,9 @@ const SummaryPageAuth = () => {
         <TouchableOpacity
               onPress={signIn}
               activeOpacity={0.8}
-              className={`bg-orange-400 py-3 px-2 rounded-md w-full justify-center items-center mt-4`}
+              className={`bg-green-800 py-3 px-2 rounded-md w-full justify-center items-center mt-4`}
           >
-            <Text className='text-green-800 font-medium text-lg'>Sign In</Text>
+            <Text className='text-orange-500 font-medium text-lg'>Sign In</Text>
         </TouchableOpacity>
       </View>
     </View>

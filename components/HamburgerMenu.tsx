@@ -39,9 +39,9 @@ const HamburgerMenu = ( { sideChoice }: { sideChoice: 'left' | 'right' } ) => {
                             router.push('/SignIn');
                         }}
                         activeOpacity={0.8}
-                        className={`bg-orange-400 py-3 px-2 rounded-md w-[240px] justify-center items-center`}
+                        className={`bg-green-800 py-3 px-2 rounded-md w-[240px] justify-center items-center`}
                     >
-                        <Text className='text-green-800 font-medium text-xl'>Go to Admin Page</Text>
+                        <Text className='text-orange-500 font-bold text-xl'>Go to Admin Page</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -52,9 +52,9 @@ const HamburgerMenu = ( { sideChoice }: { sideChoice: 'left' | 'right' } ) => {
                             router.push('/SummaryPageAuth');
                         }}
                         activeOpacity={0.8}
-                        className={`bg-orange-400 py-3 px-2 rounded-md w-[240px] justify-center items-center`}
+                        className={`bg-green-800 py-3 px-2 rounded-md w-[240px] justify-center items-center`}
                     >
-                        <Text className='text-green-800 font-medium text-xl'>Go to Summary Page</Text>
+                        <Text className='text-orange-500 font-bold text-xl'>Go to Summary Page</Text>
                     </TouchableOpacity>
                 </View>
             </View>

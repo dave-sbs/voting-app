@@ -26,7 +26,7 @@ const App = () => {
               activeOpacity={0.8}
               className="bg-green-800 p-6 rounded-md shadow-lg mt-16 min-w-[200px] justify-center items-center"
             >
-              <Text className='text-white font-bold text-4xl'>
+              <Text className='text-orange-500 font-bold text-4xl'>
                 Click here to vote →
               </Text>
           </TouchableOpacity>

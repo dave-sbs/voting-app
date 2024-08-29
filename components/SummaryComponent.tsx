@@ -15,9 +15,9 @@ const SummaryTable = () => {
             <TouchableOpacity
                 onPress={() => router.push('/summaryPage')}
                 activeOpacity={0.8}
-                className={`bg-orange-400 p-2 rounded-md h-[48px] w-[220px] justify-center items-center mt-4 mb-2 `}
+                className={`bg-green-800 p-2 rounded-md h-[48px] w-[220px] justify-center items-center mt-4 mb-2 `}
             >
-                <Text className='text-green-800 font-semibold text-lg'>
+                <Text className='text-orange-500 font-semibold text-lg'>
                     Go To Summary Page →
                 </Text>
             </TouchableOpacity>
