@@ -42,8 +42,17 @@ const MinimumChoiceInput = () => {
                 />
             </View>
         </View>
-        <View className='px-4 mt-1'>
-            <SecondaryButton title="Save Changes" handlePress={handleSubmit} />
+        <View className='px-4 mt-1 justify-center items-center'>
+            {/* <SecondaryButton title="Save Changes" handlePress={handleSubmit} /> */}
+            <TouchableOpacity
+                    onPress={handleSubmit}
+                    activeOpacity={0.8}
+                    className={`bg-orange-400 p-1 rounded-md h-[40px] w-[240px] justify-center items-center mt-3 mb-4`}
+                >
+                <Text className='text-green-800 font-semibold text-lg'>
+                    Save Changes
+                </Text>
+            </TouchableOpacity>
         </View>
     </View>
   )

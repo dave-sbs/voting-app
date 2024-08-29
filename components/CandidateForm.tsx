@@ -81,14 +81,15 @@ const CandidateForm = () => {
       <View className='p-4 flex-row gap-6 items-center'>
         <Text className='text-lg font-bold'>Full Name</Text>
         <TextInput
-          placeholder=""
+          placeholder="Enter your name"
+          placeholderTextColor="gray"
           value={name}
           onChangeText={setName}
-          className="border-b-0.5 border-gray-400 text-black py-1 px-1 w-[200px]"
+          className="border-0.5 rounded-md border-gray-400 text-black py-2 px-1 w-[240px]"
         />
       </View>
 
-      <View className='w-full mt-1 px-4'>
+      <View className='w-full px-4'>
         <TouchableOpacity 
           onPress={pickImage}
           activeOpacity={0.8}
@@ -96,8 +97,18 @@ const CandidateForm = () => {
         >
           <Text className='text-white font-bold'>{image ? 'Change Candidate Picture' : 'Upload Candidate Picture'}</Text>
         </TouchableOpacity>
-      
-      <SecondaryButton title="Add Candidate" handlePress={handleSubmit} />
+      <View className='items-center justify-center'>
+        {/* <SecondaryButton title="Add Candidate" handlePress={handleSubmit} /> */}
+        <TouchableOpacity
+              onPress={handleSubmit}
+              activeOpacity={0.8}
+              className={`bg-orange-400 p-1 rounded-md h-[40px] w-[240px] justify-center items-center mt-3 mb-4`}
+          >
+          <Text className='text-green-800 font-semibold text-lg'>
+              Add Candidate
+          </Text>
+        </TouchableOpacity>
+      </View>
       </View>
     </View>
   );

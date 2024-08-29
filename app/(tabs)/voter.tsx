@@ -88,9 +88,11 @@ const VoterScreen = () => {
         <ScrollView>
             <CardHeader title={'Voting Page'} />
             <Text className={`pt-8 pb-2 px-12 text-2xl font-bold text-red-500`}>Reminder:
-              <Text className='text-2xl text-blue-600 font-normal'> You have to select at least {minChoice} {minChoice === 1 ? 'candidate' : 'candidates'}</Text>
+              <Text className='text-2xl text-black font-normal'> Select at least
+                <Text className='font-semibold text-red-500'> {minChoice} </Text> 
+              {minChoice === 1 ? 'candidate' : 'candidates'}</Text>
             </Text>
-            <Text className={`pb-6 px-12 text-2xl text-blue-600 font-normal`}>Press the button under the corresponding candidate of your choice. </Text>
+            <Text className={`pb-6 px-12 text-2xl text-black font-normal`}>Press the button under the corresponding candidate of your choice. </Text>
             <HamburgerMenu sideChoice='right' />
             <View className={`w-full px-12`}>
               <FlatList
