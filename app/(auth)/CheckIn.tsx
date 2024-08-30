@@ -8,30 +8,23 @@ import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 const CheckInScreen = () => {
   const navigation = useNavigation<NavigationProp<any>>();
-  const { voters, addVoter, setCurrVoter } = useContext(CandidatesContext)!; // Get the voters from CandidatesContext
-  const [ voterId, setVoterId ] = useState('');
+  const { voters, setCurrVoter } = useContext(CandidatesContext)!; // Get the voters from CandidatesContext
+  const [ storeId, setStoreId ] = useState('');
 
 
   const handleSubmit = () => {
-    const numVoterId = Number(voterId);
-    const newVoter = voters.find(voter => voter.id === numVoterId);
-    console.log(newVoter !== undefined);
+    const newVoter = voters.find(voter => voter.id === storeId);
 
-    if (numVoterId) {
+    if (storeId) {
       // If Voter ID already exists, set current voter and navigate to voter screen
       if (newVoter !== undefined) {
-        setVoterId(voterId);
-        setCurrVoter(numVoterId);
+        setStoreId(storeId);
+        setCurrVoter(storeId);
         navigation.navigate('(tabs)', { screen: 'voter' });
       } 
-      // If Voter ID doesn't exist, add new voter and navigate to voter screen
+      // If Voter ID doesn't exist, show alert
       else if (!(newVoter !== undefined)){
-        setVoterId(voterId);
-        setCurrVoter(numVoterId);
-        addVoter(numVoterId);
-        navigation.navigate('(tabs)', { screen: 'voter' });
-      } else {
-        alert('Invalid credentials');
+        alert('Invalid credentials. Please check your Store Number and try again.');
       }
     } 
     // If Voter ID is empty, show alert
@@ -44,12 +37,12 @@ const CheckInScreen = () => {
     <View className="bg-white flex-1 items-center justify-center p-4">
       <View className='w-1/2 p-8 border border-gray-300 items-start rounded-md'>
         <Text className="text-3xl font-semibold mb-4">Check In</Text>
-        <Text className='py-2 text-lg font-semibold'>Voter ID</Text>
+        <Text className='py-2 text-lg font-semibold'>Store Number</Text>
           <TextInput
-            placeholder="Enter Your Voter ID"
+            placeholder="Enter Your Store Number"
             placeholderTextColor="#a1a1a1"
-            value={voterId}
-            onChangeText={setVoterId}
+            value={storeId}
+            onChangeText={setStoreId}
             className="border border-gray-400 text-black py-3 px-2 w-full rounded-md"
           />
         

@@ -54,7 +54,7 @@ const CandidateForm = () => {
   };
 
   return (
-    <View className="bg-white w-full">
+    <View className="bg-white w-full mt-2 flex-1">
       <CardHeader title={'Add New Candidate'} />
       <View className={`${image ? 'display' : 'hidden' }`}>
         <View className='p-4 pt-6 flex-row items-baseline relative'>
@@ -73,15 +73,15 @@ const CandidateForm = () => {
 
           <Text className='text-xl font-bold pb-2 pl-4'>{name}</Text>
         </View>
-        <View className='pt-10 relative'>
+        <View className='pt-12 relative'>
           <LineBreak />
         </View>
       </View>
 
-      <View className='p-4 flex-row gap-6 items-center mb-2'>
+      <View className='p-4 flex flex-row gap-6 items-center relative z-10'>
         <Text className='text-lg font-bold'>Full Name</Text>
         <TextInput
-          placeholder="Enter your name"
+          placeholder="Enter Candidate's name"
           placeholderTextColor="gray"
           value={name}
           onChangeText={setName}
@@ -98,11 +98,10 @@ const CandidateForm = () => {
           <Text className='text-white font-bold'>{image ? 'Change Candidate Picture' : 'Upload Candidate Picture'}</Text>
         </TouchableOpacity>
       <View className='items-center justify-center'>
-        {/* <SecondaryButton title="Add Candidate" handlePress={handleSubmit} /> */}
         <TouchableOpacity
               onPress={handleSubmit}
               activeOpacity={0.8}
-              className={`bg-green-800 p-1 rounded-md h-[40px] w-[240px] justify-center items-center mt-1 mb-4`}
+              className={`bg-green-800 rounded-md h-[40px] w-[240px] justify-center items-center mb-4`}
           >
           <Text className='text-orange-500 font-semibold text-lg'>
               Add Candidate

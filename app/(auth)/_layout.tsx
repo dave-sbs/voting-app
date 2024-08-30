@@ -12,7 +12,13 @@ const AuthLayout = () => {
         }}
       />
       <Stack.Screen
-        name="SignUp"
+        name="CheckIn"
+        options={{
+          title: "",
+        }}
+      />
+      <Stack.Screen
+        name="SummaryPageAuth"
         options={{
           title: "",
         }}

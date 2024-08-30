@@ -3,47 +3,46 @@ import React, { useContext, useState } from 'react'
 import { CandidatesContext } from '@/app/(context)/CandidatesContext';
 import CardHeader from './CardHeader';
 
-const MinimumChoiceInput = () => {
+const MaximumChoiceInput = () => {
 
-    const { maxChoice, minChoice, setMinChoice } = useContext(CandidatesContext)!;
-    const [newMinChoice, setMinChoiceState] = useState(0);
+    const { minChoice, maxChoice, setMaxChoice } = useContext(CandidatesContext)!;
+    const [newmaxChoice, setmaxChoiceState] = useState(0);
 
     const handleSubmit = () => {
-        if (newMinChoice && newMinChoice <= maxChoice) {
-            setMinChoiceState(newMinChoice);
-            setMinChoice(newMinChoice);
+        if (newmaxChoice && newmaxChoice >= minChoice) {
+            setmaxChoiceState(newmaxChoice);
+            setMaxChoice(newmaxChoice);
         } else {
-            alert('Please make sure the Minimum choice is at least equal to or less than the Maximum choice');
+            alert('Please make sure the Maximum choice is at least equal to or greater than the Minimum choice');
         }
     };
 
 
   return (
     <View className="bg-white w-full mt-2">
-        <CardHeader title={'Minimum Candidates Selection Choice'} />
+        <CardHeader title={'Maximum Candidates Selection Choice'} />
         <View className='p-4'>
-            <Text className="text-base">Please specify the minimum number of candidates the voters should choose to make a valid submission </Text>
+            <Text className="text-base">Please specify the maximum number of candidates the voters should choose to make a valid submission </Text>
             <View className='flex-row w-[440] mt-4 justify-between items-center'>
-                <Text className="text-lg font-bold">Current Minimum Selection Choice:</Text>
+                <Text className="text-lg font-bold">Current Maximum Selection Choice:</Text>
                 <View className='border rounded-md items-center justify-center'>
-                    <Text className="font-semibold mt-2 text-2xl pb-2 px-4 text-green-600">{minChoice}</Text>
+                    <Text className="font-semibold mt-2 text-2xl pb-2 px-4 text-green-600">{maxChoice}</Text>
                 </View>
             </View>
         </View>
         <View className='border-b w-full border-gray-300 shadow-md' />
-        <View className='px-4 pt-6 flex-row gap-[64px] items-center'>
-            <Text className='text-xl font-bold'>Change Minimum Selection Choice</Text>  
+        <View className='px-4 pt-6 flex-row gap-[58px] items-center'>
+            <Text className='text-xl font-bold'>Change Maximum Selection Choice</Text>  
             <View className='border rounded-md py-2 px-4'>
                 <TextInput
-                    placeholder="Set Minimum Candidates Choice"
-                    value={newMinChoice.toString()}
-                    onChangeText={(text) => setMinChoiceState(Number(text))}
+                    placeholder="Set Maximum Candidates Choice"
+                    value={newmaxChoice.toString()}
+                    onChangeText={(text) => setmaxChoiceState(Number(text))}
                     className="text-2xl text-black"
                 />
             </View>
         </View>
         <View className='px-4 mt-1 justify-center items-center'>
-            {/* <SecondaryButton title="Save Changes" handlePress={handleSubmit} /> */}
             <TouchableOpacity
                     onPress={handleSubmit}
                     activeOpacity={0.8}
@@ -58,5 +57,5 @@ const MinimumChoiceInput = () => {
   )
 }
 
-export default MinimumChoiceInput
+export default MaximumChoiceInput
 

@@ -19,9 +19,9 @@ DONE
 
 
 TO DO
-[] Add date to vote tally table
-[] Unique Voter count acting somewhat weirdly
-[] Should I reset vote tally if voter data gets reset? 
+[D] Add date to vote tally table
+[D] Unique Voter count acting somewhat weirdly
+[D] Should I reset vote tally if voter data gets reset? 
 
 
 QUESTIONS
@@ -33,11 +33,6 @@ QUESTIONS
 [] Do we want Sign up
     [] There is no way to protect it
     [] What if someone forgets the username or password?
-    
-    admin
-    081224
-
-
 
 so I was thinking we could implement this feature by first creating an object array - let's call it votersArray - in CandidatesContext. This array gets populated when voters register, and is also used to check in voters that are already in the array. I am not sure what exact props we want each voter object to have though. So far I'm thinking registration date, name, unique ID, and voting status
 

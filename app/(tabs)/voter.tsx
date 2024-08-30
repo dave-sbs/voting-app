@@ -13,7 +13,9 @@ import HamburgerMenu from '@/components/HamburgerMenu';
 import { useRouter } from 'expo-router';
 
 const VoterScreen = () => {
-  const { candidates, votes, voters, currVoter, updateVoter, tallyVote, minChoice, uniqueVotes, setUniqueVotes } = useContext(CandidatesContext)!;
+  const { 
+    candidates, votes, voters, currVoter, updateVoter, tallyVote, minChoice, maxChoice, uniqueVotes, setUniqueVotes
+   } = useContext(CandidatesContext)!;
   const [selectedCandidates, setSelectedCandidates] = useState<string[]>([]);
   const [numColumns, setNumColumns] = useState(3);
   
@@ -43,7 +45,7 @@ const VoterScreen = () => {
     const currentVoter = voters.find(voter => voter.id === currVoter);
 
     // Check if the user has already voted and has selected at least minChoice candidates, then submit the vote
-    if (selectedCandidates.length >= minChoice && currentVoter && !currentVoter.hasVoted) {
+    if (selectedCandidates.length >= minChoice && selectedCandidates.length <= maxChoice && currentVoter && !currentVoter.hasVoted) {
       let newUniqueChoice = uniqueVotes + 1;
       let newVotes = { ...votes };
 
@@ -64,9 +66,14 @@ const VoterScreen = () => {
       setSelectedCandidates([]);
       alert("Vote submitted successfully!");
       router.push('/');
-    } else if (currentVoter && currentVoter.hasVoted) {
+    } 
+    else if (currentVoter && currentVoter.hasVoted) {
       alert('You have already voted!');
-    } else {
+    } 
+    else if (selectedCandidates.length > maxChoice) {
+      alert(`Please select no more than ${maxChoice} candidates.`);
+    } 
+    else {
       alert(`Please select at least ${minChoice} candidates.`);
     }
   };
@@ -87,12 +94,18 @@ const VoterScreen = () => {
       <SafeAreaView className='h-full bg-white'>
         <ScrollView>
             <CardHeader title={'Voting Page'} />
-            <Text className={`pt-8 pb-2 px-12 text-2xl font-bold text-red-500`}>Reminder:
+            <Text className={`pt-8 pb-2 px-12 text-2xl font-bold text-red-500`}>Reminders:</Text>
+            <View className='border-l-4 ml-12 px-2'>
               <Text className='text-2xl text-black font-normal'> Select at least
                 <Text className='font-semibold text-red-500'> {minChoice} </Text> 
               {minChoice === 1 ? 'candidate' : 'candidates'}</Text>
-            </Text>
-            <Text className={`pb-6 px-12 text-2xl text-black font-normal`}>Press the button under the corresponding candidate of your choice. </Text>
+            </View>
+            <View className='border-l-4 ml-12 px-2'>
+              <Text className='text-2xl text-black font-normal'> Select at most
+                <Text className='font-semibold text-red-500'> {maxChoice} </Text> 
+              {maxChoice === 1 ? 'candidate' : 'candidates'}</Text>
+            </View>
+            <Text className={`pt-4 pb-6 px-12 text-2xl text-black font-normal`}>Press the button under the corresponding candidate of your choice. </Text>
             <HamburgerMenu sideChoice='right' />
             <View className={`w-full px-12`}>
               <FlatList
@@ -130,7 +143,7 @@ const VoterScreen = () => {
                     activeOpacity={0.8}
                     className={`bg-green-800 py-3 px-2 rounded-md w-[240px] justify-center items-center mt-4`}
                 >
-                  <Text className='text-white font-bold text-xl'>Submit Selections</Text>
+                  <Text className='text-orange-500 font-bold text-xl'>Submit Selections</Text>
               </TouchableOpacity>
             </View>
           <StatusBar backgroundColor="transparent" style="dark" />
