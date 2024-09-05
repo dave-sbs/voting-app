@@ -26,7 +26,7 @@ const SignInScreen = () => {
   return (
     <View className="bg-white flex-1 items-center justify-center p-4">
       <View className='w-1/2 p-8 border border-gray-300 items-start rounded-md'>
-        <Text className="text-3xl font-semibold mb-4">Sign In</Text>
+        <Text className="text-3xl font-semibold mb-4">Sign In to Admin</Text>
         <Text className='py-2 text-lg font-semibold'>Password</Text>
           <TextInput
             placeholder="Your Password"

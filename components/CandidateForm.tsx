@@ -4,7 +4,6 @@ import { CandidatesContext } from '@/app/(context)/CandidatesContext';
 import { styled } from 'nativewind';
 import * as ImagePicker from 'expo-image-picker';
 import CardHeader from './CardHeader';
-import SecondaryButton from './SecondaryButton';
 import LineBreak from './LineBreak';
 
 const CandidateForm = () => {
