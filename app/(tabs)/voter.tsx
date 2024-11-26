@@ -244,13 +244,13 @@ const VoterScreen = () => {
         <ScrollView>
           <CardHeader title={'Voting Page'} />
               <Text className={`pt-8 pb-2 px-12 text-2xl font-bold text-red-500`}>Reminders:</Text>
-              <View className='border-l-4 ml-12 px-2'>
+              {/* <View className='border-l-4 ml-12 px-2'>
                 <Text className='text-2xl text-black font-normal'> Select at least
                   <Text className='font-semibold text-red-500'> {minChoice} </Text> 
                 {minChoice === 1 ? 'candidate' : 'candidates'}</Text>
-              </View>
+              </View> */}
               <View className='border-l-4 ml-12 px-2'>
-                <Text className='text-2xl text-black font-normal'> Select at most
+                <Text className='text-2xl text-black font-normal'> Plase select maximum
                   <Text className='font-semibold text-red-500'> {maxChoice} </Text> 
                 {maxChoice === 1 ? 'candidate' : 'candidates'}</Text>
               </View>
