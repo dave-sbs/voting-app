@@ -20,6 +20,7 @@ interface CandidatesContextType {
   voters: Voters[];
   minChoice: number;
   maxChoice: number;
+  deviceName: string;
   votes: { [key: string]: number };
   currVoter: string;
   uniqueVotes: number;
@@ -33,6 +34,7 @@ interface CandidatesContextType {
   tallyVote: ({ updatedVotes }: { updatedVotes: {  [x: string]: number } }) => Promise<void>;
   setUniqueVotes: (choice: number) => void;
   resetVotersArr: () => void;
+  setDeviceName: (name: string) => void;
 }
 
 export const CandidatesContext = createContext<CandidatesContextType | undefined>(undefined);
@@ -45,7 +47,7 @@ export const CandidatesProvider = ({ children }: { children: ReactNode }) => {
   const [maxChoice, setmaxChoiceState] = useState<number>(6);
   const [uniqueVotes, setUniqueVotesState] = useState<number>(0);
   const [currVoter, setCurrVoterState] = useState<string>('');
-
+  const [deviceName, setDeviceNameState] = useState<string>('');
 
   const loadVoters = async () => {
     const votersData = require('../../scripts/voters.json');
@@ -190,6 +192,11 @@ export const CandidatesProvider = ({ children }: { children: ReactNode }) => {
     await AsyncStorage.setItem('uniqueVotes', choice.toString());
   };
 
+  const setDeviceName = async (name: string) => {
+    setDeviceNameState(name);
+    await AsyncStorage.setItem('deviceName', name);
+  };
+
   /**
    * Resets the voter data to its initial state. This function asks for
    * confirmation before doing so. If the user confirms, the following
@@ -233,7 +240,7 @@ export const CandidatesProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <CandidatesContext.Provider value={{ voters, candidates, maxChoice, minChoice, votes, currVoter, uniqueVotes, addCandidate, addVoter, updateVoter, setCurrVoter, removeCandidate, setMinChoice, setMaxChoice, tallyVote, setUniqueVotes, resetVotersArr }}>
+    <CandidatesContext.Provider value={{ voters, candidates, maxChoice, minChoice,deviceName,votes, currVoter, uniqueVotes, addCandidate, addVoter, updateVoter, setCurrVoter, removeCandidate, setMinChoice, setMaxChoice, tallyVote, setUniqueVotes, setDeviceName, resetVotersArr }}>
       {children}
     </CandidatesContext.Provider>
   );
