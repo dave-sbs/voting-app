@@ -7,7 +7,7 @@ const HamburgerMenu = ( { sideChoice }: { sideChoice: 'left' | 'right' } ) => {
     const router = useRouter();
 
     return (
-        <View className={`absolute ${sideChoice === 'left' ? 'left-0' : 'right-0'} top-0`}>
+        <View className={`absolute ${sideChoice === 'left' ? 'left-0' : 'right-0'}`}>
             <View className={`${!showMenu ? 'block' : 'hidden'}`}>
                 <TouchableOpacity
                     onPress={() => setShowMenu(true)}
@@ -20,7 +20,7 @@ const HamburgerMenu = ( { sideChoice }: { sideChoice: 'left' | 'right' } ) => {
                 </TouchableOpacity>
             </View>
 
-            <View className={`${showMenu ? 'block' : 'hidden'} py-2 w-[300px] h-[190px] bg-white rounded-b-md shadow shadow-gray-200`}>
+            <View className={`${showMenu ? 'block' : 'hidden'} ${sideChoice === 'left' ? 'left-0' : 'right-0'} py-2 w-[300px] h-[190px] bg-white rounded-b-md shadow shadow-gray-200`}>
                 {/* Close button */}
                 <View className={`items-end justify-center px-8`}>
                     <TouchableOpacity
