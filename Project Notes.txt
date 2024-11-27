@@ -1,0 +1,62 @@
+Project Notes
+DONE
+[D] App is borderline functional
+[D] Voter page UI is more or less there. Need to implement the picture part
+[D] Admin page has most functionalities set up
+[D] Add Minimum Choice input in admin, add image upload in admin
+[D] Users are not removed from the Tally table after being deleted which makes me think the Tally vote doesn't re-render properly
+[D] Not sure if its tallyVotes() or TallyTable but the tallies aren't properly displayed
+[D] Implement proper UI for admin page
+[D] Fix voter page card layout
+[D] Profile display section in Add Candidates behaves weirdly on phone.
+[D] Implement SignIn and SignUp pages
+[D] Remove username in Sign In
+[D] Have Voter Count reset if all candidates have been removed
+[D] Refine flow
+[D] Make hamburger menu collapsable when user touches other areas of screen
+[D] Remove the navigation tab on voting and admin pages
+[D] New Voter Registration feature
+
+
+TO DO
+[D] Add date to vote tally table
+[D] Unique Voter count acting somewhat weirdly
+[D] Should I reset vote tally if voter data gets reset? 
+
+
+QUESTIONS
+[] People with the same name?
+    [] It currently resets the tally, even if both appear on the voter page and on the current candidates list
+    [] On the voter page, they share the same name so they will both activate and deactivate
+[] What happens with Unique Vote Count when all people have been removed?
+    [] I think it doesn't store state in a conventional way either. I think it resets on some instances - test more tomorrow!
+[] Do we want Sign up
+    [] There is no way to protect it
+    [] What if someone forgets the username or password?
+
+so I was thinking we could implement this feature by first creating an object array - let's call it votersArray - in CandidatesContext. This array gets populated when voters register, and is also used to check in voters that are already in the array. I am not sure what exact props we want each voter object to have though. So far I'm thinking registration date, name, unique ID, and voting status
+
+Once registered and checked in, voters then go to voting page and cast their vote which will then be logged by changing the voting status.
+
+While that is happening on the backend, we will create some new screens on the front end.
+Registration and Check In pages will now be the default pages to show on index.tsx. 
+
+Both of them will lead to a landing page welcoming them (Currently the content in index.tsx), and then lead to the voting screen. During this process the voter ID will be somehow remembered so that the voting status can be changed if the vote is cast.
+
+The voter ID will be removed/reset, under the following conditions:
+1. Voter Signs Out (new feature that needs to be implemented)
+2. Voter casts vote
+
+Both options should redirect voters back to index.tsx which will show them the option of either Registering to vote or Checking in.
+
+Then we will also implement a final screen - SummaryPage.tsx.
+This screen will essentially display the essential details of each voter such as their ID, name, and voting status
+
+Now some follow up questions that I still need to think about are:
+1. Do we disable second-time voting for people that have already voted?
+2. Do we want to log the time and frequency of check ins for each voter?
+3. What should the register and check in process look like? 
+    - Just Name?
+    - Name and ID
+
+
