@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { styled } from 'nativewind';
 
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
@@ -49,4 +48,4 @@ const SignInScreen = () => {
   );
 };
 
-export default styled(SignInScreen);
+export default SignInScreen;
