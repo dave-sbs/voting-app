@@ -13,10 +13,10 @@ const App = () => {
 
   return (
     <SafeAreaView className='flex-1 h-full bg-white'>
+      <HamburgerMenu sideChoice='left'/>
       <View className='items-center p-8 w-full h-1/4'>
           <Image source={require('../assets/images/7Eleven.png')} className='w-2/3 h-2/3' resizeMode='contain' />
       </View>
-        <HamburgerMenu sideChoice='left'/>
       <View className="items-center justify-center">
         <View className='justify-center items-center'>
           <Text className="text-5xl font-bold mt-16 mb-4 text-orange-400">Welcome to the Voting App</Text>

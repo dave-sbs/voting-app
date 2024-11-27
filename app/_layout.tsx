@@ -41,7 +41,7 @@
 
 
 import React from 'react';
-// import { CandidatesProvider } from '@/app/(context)/CandidatesContext';
+import { CandidatesProvider } from '@/app/(context)/CandidatesContext';
 
 import { Slot, Stack } from "expo-router";
 import '../global.css';
@@ -49,7 +49,7 @@ import '../global.css';
 const RootLayout = () => {
   return (
     
-    // <CandidatesProvider>
+    <CandidatesProvider>
       <Stack>
         <Stack.Screen
           name="index"
