@@ -31,8 +31,12 @@ yarn-error.*
 
 # local env files
 .env*.local
+supabaseClient.js
 
 # typescript
 *.tsbuildinfo
 
 app-example
+
+# sensitive files
+voters.json
