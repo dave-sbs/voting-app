@@ -1,4 +1,4 @@
-import { supabase } from '../services/supabaseClient';
+import { supabase } from '../services/supabaseClient.js';
 
 const getMemberStoreNumber = async (memberName) => {
   const { data, error } = await supabase
@@ -129,5 +129,49 @@ export const deleteOrganizationMember = async (memberName) => {
     return { data, error: null };
   } catch (error) {
     return { data: null, error };
+  }
+};
+
+export const resetMasterTable = async () => {
+  try {
+    // Use Supabase's DELETE without conditions to clear the entire table
+    const { data, error } = await supabase
+      .from('organization_members')
+      .delete();
+
+    if (error) {
+      throw error; // Throw the error to be caught in the catch block
+    }
+
+    console.log('Master table reset successfully.');
+    return { data, error: null };
+  } catch (error) {
+    console.error('Error resetting master table:', error);
+    return { data: null, error };
+  }
+};
+
+
+// Create copy of master table and store in a json file in the assets folder
+export const createCopyMasterTable = async () => {
+  try {
+    const { data, error } = await supabase
+      .from('organization_members')
+      .select();
+
+    data.forEach((member) => {
+      const memberData = {
+        memberName: member.member_name,
+        storeNumber: member.store_number
+      };
+  
+      const memberJson = JSON.stringify(memberData, null, 2);
+      fs.writeFileSync(`./backup_copy/organization_members_copy.json`, memberJson);
+    }); 
+
+    if (error) throw error;
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error };   
   }
 };

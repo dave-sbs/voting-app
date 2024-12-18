@@ -1,4 +1,3 @@
-import { supabase } from '../services/supabaseClient';
 import { insertOrganizationMember, getOrganizationMembers, deleteOrganizationMember } from '../scripts/masterTableUM';
 
 describe('Organization Member Management', () => {
