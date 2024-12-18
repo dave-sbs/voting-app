@@ -135,9 +135,14 @@ export const deleteOrganizationMember = async (memberName) => {
 export const resetMasterTable = async () => {
   try {
     // Use Supabase's DELETE without conditions to clear the entire table
-    const { data, error } = await supabase
-      .from('organization_members')
-      .delete();
+    const { data, error } = await getOrganizationMembers();
+
+    data.forEach(async (member) => {
+      const { data, deleteError } = await deleteOrganizationMember(member.member_name);
+      if (deleteError) {
+        throw deleteError; // Throw the error to be caught in the catch block
+      }
+    });
 
     if (error) {
       throw error; // Throw the error to be caught in the catch block
