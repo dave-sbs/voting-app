@@ -51,6 +51,5 @@ export const loadVotersToTable = async () => {
 };
 
 
-
-resetMasterTable();
+// resetMasterTable();
 loadVotersToTable();
