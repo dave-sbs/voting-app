@@ -1,4 +1,4 @@
-import { supabase } from '../services/supabaseClient.js';
+import { supabase } from '../../services/supabaseClient.js';
 
 const getMemberStoreNumber = async (memberName) => {
   const { data, error } = await supabase
@@ -178,5 +178,19 @@ export const createCopyMasterTable = async () => {
     return { data, error: null };
   } catch (error) {
     return { data: null, error };   
+  }
+};
+
+export const idExists = async (memberId) => {
+  try {
+    const { data, error } = await supabase
+      .from('organization_members')
+      .select()
+      .eq('member_id', memberId);
+
+    if (error) throw error;
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error };
   }
 };

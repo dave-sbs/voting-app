@@ -25,6 +25,15 @@ TO DO
 
 
 QUESTIONS
+[] Do we have a list for Board Members yet?
+[] How to make sure that changes on Master are reflected on Board, and Check In
+[] How to denote a session active or done for the Check In? Chat suggested using a 'session'/'event' tag that essentially denotes a given event. So no need to reset the table, just need to either manually set a new session or write a script that detects a new session. 
+    [] For instance if a new check in is detected 12 hours after the previous one, then that could be a new session. 
+    [] The session reports for attendance can then be easily emailed, printed, or even better stored in a Google Drive.
+
+
+
+
 [] People with the same name?
     [] It currently resets the tally, even if both appear on the voter page and on the current candidates list
     [] On the voter page, they share the same name so they will both activate and deactivate
@@ -34,6 +43,15 @@ QUESTIONS
     [] There is no way to protect it
     [] What if someone forgets the username or password?
 
+
+BLOG
+New Features
+- The database architecture and the decision process behind the system
+- The front end architecture and the decision process behind the system
+- General discussion around design
+
+
+Old thoughts
 so I was thinking we could implement this feature by first creating an object array - let's call it votersArray - in CandidatesContext. This array gets populated when voters register, and is also used to check in voters that are already in the array. I am not sure what exact props we want each voter object to have though. So far I'm thinking registration date, name, unique ID, and voting status
 
 Once registered and checked in, voters then go to voting page and cast their vote which will then be logged by changing the voting status.

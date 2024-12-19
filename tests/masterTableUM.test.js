@@ -1,4 +1,4 @@
-import { insertOrganizationMember, getOrganizationMembers, deleteOrganizationMember } from '../scripts/masterTableUM';
+import { insertOrganizationMember, getOrganizationMembers, deleteOrganizationMember } from '../scripts/table_functions/masterTableFunctions';
 
 describe('Organization Member Management', () => {
   it('should fail to insert a new organization member with empty parameters', async () => {
