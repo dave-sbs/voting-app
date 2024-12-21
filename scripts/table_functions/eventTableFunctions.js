@@ -4,7 +4,7 @@ SCHEMA
 event_name: String
 event_date: Timestamp
 created_by: String
-status: Boolean
+is_open: Boolean
 */
 
 
@@ -31,7 +31,7 @@ const addEvent = async (eventName, eventDate, createdBy) => {
             event_name: eventName,
             event_date: eventDate,
             created_by: createdBy,
-            status: open
+            is_open: open
         }
     ])
     .select();
@@ -45,7 +45,7 @@ const closeEvent = async (eventId) => {
     const { data, error } = await supabase
     .from('events')
     .update({
-        status: false
+        is_open: false
     })
     .eq('event_id', eventId)
     .select();
@@ -89,7 +89,7 @@ export const getOpenEvents = async () => {
         const { data, error } = await supabase
         .from('events')
         .select()
-        .eq('status', true);    
+        .eq('is_open', true);    
 
         if (error) throw error;
         return { data, error: null };
