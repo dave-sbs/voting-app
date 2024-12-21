@@ -60,15 +60,11 @@ describe('Organization Member Management', () => {
     expect(error).toBeNull(); 
   });
 
-  // it('should delete an organization member', async () => {
-  //   const { data, error } = await deleteOrganizationMember('Taye Shegere');
-  //   expect(error).toBeNull();
-  //   expect(data).toBeDefined();
-  // });
+  it('should get all organization members', async () => {
+    const { data, error } = await getOrganizationMembers();
 
-  // it('should fail to delete an already deleted/non-existent organization member', async () => {
-  //   const { data, error } = await deleteOrganizationMember('Taye Shegere');
-  //   expect(error).toBeDefined();
-  //   expect(data).toBeNull();
-  // });
+    console.log(data[0]);
+    expect(data).toBeDefined();
+    expect(error).toBeNull();
+  }); 
 });
