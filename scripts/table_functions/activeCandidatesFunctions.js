@@ -1,14 +1,14 @@
 import { supabase } from '../../services/supabaseClient.js';
 
 
-const addNewCandidate = async ({ memberId, profile_pic }) => {
+const addNewCandidate = async ({ memberId, profile_picture }) => {
     const { data, error } = await supabase
         .from('active_candidates')
         .insert([
             {
                 member_id: memberId, 
                 vote_count: 0,
-                profile_pic: profile_pic
+                profile_picture: profile_picture
             }
         ])
         .select();
@@ -33,7 +33,7 @@ const updateVote = async ({ memberId }) => {
 
 
 
-const getActiveCandidates = async () => {
+export const getActiveCandidates = async () => {
     try {
         const { data, error } = await supabase
             .from('active_candidates')
@@ -47,7 +47,7 @@ const getActiveCandidates = async () => {
 }
 
 
-export const insertActiveCandidate = async ({ memberId, profile_pic }) => {
+export const insertActiveCandidate = async ({ memberId, profile_picture }) => {
     try {
         const { currData, currError } = await getActiveCandidates();
 
@@ -55,9 +55,9 @@ export const insertActiveCandidate = async ({ memberId, profile_pic }) => {
             throw currError;
         }
 
-        const member = currData.find((member) => member.member_id === memberId);
+        const member = currData?.find((member) => member.member_id === memberId);
         if (!member) {
-            const { data, error } = await addNewCandidate({ memberId, profile_pic });
+            const { data, error } = await addNewCandidate({ memberId, profile_picture });
             if (error) throw error;
             return { data, error: null };
         }
@@ -70,15 +70,21 @@ export const insertActiveCandidate = async ({ memberId, profile_pic }) => {
 
 
 export const deleteActiveCandidate = async ({ memberId }) => {
+    console.log(`Attempting to delete active candidate with memberId: ${memberId}`);
     try {
         const { data, error } = await supabase
             .from('active_candidates')
             .delete()
             .eq('member_id', memberId);
 
-        if (error) throw error;
+        if (error) {
+            console.error(`Error deleting active candidate: ${error.message}`);
+            throw error;
+        }
+        console.log(`Successfully deleted active candidate with memberId: ${memberId}`);
         return { data, error: null };
     } catch (error) {
+        console.error(`Caught error in deleteActiveCandidate: ${error.message}`);
         return { data: null, error };
     }
 }

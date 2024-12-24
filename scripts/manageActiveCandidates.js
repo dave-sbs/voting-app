@@ -1,4 +1,4 @@
-import { insertActiveCandidate, deleteActiveCandidate, deleteAllActiveCandidates } from "./table_functions/activeCandidatesFunctions";
+import { insertActiveCandidate, deleteActiveCandidate, deleteAllActiveCandidates, getActiveCandidates } from "./table_functions/activeCandidatesFunctions";
 import { getMemberId } from "./table_functions/masterTableFunctions";
 import { uploadCandidateImage, deleteCandidateImage } from './storage_functions/imageStorage';
 
@@ -14,22 +14,23 @@ export const addNewCandidates = async ({memberName, imageFile}) => {
         }
 
         // Upload image first
-        const { url: profile_pic, error: uploadError } = await uploadCandidateImage(imageFile);
+        const { url: profile_picture, error: uploadError } = await uploadCandidateImage(imageFile);
         if (uploadError) {
             return { data: null, error: uploadError };
         }
 
         const memberId = await getMemberId(memberName);
+        console.log(memberId);
         if (memberId === null) {
             // Clean up uploaded image if member doesn't exist
-            await deleteCandidateImage(profile_pic);
+            await deleteCandidateImage(profile_picture);
             return { data: null, error: new Error('Member does not exist') };
         }
         
-        const { data, error } = await insertActiveCandidate({memberId, profile_pic});
+        const { data, error } = await insertActiveCandidate({memberId, profile_picture});
         if (error) {
             // Clean up uploaded image if insertion fails
-            await deleteCandidateImage(profile_pic);
+            await deleteCandidateImage(profile_picture);
             throw error;
         }
         return { data, error: null };
@@ -39,30 +40,45 @@ export const addNewCandidates = async ({memberName, imageFile}) => {
 };
 
 
-export const removeCandidate = async ({memberName}) => {
+export const removeCandidate = async ({memberId}) => {
+    console.log('Starting removeCandidate function');
     try {
-        if (!memberName) {
-            return { data: null, error: new Error('Member name is required') };
+        if (!memberId) {
+            console.log('Error: Member Id is required');
+            return { data: null, error: new Error('Member Id is required') };
         }    
 
-        // Get candidate data first to get the image URL
-        const memberId = await getMemberId(memberName);
         if (memberId === null) {
+            console.log('Error: Member does not exist');
             return { data: null, error: new Error('Member does not exist') };
         }
 
-        const { data: candidateData } = await getActiveCandidates();
+        console.log('Fetching active candidates');
+        const { data: candidateData, error: fetchError } = await getActiveCandidates();
+        if (fetchError) {
+            console.log('Error fetching candidates:', fetchError);
+            throw fetchError;
+        }
+
         const candidate = candidateData?.find(c => c.member_id === memberId);
+        console.log('Candidate found:', candidate ? 'Yes' : 'No');
         
-        if (candidate?.profile_pic) {
-            // Delete image from storage
-            await deleteCandidateImage(candidate.profile_pic);
+        console.log('Deleting active candidate');
+        const { data, error } = await deleteActiveCandidate({memberId});
+        if (error) {
+            console.log('Error deleting candidate:', error);
+            throw error;
         }
         
-        const { data, error } = await deleteActiveCandidate({memberId});
-        if (error) throw error;
+        if (candidate?.profile_picture) {
+            console.log('Deleting candidate image');
+            await deleteCandidateImage(candidate.profile_picture);
+        }
+        
+        console.log('Candidate removed successfully');
         return { data, error: null };        
     } catch (error) {
+        console.log('Error in removeCandidate:', error);
         return { data: null, error };
     }
 };
