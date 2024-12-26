@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { View, Text, FlatList } from 'react-native';
-import { CandidatesContext } from '@/app/(context)/CandidatesContext';
+import { useVotingContext } from '@/app/(context)/VotingContext';
 import CardHeader from './CardHeader';
 import LineBreak from './LineBreak';
 
 const TallyTable = () => {
-  const { votes } = useContext(CandidatesContext)!;
+  const { votes } = useVotingContext();
 
   return (
     <View className="w-full bg-white mt-2">

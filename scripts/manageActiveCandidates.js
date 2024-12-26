@@ -40,8 +40,8 @@ export const addNewCandidates = async ({memberName, imageFile}) => {
 };
 
 
-export const removeCandidate = async ({memberId}) => {
-    console.log('Starting removeCandidate function');
+export const removeActiveCandidate = async ({memberId}) => {
+    console.log('Starting removeActiveCandidate function');
     try {
         if (!memberId) {
             console.log('Error: Member Id is required');

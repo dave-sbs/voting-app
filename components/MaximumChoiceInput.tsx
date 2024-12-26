@@ -1,17 +1,17 @@
 import { Button, View, Text, TextInput, TouchableOpacity } from 'react-native'
-import React, { useContext, useState } from 'react'
-import { CandidatesContext } from '@/app/(context)/CandidatesContext';
+import React, { useState } from 'react'
+import { useChoiceContext } from '@/app/(context)/VoteChoiceContext';
 import CardHeader from './CardHeader';
 
-const MaximumChoiceInput = () => {
 
-    const { minChoice, maxChoice, setMaxChoice } = useContext(CandidatesContext)!;
+const MaximumChoiceInput = () => {
+    const { maxChoice, updateMaxChoice } = useChoiceContext();
     const [newmaxChoice, setmaxChoiceState] = useState(0);
 
     const handleSubmit = () => {
-        if (newmaxChoice && newmaxChoice >= minChoice) {
+        if (newmaxChoice) {
             setmaxChoiceState(newmaxChoice);
-            setMaxChoice(newmaxChoice);
+            updateMaxChoice(newmaxChoice);
         } else {
             alert('Please make sure the Maximum choice is at least equal to or greater than the Minimum choice');
         }
@@ -58,4 +58,3 @@ const MaximumChoiceInput = () => {
 }
 
 export default MaximumChoiceInput
-
