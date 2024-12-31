@@ -1,39 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
+
 import CardHeader from './CardHeader';
-import { useVotingContext } from '@/app/(context)/VotingContext';
+
+import { useCandidateContext } from '@/app/(context)/CandidateContext';
+import { Candidate } from '@/scripts/candidateAPI';
 
 
 const CandidateList = () => {
-  const { candidates, removeCandidate, subscribe, unsubscribe } = useVotingContext();
+  const { candidates, isLoading, error, fetchCandidates, deleteCandidate, clearCandidates } = useCandidateContext();
 
-  // useEffect(() => {
-  //   const handleCandidatesUpdate = (updatedCandidates: Candidate[]) => {
-  //     setLocalCandidates(updatedCandidates);
-  //   };
-
-  //   subscribe('candidateAdded', handleCandidatesUpdate);
-  //   setLocalCandidates(candidates);
-
-  //   return () => {
-  //     unsubscribe('candidateAdded', handleCandidatesUpdate);
-  //   };
-  // }, [candidates, subscribe, unsubscribe]);
-
-  // const handleRemoveCandidate = (id: number) => {
-  //   removeCandidate(id);
-  // };
+  useEffect(() => {
+    if (error) {
+      console.error('Context Error:', error);
+      Alert.alert('Error', error);
+    }
+  }, [error]);
 
 
-  const handleRemoveCandidate = (id: string) => {
-    removeCandidate(id);
+  const handleRemoveCandidate = (candidate: Candidate) => {
+    deleteCandidate(candidate);
+    fetchCandidates();
   };
-
-  // const handleVote = (id: string) => {
-  //   incrementVote(id);
-  // };
-
 
   return (
     <View className="bg-white w-full mt-2 flex-1">
@@ -44,7 +33,7 @@ const CandidateList = () => {
         renderItem={({ item }) => (
           <View className="px-4 flex-row items-center justify-between mb-2">
             <Text className="text-lg font-semibold">{item.name}</Text>
-            <TouchableOpacity onPress={() => handleRemoveCandidate(item.id)}>
+            <TouchableOpacity onPress={() => handleRemoveCandidate(item)}>
               <Text className="text-md text-red-500">Remove</Text>
             </TouchableOpacity>
           </View>
