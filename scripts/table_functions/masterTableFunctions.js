@@ -15,21 +15,6 @@ const getMemberStoreNumber = async (memberName) => {
 };
 
 
-const getMemberId = async (memberName) => {
-  const { data, error } = await supabase
-    .from('organization_members')
-    .select('member_id')
-    .eq('member_name', memberName)
-    .single();
-
-  if (error && error.code !== 'PGRST116') { // PGRST116 is the "not found" error code
-    throw error;
-  }
-
-  return data;
-}; 
-
-
 const createNewMember = async (memberName, storeNumber) => {
   const { data, error } = await supabase
     .from('organization_members')
@@ -193,4 +178,34 @@ export const idExists = async (memberId) => {
   } catch (error) {
     return { data: null, error };
   }
+};
+
+
+export const getMemberId = async (memberName) => {
+  const { data, error } = await supabase
+    .from('organization_members')
+    .select('member_id')
+    .eq('member_name', memberName)
+    .single();
+
+  if (error && error.code !== 'PGRST116') { // PGRST116 is the "not found" error code
+    throw error;
+  }
+
+  return data.member_id;
+}; 
+
+
+export const getMemberName = async (memberId) => {
+  const { data, error } = await supabase
+    .from('organization_members')
+    .select('member_name')
+    .eq('member_id', memberId)
+    .single();
+
+  if (error && error.code !== 'PGRST116') { // PGRST116 is the "not found" error code
+    throw error;
+  } 
+
+  return data.member_name;
 };

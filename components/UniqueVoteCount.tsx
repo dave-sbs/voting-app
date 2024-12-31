@@ -1,11 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React, { useContext } from 'react'
-import { CandidatesContext } from '@/app/(context)/CandidatesContext';
+import React from 'react'
+import { useVotingContext } from '@/app/(context)/VotingContext';
 import CardHeader from './CardHeader';
 
 const UniqueVoteCount = () => {
 
-    const { uniqueVotes } = useContext(CandidatesContext)!;
+    const { votes } = useVotingContext();
+    const uniqueVotes = Object.keys(votes).length;
 
   return (
     <View className="bg-white w-full mt-2">

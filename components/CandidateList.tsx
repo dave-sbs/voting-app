@@ -1,13 +1,39 @@
-import React, { useContext } from 'react';
-import { View, Text, ScrollView } from 'react-native';
-import { CandidatesContext } from '@/app/(context)/CandidatesContext';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
-import { Button } from 'react-native';
 import CardHeader from './CardHeader';
-import LineBreak from './LineBreak';
+import { useVotingContext } from '@/app/(context)/VotingContext';
+
 
 const CandidateList = () => {
-  const { candidates, removeCandidate } = useContext(CandidatesContext)!;
+  const { candidates, removeCandidate, subscribe, unsubscribe } = useVotingContext();
+
+  // useEffect(() => {
+  //   const handleCandidatesUpdate = (updatedCandidates: Candidate[]) => {
+  //     setLocalCandidates(updatedCandidates);
+  //   };
+
+  //   subscribe('candidateAdded', handleCandidatesUpdate);
+  //   setLocalCandidates(candidates);
+
+  //   return () => {
+  //     unsubscribe('candidateAdded', handleCandidatesUpdate);
+  //   };
+  // }, [candidates, subscribe, unsubscribe]);
+
+  // const handleRemoveCandidate = (id: number) => {
+  //   removeCandidate(id);
+  // };
+
+
+  const handleRemoveCandidate = (id: string) => {
+    removeCandidate(id);
+  };
+
+  // const handleVote = (id: string) => {
+  //   incrementVote(id);
+  // };
+
 
   return (
     <View className="bg-white w-full mt-2 flex-1">
@@ -15,12 +41,12 @@ const CandidateList = () => {
       <FlatList
         data={candidates}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item, index }) => (
-          <View className="px-4 flex-row items-center mb-2">
-            <View className='w-[50%] md:w-[35%]'>
-              <Text className='text-lg font-semibold'>{item.name}</Text>
-            </View>
-            <Button title="Remove" onPress={() => removeCandidate(item.name)} />
+        renderItem={({ item }) => (
+          <View className="px-4 flex-row items-center justify-between mb-2">
+            <Text className="text-lg font-semibold">{item.name}</Text>
+            <TouchableOpacity onPress={() => handleRemoveCandidate(item.id)}>
+              <Text className="text-md text-red-500">Remove</Text>
+            </TouchableOpacity>
           </View>
         )}
       />

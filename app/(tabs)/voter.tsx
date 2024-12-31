@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { View, Text, Button, FlatList, TouchableOpacity, Image, Dimensions, Modal } from 'react-native';
-import { CandidatesContext } from '@/app/(context)/CandidatesContext';
+import { useVotingContext } from '@/app/(context)/VotingContext';
 import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CandidateButton from '@/components/CandidateButton';
@@ -11,9 +11,13 @@ import HamburgerMenu from '@/components/HamburgerMenu';
 import { useRouter } from 'expo-router';
 
 const VoterScreen = () => {
-  const { 
-    candidates, votes, voters, currVoter, updateVoter, tallyVote, minChoice, maxChoice, uniqueVotes, setUniqueVotes
-   } = useContext(CandidatesContext)!;
+  const {
+    candidates,
+    votes,
+    maxChoice,
+    minChoice,
+    updateVotes
+  } = useVotingContext();
   const [selectedCandidates, setSelectedCandidates] = useState<string[]>([]);
   const [numColumns, setNumColumns] = useState(3);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -37,35 +41,19 @@ const VoterScreen = () => {
   };
 
   const submitVote = async () => {
-    const currentVoter = voters.find(voter => voter.id === currVoter);
+    const newUniqueChoice = votes + 1;
+    let newVotes = { ...votes };
 
-    if (selectedCandidates.length >= minChoice && selectedCandidates.length <= maxChoice && currentVoter && !currentVoter.hasVoted) {
-      let newUniqueChoice = uniqueVotes + 1;
-      let newVotes = { ...votes };
+    for (const name of selectedCandidates) {
+      newVotes = { ...newVotes, [name]: (newVotes[name] || 0) + 1 };
+    }  
 
-      for (const name of selectedCandidates) {
-        newVotes = { ...newVotes, [name]: (newVotes[name] || 0) + 1 };
-      }  
+    updateVotes(newVotes);
+    await AsyncStorage.setItem('votes', JSON.stringify(newVotes));
 
-      setUniqueVotes(newUniqueChoice);
-      tallyVote({ updatedVotes: newVotes });
-      await AsyncStorage.setItem('votes', JSON.stringify(newVotes));
-
-      updateVoter(currVoter, true);
-
-      setSelectedCandidates([]);
-      showModal("Vote submitted successfully!");
-      router.push('/');
-    } 
-    else if (currentVoter && currentVoter.hasVoted) {
-      showModal('You have already voted!');
-    } 
-    else if (selectedCandidates.length > maxChoice) {
-      showModal(`Please select no more than ${maxChoice} candidates.`);
-    } 
-    else {
-      showModal(`Please select at least ${minChoice} candidates.`);
-    }
+    setSelectedCandidates([]);
+    showModal("Vote submitted successfully!");
+    router.push('/');
   };
 
   const setColumnSize = () => {

@@ -32,6 +32,12 @@ QUESTIONS
     [] The session reports for attendance can then be easily emailed, printed, or even better stored in a Google Drive.
 
 
+[] Let's finish everything with Active Candidates
+    [] Create a Design Doc for the whole process
+    [] UI = Admin UI and Voting UI
+    [] Make sure newly added candidates render in real time
+    [] Make sure removed candidates are removed from in the UI as well
+
 
 
 [] People with the same name?

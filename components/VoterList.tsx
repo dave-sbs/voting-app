@@ -1,16 +1,16 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { View, Text, Button, FlatList } from 'react-native';
-import { CandidatesContext } from '@/app/(context)/CandidatesContext';
+import { useVotingContext } from '@/app/(context)/VotingContext';
 import CardHeader from './CardHeader';
 
 const VoterList = () => {
-  const { voters } = useContext(CandidatesContext)!;
+  const { votes } = useVotingContext();
 
   return (
     <View className="bg-white w-full mt-2 flex-1">
       <CardHeader title={'Registered Voters'} />
       <FlatList
-        data={voters}
+        data={votes}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item, index }) => (
             <View className='w-[50%] md:w-[35%]'>
