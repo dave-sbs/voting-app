@@ -4,10 +4,12 @@ import { VotingProvider } from './(context)/VotingContext';
 import { Slot, Stack } from "expo-router";
 import '../global.css';
 import { VoteChoiceProvider } from './(context)/VoteChoiceContext';
+import { CandidateProvider } from './(context)/CandidateContext';
 
 const RootLayout = () => {
   return (
     
+    <CandidateProvider>
     <VotingProvider>
     <VoteChoiceProvider>
       <Stack>
@@ -21,6 +23,7 @@ const RootLayout = () => {
       </Stack>
     </VoteChoiceProvider>
     </VotingProvider>
+    </CandidateProvider>
   );
 };
 
