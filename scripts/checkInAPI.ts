@@ -13,6 +13,27 @@ export interface Voter {
     has_voted: boolean;
 }
 
+
+export async function convertStoreNumbertoId(storeNumber: string): Promise<string | null> {
+    const { data: storeData, error: storeError } = await supabase
+        .from('organization_members')
+        .select('member_id')
+        .contains('store_number', [storeNumber])
+        .single();
+
+    if (storeError && storeError.code !== 'PGRST116') {
+        throw storeError;
+    }
+
+    if (storeData && typeof storeData.member_id === 'string') {
+        return storeData.member_id;
+    }
+
+    return null;
+}
+
+
+
 export async function checkIn({ member_id, event_id }: CheckInCredentials): Promise<Voter> {
     // Check if member exists
     const { data: memberData, error: memberError } = await supabase
@@ -74,7 +95,7 @@ export async function checkIn({ member_id, event_id }: CheckInCredentials): Prom
             .insert([
                 {
                     member_id,
-                    event_id: 'kenyan',
+                    event_id,
                     check_in_time: new Date().toISOString(),
                     updated_check_in_time: new Date().toISOString(),
                     has_voted: false
