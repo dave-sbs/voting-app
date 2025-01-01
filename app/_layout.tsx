@@ -1,8 +1,8 @@
-import React from 'react';
-import { VotingProvider } from './(context)/VotingContext';
-
-import { Slot, Stack } from "expo-router";
 import '../global.css';
+import React from 'react';
+import { Slot, Stack } from "expo-router";
+
+import { VotingProvider } from './(context)/VotingContext';
 import { VoteChoiceProvider } from './(context)/VoteChoiceContext';
 import { CandidateProvider } from './(context)/CandidateContext';
 
