@@ -1,6 +1,5 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { CandidatesContext } from '../(context)/CandidatesContext';
 import { Text, TextInput, TouchableOpacity, View, Modal } from 'react-native';
 import { useVotingContext } from '../(context)/VotingContext';
 import { convertStoreNumbertoId } from '@/scripts/checkInAPI';
@@ -30,11 +29,7 @@ const CheckInScreen = () => {
       return;
     }
 
-    console.log(voter);
-
     const newVoter = await checkInVoter({ member_id: memberId, event_id: '8d44deea-8d13-49a9-85df-910489ce78e9' });
-
-    console.log('New Voter:', voter);
 
     if (storeId) {
       if (voter) {

@@ -18,6 +18,7 @@ const CandidateForm = () => {
     candidates,
     isLoading,
     error,
+    fetchCandidates,
     addCandidate,
   } = useCandidateContext();
 
@@ -56,6 +57,7 @@ const CandidateForm = () => {
       setName('');
       setImage(null);
       Alert.alert('Success', 'Candidate added successfully!');
+      fetchCandidates();
     } catch (err: any) {
       console.error('Failed to add candidate:', err);
       Alert.alert('Error', err.message || 'Failed to add candidate');
