@@ -1,178 +1,169 @@
-// VotingContext.tsx
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { 
-  Candidate, 
-  getActiveCandidates, 
-  addCandidateToDB, 
-  removeCandidateFromDB, 
-  incrementCandidateVote 
-} from '@/scripts/candidateAPI';
+  Candidate,
+  submitVote,
+} from '@/scripts/votingAPI';
 
-/** Event types, if you need them for subscriptions. */
-type EventType = 'candidateAdded' | 'candidateRemoved' | 'voteUpdated';
+import {
+  Voter, 
+  checkIn,
+  convertStoreNumbertoId,
+  CheckInCredentials
+} from '@/scripts/checkInAPI';
 
-/**
- * Primary shape of your React Context’s value.
- */
-interface VotingContextType {
-  candidates: Candidate[];
-  votes: { [key: string]: number };
-  addCandidate: (candidate: Candidate) => Promise<void>;
-  removeCandidate: (id: string) => Promise<void>;
-  incrementVote: (id: string) => Promise<void>;
+import { getActiveCandidates } from '@/scripts/candidateAPI';
 
-  // Optional subscription-based architecture
-  subscribe: (eventType: EventType, callback: (data: any) => void) => void;
-  unsubscribe: (eventType: EventType, callback: (data: any) => void) => void;
-}
+interface VotingContextProps {
+  // State
+  voter: Voter | null;                    // current checked in voter 
+  candidates: Candidate[];                // current list of candidates
+  chosenCandidatesList: Candidate[];      // list of candidates the voter has chosen to vote for
+  
+  // Loading & Error
+  isLoading: boolean;
+  error: string | null;
 
-/** 
- * Create the VotingContext with an undefined initial value,
- * ensuring consumers must be wrapped by a provider. 
- */
-const VotingContext = createContext<VotingContextType | undefined>(undefined);
-
-/** 
- * Custom hook that ensures consumers are within VotingProvider 
- */
-export const useVotingContext = (): VotingContextType => {
-  const context = useContext(VotingContext);
-  if (!context) {
-    throw new Error('useVotingContext must be used within a VotingProvider');
-  }
-  return context;
+  //Actions
+  fetchCandidates: () => Promise<void>;
+  checkInVoter: (creds: CheckInCredentials) => Promise<void>;
+  selectCandidate: (candidate: Candidate) => void;
+  deselectCandidate: (candidate: Candidate) => void;
+  castVotes: () => Promise<void>; // No need to pass voter if we store it in state
 };
 
+
+const VotingContext = createContext<VotingContextProps>({
+  voter: null,
+  candidates: [],
+  chosenCandidatesList: [],
+  isLoading: false,
+  error: null,
+  fetchCandidates: async () => undefined,
+  checkInVoter: async () => undefined,
+  selectCandidate: () => {},
+  deselectCandidate: () => {},
+  castVotes: async () => undefined
+});
+
+
+interface VotingProviderProps{
+  children: ReactNode;
+}
+
+
 export const VotingProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  // State stored Voter and Candidates
+  const [voter, setVoter] = useState<Voter | null>(null);
   const [candidates, setCandidates] = useState<Candidate[]>([]);
-  const [votes, setVotes] = useState<{ [key: string]: number }>({});
 
-  // Simple subscribers map
-  const [subscribers, setSubscribers] = useState<{
-    [key in EventType]: ((data: any) => void)[]
-  }>({
-    candidateAdded: [],
-    candidateRemoved: [],
-    voteUpdated: [],
-  });
+  // Client-side chosen Candidates
+  const [candidateChoices, setCandidateChoices] = useState<Candidate[]>([]);
 
-  useEffect(() => {
-    loadInitialCandidates();
-  }, []);
+  // Loading & Error states
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   /**
    * Load the initial list of candidates from Supabase.
    */
-  const loadInitialCandidates = async () => {
+  const fetchCandidates = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+
     try {
-      const fetchedCandidates = await getActiveCandidates();
-      setCandidates(fetchedCandidates);
-
-      // Build a { [candidateId]: vote_count } object
-      const votesObject = fetchedCandidates.reduce((acc, candidate) => {
-        acc[candidate.id] = candidate.vote_count || 0;
-        return acc;
-      }, {} as { [key: string]: number });
-      setVotes(votesObject);
-
-    } catch (error) {
-      console.error('Error loading initial candidates:', error);
+      const result = await getActiveCandidates();
+      setCandidates(result);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Failed to fetch candidates');
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, []);
 
-  /**
-   * Add a new candidate both locally and in the DB.
-   */
-  const addCandidate = async (candidate: Candidate) => {
-    try {
-      // if the candidate already exists, return
-      const existingCandidate = candidates.find(c => c.id === candidate.id);
-      if (existingCandidate) {
-        console.log(`Candidate with ID ${candidate.id} already exists in the database.`);
-        return;
+
+  /*
+  Check In the user and set them as the current voter
+  */
+
+  const checkInVoter = useCallback(async (creds: CheckInCredentials) => {
+    setIsLoading(true);
+    setError(null);
+
+    try{
+      const voterResponse = await checkIn(creds);
+      setVoter(voterResponse);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Failed to fetch candidates');
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+    /* 
+    Selecting and Deselcting candidates in the local state
+    */
+  const selectCandidate = useCallback((candidate: Candidate) => {
+    setCandidateChoices((prev) => {
+      if (prev.find((c) => c.id === candidate.id)) {
+        return prev; //already selected
       }
+      return [...prev, candidate];
+    });
+  }, []);
 
-      await addCandidateToDB(candidate);
-      // Update local state
-      setCandidates(prev => [...prev, candidate]);
-      setVotes(prev => ({ ...prev, [candidate.id]: candidate.vote_count || 0 }));
+  const deselectCandidate = useCallback((candidate: Candidate) => {
+    setCandidateChoices((prev) => prev.filter((c) => c.id !== candidate.id));
+  }, []);
 
-      notify('candidateAdded', candidate);
-      console.log('Candidate added:', candidate);
-    } catch (error) {
-      console.error('Error adding candidate:', error);
+  // In VotingContext.tsx:
+
+  const castVotes = useCallback(async () => {
+    if (!voter) {
+      // Provide a specific error for no voter
+      const msg = 'No voter is currently logged in.';
+      setError(msg);
+      throw new Error(msg);
     }
-  };
 
-  /**
-   * Remove candidate locally and from DB.
-   */
-  const removeCandidate = async (id: string) => {
+    setIsLoading(true);
+    setError(null);
+
     try {
-      await removeCandidateFromDB(id);
-      setCandidates(prev => prev.filter(c => c.id !== id));
+      await submitVote(voter, candidateChoices);
+      setCandidateChoices([]);
+    } catch (err: any) {
+      console.error('castVotes error:', err);
 
-      const { [id]: _, ...remainingVotes } = votes; // remove candidate from votes
-      setVotes(remainingVotes);
+      const message = err?.message || 'Failed to cast the vote.';
+      setError(message);
 
-      notify('candidateRemoved', id);
-    } catch (error) {
-      console.error('Error removing candidate:', error);
+      throw new Error(message);
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, [voter, candidateChoices]);
 
-  /**
-   * Increment the vote for a particular candidate in DB and local state.
-   */
-  const incrementVote = async (id: string) => {
-    try {
-      await incrementCandidateVote(id);
-      setVotes(prev => ({
-        ...prev,
-        [id]: (prev[id] || 0) + 1,
-      }));
-      notify('voteUpdated', { id, newCount: votes[id] + 1 });
-    } catch (error) {
-      console.error('Error incrementing vote:', error);
-    }
-  };
 
-  /**
-   * Notify all subscribers of an event.
-   */
-  const notify = (eventType: EventType, data: any) => {
-    subscribers[eventType].forEach(callback => callback(data));
-  };
 
-  /**
-   * Subscribe to a particular event type.
-   */
-  const subscribe = (eventType: EventType, callback: (data: any) => void) => {
-    setSubscribers(prev => ({
-      ...prev,
-      [eventType]: [...prev[eventType], callback],
-    }));
-  };
+  useEffect(() => {
+    fetchCandidates();
+  }, []);
 
-  /**
-   * Unsubscribe from a particular event type.
-   */
-  const unsubscribe = (eventType: EventType, callback: (data: any) => void) => {
-    setSubscribers(prev => ({
-      ...prev,
-      [eventType]: prev[eventType].filter(cb => cb !== callback),
-    }));
-  };
 
-  const contextValue: VotingContextType = {
+  const contextValue: VotingContextProps = {
+    voter,
     candidates,
-    votes,
-    addCandidate,
-    removeCandidate,
-    incrementVote,
-    subscribe,
-    unsubscribe,
+    chosenCandidatesList: candidateChoices,
+    isLoading,
+    error,
+    fetchCandidates,
+    checkInVoter,
+    selectCandidate,
+    deselectCandidate,
+    castVotes
   };
 
   return (
@@ -180,4 +171,16 @@ export const VotingProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       {children}
     </VotingContext.Provider>
   );
+};
+
+
+/** 
+ * Custom hook that ensures consumers are within VotingProvider 
+ */
+export function useVotingContext() {
+  const context = useContext(VotingContext);
+  if (!context) {
+    throw new Error('useVotingContext must be used within a VotingProvider');
+  }
+  return context;
 };

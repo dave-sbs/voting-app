@@ -1,11 +1,23 @@
-import React from 'react';
-import { View, Text, FlatList } from 'react-native';
-import { useVotingContext } from '@/app/(context)/VotingContext';
+import React, { useEffect } from 'react';
+import { View, Text, FlatList, Alert } from 'react-native';
+
 import CardHeader from './CardHeader';
-import LineBreak from './LineBreak';
+
+import { useVotingContext } from '@/app/(context)/VotingContext';
+import { useCandidateContext } from '@/app/(context)/CandidateContext';
+
+export interface Candidate {
+  id: string;
+  name: string;
+  profile_picture: string;
+  vote_count: number;
+}
 
 const TallyTable = () => {
-  const { votes } = useVotingContext();
+  const { candidates, isLoading, error, fetchCandidates } = useCandidateContext();
+
+  useEffect(() => {
+    fetchCandidates()}, []);
 
   return (
     <View className="w-full bg-white mt-2">
@@ -16,15 +28,15 @@ const TallyTable = () => {
         </Text>
         <View className='border-b-2 w-[60%] md:w-[45%] border-black' />
         <FlatList
-          data={Object.entries(votes)}
-          keyExtractor={(item) => item[0]}
+          data={candidates}
+          keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <View className="flex-row">
               <View className='border-l-2 border-b-2 w-[50%] md:w-[35%] h-10 pl-4 justify-center'>
-                <Text className='text-lg font-semibold'>{item[0]}</Text>
+                <Text className='text-lg font-semibold'>{item.name}</Text>
               </View>
               <View className='border-l-2 border-b-2 border-r-2 w-[10%] items-center justify-center'>
-                <Text className='text-xl font-bold text-blue-600'>{item[1]}</Text>
+                <Text className='text-xl font-bold text-blue-600'>{item.vote_count}</Text>
               </View>
             </View>
           )}
