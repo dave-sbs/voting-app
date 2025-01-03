@@ -111,7 +111,7 @@ export const VotingProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   Check In the user and set them as the current voter
   */
 
-  const checkInVoter = useCallback(async (creds: CheckInCredentials) => {
+  const checkInVoter = useCallback(async (creds: CheckInCredentials) : Promise<void> => {
     setIsLoading(true);
     setError(null);
 
@@ -121,6 +121,7 @@ export const VotingProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     } catch (err: any) {
       console.error(err);
       setError(err.message || 'Failed to fetch candidates');
+      throw new Error(err.message || 'Failed to fetch candidates');
     } finally {
       setIsLoading(false);
     }

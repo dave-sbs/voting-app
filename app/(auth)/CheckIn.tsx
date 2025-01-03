@@ -7,7 +7,11 @@ import { convertStoreNumbertoId } from '@/scripts/checkInAPI';
 const CheckInScreen = () => {
   const navigation = useNavigation<NavigationProp<any>>();
   
-  const { voter, checkInVoter } = useVotingContext();
+  const { 
+    error, 
+    isLoading,
+    voter, 
+    checkInVoter,  } = useVotingContext();
   
   const [storeId, setStoreId] = useState('');
   const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
@@ -22,25 +26,25 @@ const CheckInScreen = () => {
   Will need extra logic to check if event is open.
   */ 
   const handleSubmit = async () => {
-    const memberId = await convertStoreNumbertoId(storeId);
-    
-    if (!memberId) {
-      showErrorModal('Invalid credentials. Please check your Store Number and try again.');
-      return;
-    }
-
-    const newVoter = await checkInVoter({ member_id: memberId, event_id: '8d44deea-8d13-49a9-85df-910489ce78e9' });
-
-    if (storeId) {
-      if (voter) {
-        setStoreId(storeId);
-        navigation.navigate('(tabs)', { screen: 'voter' });
-      } else {
-        showErrorModal('Invalid credentials. Please check your Store Number and try again.');
+      let memberId: string | null;
+      try {
+          memberId = await convertStoreNumbertoId(storeId);
+          if (memberId === null) {
+              showErrorModal('Store number not found.');
+              return;
+          }
+      } catch (err) {
+          showErrorModal('Invalid credentials. Please check your Store Number and try again.');
+          return;
       }
-    } else {
-      showErrorModal('Please enter your Voter ID');
-    }
+  
+      try {
+          await checkInVoter({ member_id: memberId, event_id: '8d44deea-8d13-49a9-85df-910489ce78e9' });
+          setStoreId(storeId);
+          navigation.navigate('(tabs)', { screen: 'voter' });
+      } catch (err: any) {
+          showErrorModal(err || 'Check-in failed. Please try again.');
+      }
   };
 
   return (
@@ -59,9 +63,10 @@ const CheckInScreen = () => {
         <TouchableOpacity
           onPress={handleSubmit}
           activeOpacity={0.8}
-          className={`bg-green-800 py-3 px-2 rounded-md w-full justify-center items-center mt-4`}
+          disabled={isLoading}
+          className={`bg-green-800 py-3 px-2 rounded-md w-full justify-center items-center mt-4 ${isLoading ? 'opacity-50' : ''}`}
         >
-          <Text className='text-orange-500 font-bold text-lg'>Check In</Text>
+          <Text className='text-orange-500 font-bold text-lg'>{isLoading ? 'Checking In...' : 'Check In'}</Text>
         </TouchableOpacity>
       </View>
 

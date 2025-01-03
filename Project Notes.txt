@@ -1,3 +1,31 @@
+---------------------------------------------------------------------------------------------------------
+
+Commit Message Prefixes:
+- "fix:" for bug fixes
+- "feat:" for new features
+- "perf:" for performance improvements
+- "docs:" for documentation changes
+- "style:" for formatting changes
+- "refactor:" for code refactoring
+- "test:" for adding missing tests
+- "chore:" for maintenance tasks
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+January 2, 2025
+
+WYA
+[] Design UX for event creation and termination
+[] Design UI for event creation and termination
+[] Design UX for payments page
+[] Design UI for payments page
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
 Project Notes
 DONE
 [D] App is borderline functional
@@ -85,21 +113,7 @@ Now some follow up questions that I still need to think about are:
 
 
 
----------------------------------------------------------------------------------------------------------
 
-Commit Message Prefixes:
-- "fix:" for bug fixes
-- "feat:" for new features
-- "perf:" for performance improvements
-- "docs:" for documentation changes
-- "style:" for formatting changes
-- "refactor:" for code refactoring
-- "test:" for adding missing tests
-- "chore:" for maintenance tasks
-
-
-
-------------------------------------------------------------------------------------------------------------------------
 
 
 
