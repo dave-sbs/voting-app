@@ -14,6 +14,58 @@ export interface Voter {
 }
 
 
+export async function getAllVoters(): Promise<Voter[]> {
+    const { data: checkInData, error: checkInError } = await supabase
+        .from('check_in')
+        .select()
+        .eq('has_voted', true)
+
+    if (checkInError) {
+        throw checkInError;
+    }
+
+    return checkInData as Voter[];
+}
+
+
+export async function getNamefromId(memberId: string): Promise<string | null> {
+    const { data: memberData, error: memberError } = await supabase
+        .from('organization_members')
+        .select('member_name')
+        .eq('member_id', memberId)
+        .single();
+
+    if (memberError && memberError.code !== 'PGRST116') {
+        throw memberError;
+    }
+
+    if (memberData && typeof memberData.member_name === 'string') {
+        return memberData.member_name;
+    }    
+
+    return null;
+}
+
+
+export async function getStoreNumberfromId(memberId: string): Promise<string | null> {
+    const { data: memberData, error: memberError } = await supabase
+        .from('organization_members')
+        .select('store_number')
+        .eq('member_id', memberId)
+        .single();
+
+    if (memberError && memberError.code !== 'PGRST116') {
+        throw memberError;
+    }    
+
+    if (memberData) {
+        return memberData.store_number;
+    }    
+
+    return null;    
+}   
+
+
 export async function convertStoreNumbertoId(storeNumber: string): Promise<string | null> {
     const { data: storeData, error: storeError } = await supabase
         .from('organization_members')
@@ -31,7 +83,6 @@ export async function convertStoreNumbertoId(storeNumber: string): Promise<strin
 
     return null;
 }
-
 
 
 export async function checkIn({ member_id, event_id }: CheckInCredentials): Promise<Voter> {

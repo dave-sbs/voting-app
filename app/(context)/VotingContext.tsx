@@ -8,7 +8,7 @@ import {
 import {
   Voter, 
   checkIn,
-  convertStoreNumbertoId,
+  getAllVoters,
   CheckInCredentials
 } from '@/scripts/checkInAPI';
 
@@ -17,7 +17,8 @@ import { getActiveCandidates } from '@/scripts/candidateAPI';
 interface VotingContextProps {
   // State
   voter: Voter | null;                    // current checked in voter 
-  candidates: Candidate[];                // current list of candidates
+  uniqueVotes: Voter[];                    // current list of candidates
+  candidates: Candidate[];   
   chosenCandidatesList: Candidate[];      // list of candidates the voter has chosen to vote for
   
   // Loading & Error
@@ -26,6 +27,7 @@ interface VotingContextProps {
 
   //Actions
   fetchCandidates: () => Promise<void>;
+  fetchVoters: () => Promise<void>;
   checkInVoter: (creds: CheckInCredentials) => Promise<void>;
   selectCandidate: (candidate: Candidate) => void;
   deselectCandidate: (candidate: Candidate) => void;
@@ -36,10 +38,12 @@ interface VotingContextProps {
 const VotingContext = createContext<VotingContextProps>({
   voter: null,
   candidates: [],
+  uniqueVotes: [],
   chosenCandidatesList: [],
   isLoading: false,
   error: null,
   fetchCandidates: async () => undefined,
+  fetchVoters: async () => undefined,
   checkInVoter: async () => undefined,
   selectCandidate: () => {},
   deselectCandidate: () => {},
@@ -55,6 +59,7 @@ interface VotingProviderProps{
 export const VotingProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   // State stored Voter and Candidates
   const [voter, setVoter] = useState<Voter | null>(null);
+  const [uniqueVotes, setUniqueVotes] = useState<Voter[]>([]);
   const [candidates, setCandidates] = useState<Candidate[]>([]);
 
   // Client-side chosen Candidates
@@ -83,11 +88,30 @@ export const VotingProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   }, []);
 
 
+    /*
+    *  Access the Check In table and retrieve all rows with has_voted property True
+    */
+  const fetchVoters = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const result = await getAllVoters();
+      setUniqueVotes(result);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Failed to fetch voters');
+    } finally {
+      setIsLoading(false);
+    }
+  },[]);
+
+
   /*
   Check In the user and set them as the current voter
   */
 
-  const checkInVoter = useCallback(async (creds: CheckInCredentials) => {
+  const checkInVoter = useCallback(async (creds: CheckInCredentials) : Promise<void> => {
     setIsLoading(true);
     setError(null);
 
@@ -97,6 +121,7 @@ export const VotingProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     } catch (err: any) {
       console.error(err);
       setError(err.message || 'Failed to fetch candidates');
+      throw new Error(err.message || 'Failed to fetch candidates');
     } finally {
       setIsLoading(false);
     }
@@ -156,10 +181,12 @@ export const VotingProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const contextValue: VotingContextProps = {
     voter,
     candidates,
+    uniqueVotes,
     chosenCandidatesList: candidateChoices,
     isLoading,
     error,
     fetchCandidates,
+    fetchVoters,
     checkInVoter,
     selectCandidate,
     deselectCandidate,

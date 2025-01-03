@@ -1,7 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import CardHeader from './CardHeader'
-import SecondaryButton from './SecondaryButton'
 import { useRouter } from 'expo-router'
 
 const SummaryTable = () => {

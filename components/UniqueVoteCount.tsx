@@ -1,12 +1,16 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import { useVotingContext } from '@/app/(context)/VotingContext';
+import React, { useEffect } from 'react'
 import CardHeader from './CardHeader';
+
+import { useVotingContext } from '@/app/(context)/VotingContext';
 
 const UniqueVoteCount = () => {
 
-    const { votes } = useVotingContext();
-    const uniqueVotes = Object.keys(votes).length;
+    const { uniqueVotes, fetchVoters } = useVotingContext();
+
+    useEffect(() => {
+        fetchVoters();
+    }, []);
 
   return (
     <View className="bg-white w-full mt-2">
@@ -14,7 +18,7 @@ const UniqueVoteCount = () => {
       <View className='p-4 flex-row gap-16'>
         <Text className='pt-2 text-xl font-bold'>Number of people that have voted:</Text>
         <View className='border rounded-md items-center'>
-          <Text className="font-semibold text-2xl py-2 px-4 text-green-600">{uniqueVotes}</Text>
+          <Text className="font-semibold text-2xl py-2 px-4 text-green-600">{uniqueVotes.length}</Text>
         </View>
       </View>
     </View>
