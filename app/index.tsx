@@ -30,6 +30,15 @@ const App = () => {
                 Click here to vote →
               </Text>
           </TouchableOpacity>
+          <TouchableOpacity
+              onPress={() => navigation.navigate('(tabs)', { screen: 'payments' })}
+              activeOpacity={0.8}
+              className="bg-green-800 p-6 rounded-md shadow-lg mt-16 min-w-[200px] justify-center items-center"
+            >
+              <Text className='text-orange-500 font-bold text-4xl'>
+                Record Payments →
+              </Text>
+          </TouchableOpacity>
           </View>
         </View>
       </View>
