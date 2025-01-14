@@ -1,7 +1,16 @@
 import { supabase } from '@/services/supabaseClient';
 
 
-// Define the interface for a candidate
+/**
+ * -----------------------------
+ * CANDIDATE SCHEMA
+ * -----------------------------
+ * member_id (primary key)   
+ * candidate_name: string       
+ * candidate_picture: string   
+ * vote_count: number          
+ */
+
 export interface Candidate {
     id: string;
     name: string;

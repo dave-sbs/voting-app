@@ -15,7 +15,7 @@ const SignInScreen = () => {
     
     // Set password manually from here
     if (password === '1234') {
-      navigation.navigate('(tabs)', { screen: 'admin' });
+      navigation.navigate('(tabs)', { screen: 'events' });
     } else {
       alert('Invalid credentials');
     }
