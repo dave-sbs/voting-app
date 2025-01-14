@@ -13,13 +13,15 @@ import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 
+import { useRouter } from 'expo-router';
+
+import { useVotingContext } from '@/app/(context)/VotingContext';
+import { useChoiceContext } from '@/app/(context)/VoteChoiceContext';
+
 import CardHeader from '@/components/CardHeader';
 import HamburgerMenu from '@/components/HamburgerMenu';
 import CandidateButton from '@/components/CandidateButton';
 
-import { useVotingContext } from '@/app/(context)/VotingContext';
-import { useChoiceContext } from '@/app/(context)/VoteChoiceContext';
-import { useRouter } from 'expo-router';
 
 interface Candidate {
   id: string;

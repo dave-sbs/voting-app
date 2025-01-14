@@ -1,99 +1,61 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+  Modal,
+  ScrollView,
+} from 'react-native';
 import Signature from 'react-native-signature-canvas'; 
+import { supabase } from '../../services/supabaseClient.js';
 
-import { addEvent } from '@/scripts/eventsAPI'; 
-import { createPaymentRecord } from '@/scripts/paymentRecordsAPI';
+import { insertNewEvent } from '../../scripts/eventsAPI';
+import { createPaymentRecord } from '../../scripts/paymentRecordsAPI';
 
-import { supabase } from '@/services/supabaseClient';
-
-
-interface RecordPaymentsProps {
-  // If you use navigation, pass props as neede
-}
-
+interface RecordPaymentsProps {}
 
 const RecordPayments: React.FC<RecordPaymentsProps> = () => {
-  // 1) Form states
   const [storeNumber, setStoreNumber] = useState('');
   const [paymentAmount, setPaymentAmount] = useState('');
   const [additionalComments, setAdditionalComments] = useState('');
-  const [creationDate, setCreationDate] = useState(new Date().toISOString().split('T')[0]); 
-  // store date as YYYY-MM-DD or however your DB expects
+  const [creationDate, setCreationDate] = useState(
+    new Date().toISOString().split('T')[0]
+  ); 
 
-  // 2) Signature
   const [signatureBase64, setSignatureBase64] = useState<string | null>(null);
   const signatureRef = useRef<any>(null);
 
-  // 3) Loading / Error
   const [isLoading, setIsLoading] = useState(false);
 
-  // 4) On mount, create an AUTO event
-  useEffect(() => {
-    (async () => {
-      try {
-        // You can choose any createdBy value. 
-        // E.g., 'System' or the current user
-        await addEvent('AUTO', new Date(), 'System');
-        console.log('AUTO event created successfully');
-      } catch (err: any) {
-        console.error('Error creating AUTO event:', err);
-        // Show an alert or handle error
-      }
-    })();
-  }, []);
+  const [errorModalVisible, setErrorModalVisible] = useState(false);
+  const [errorModalMessage, setErrorModalMessage] = useState('');
 
-  /**
-   * Callback when signature is saved from the signature pad
-   * signature is a base64 encoded image (e.g., 'data:image/png;base64,iVBOR...')
-   */
-  const handleSignature = (signature: string) => {
-    console.log('Signature captured!');
-    setSignatureBase64(signature);
+  const showErrorModal = (err: any) => {
+    const message = err?.message || String(err);
+    console.error('[RecordPayments] Error:', err);
+    setErrorModalMessage(message);
+    setErrorModalVisible(true);
   };
 
-  // If user taps 'Clear', we can reset the signature
-  const handleClear = () => {
-    if (signatureRef.current) {
-      signatureRef.current.clearSignature();
-    }
-    setSignatureBase64(null);
-  };
-
-  /**
-   * Upload the signature to Supabase Storage
-   * Replace 'your-signatures-bucket' with your actual bucket name
-   */
   const uploadSignatureToSupabase = async (base64Data: string): Promise<string> => {
     try {
-      // 1) Convert base64 to a blob or to a file
-      const base64WithoutPrefix = base64Data.replace(/^data:image\/\w+;base64,/, '');
-      const fileName = `signature_${Date.now()}.png`;
+      const dataUri = base64Data.startsWith('data:image/')
+        ? base64Data
+        : `data:image/png;base64,${base64Data.replace(/^data:image\/\w+;base64,/, '')}`;
 
-      // Supabase requires a file (Blob in RN you can do a workaround)
-      // For demonstration, let's convert base64 -> array buffer -> Blob
-      const binaryString = atob(base64WithoutPrefix);
-      const len = binaryString.length;
-      const bytes = new Uint8Array(len);
-      for (let i = 0; i < len; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-      }
-      const blob = new Blob([bytes], { type: 'image/png' });
-
-      // 2) Upload to Supabase
+      const fileName = `signature_${Date.now()}_${storeNumber}.png`;
       const { data, error } = await supabase.storage
-        .from('your-signatures-bucket')
-        .upload(fileName, blob, {
-          contentType: 'image/png',
-        });
+        .from('signature_bucket')
+        .upload(fileName, dataUri, { contentType: 'image/png' });
 
       if (error) {
         throw error;
       }
 
-      // 3) Construct the public URL to store in DB (or sign a URL)
       const { data: publicUrlData } = supabase.storage
-        .from('your-signatures-bucket')
+        .from('signature_bucket')
         .getPublicUrl(fileName);
 
       if (!publicUrlData?.publicUrl) {
@@ -107,50 +69,55 @@ const RecordPayments: React.FC<RecordPaymentsProps> = () => {
     }
   };
 
-  /**
-   * Handle the final submission of the payment record
-   */
+  const handleSignature = (signature: string) => {
+    console.log('Signature captured (base64).');
+    setSignatureBase64(signature);
+  };
+
+  const handleClear = () => {
+    if (signatureRef.current) {
+      signatureRef.current.clearSignature();
+    }
+    setSignatureBase64(null);
+  };
+
   const handleSubmit = async () => {
     if (!storeNumber || !paymentAmount) {
-      Alert.alert('Missing Fields', 'Please enter both a store number and payment amount.');
+      showErrorModal('Please enter both a store number and payment amount.');
       return;
     }
-
     setIsLoading(true);
 
     try {
-      // 1) If signature is present, upload it
       let signatureUrl = '';
       if (signatureBase64) {
         signatureUrl = await uploadSignatureToSupabase(signatureBase64);
       }
 
-      // 2) Create payment record in DB
-      const numericStoreNumber = parseInt(storeNumber, 10);
-      const numericPaymentAmount = parseInt(paymentAmount, 10);
+      const parsedPaymentAmount = parseFloat(paymentAmount);
+      if (isNaN(parsedPaymentAmount)) {
+        throw new Error('Invalid payment amount');
+      }
 
-      // We'll store creation_date as a string for example
-      const newRecord = {
-        store_number: numericStoreNumber,
-        payment_amount: numericPaymentAmount,
+      await createPaymentRecord({
+        store_number: storeNumber,
+        payment_amount: parsedPaymentAmount.toString(),
         signature: signatureUrl,
-        creation_date: creationDate,  // or new Date().toISOString()
+        creation_date: new Date().toISOString().split('T')[0],
         additional_comments: additionalComments,
-      };
+      });
 
-      await createPaymentRecord(newRecord);
-      Alert.alert('Success', 'Payment record created successfully!');
-      // Clear fields
+      await insertNewEvent('AUTO', new Date(), 'System');
+
+      setErrorModalMessage('Payment record created successfully!');
+      setErrorModalVisible(true);
+
       setStoreNumber('');
       setPaymentAmount('');
-      setAdditionalComments('');
       setSignatureBase64(null);
-
-      // If desired, create another event or do other logic
-      // The addEvent call in useEffect might suffice
+      setAdditionalComments('');
     } catch (err: any) {
-      console.error(err);
-      Alert.alert('Error', err.message || 'Failed to create payment record.');
+      showErrorModal(err);
     } finally {
       setIsLoading(false);
     }
@@ -215,8 +182,14 @@ const RecordPayments: React.FC<RecordPaymentsProps> = () => {
 
       <Text style={{ marginBottom: 6 }}>Signature</Text>
       {!signatureBase64 ? (
-        // If no signature, show the signature pad
-        <View style={{ height: 200, borderWidth: 1, borderColor: '#ccc', marginBottom: 12 }}>
+        <View
+          style={{
+            height: 300,
+            borderWidth: 1,
+            borderColor: '#ccc',
+            marginBottom: 12,
+          }}
+        >
           <Signature
             ref={signatureRef}
             onOK={handleSignature}
@@ -238,15 +211,55 @@ const RecordPayments: React.FC<RecordPaymentsProps> = () => {
       ) : (
         <TouchableOpacity
           onPress={handleSubmit}
-          style={{
-            backgroundColor: 'green',
-            padding: 12,
-            alignItems: 'center',
-          }}
+          style={{ backgroundColor: 'green', padding: 12, alignItems: 'center' }}
         >
           <Text style={{ color: '#fff', fontWeight: 'bold' }}>Submit</Text>
         </TouchableOpacity>
       )}
+
+      <Modal
+        visible={errorModalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setErrorModalVisible(false)}
+      >
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            justifyContent: 'center',
+          }}
+        >
+          <View
+            style={{
+              margin: 20,
+              backgroundColor: '#fff',
+              borderRadius: 8,
+              padding: 16,
+              elevation: 5,
+            }}
+          >
+            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>
+              Notice
+            </Text>
+            <ScrollView style={{ maxHeight: 300 }}>
+              <Text style={{ color: '#333' }}>{errorModalMessage}</Text>
+            </ScrollView>
+            <TouchableOpacity
+              style={{
+                backgroundColor: 'green',
+                padding: 10,
+                alignItems: 'center',
+                marginTop: 16,
+                borderRadius: 4,
+              }}
+              onPress={() => setErrorModalVisible(false)}
+            >
+              <Text style={{ color: '#fff', fontWeight: 'bold' }}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
