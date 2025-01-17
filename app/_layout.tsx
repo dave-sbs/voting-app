@@ -10,9 +10,9 @@ import { EventProvider } from './(context)/EventContext';
 const RootLayout = () => {
   return (
     
-    <EventProvider>
     <CandidateProvider>
     <VotingProvider>
+    <EventProvider>
     <VoteChoiceProvider>
       <Stack>
         <Stack.Screen
@@ -24,9 +24,9 @@ const RootLayout = () => {
         <Slot />
       </Stack>
     </VoteChoiceProvider>
+    </EventProvider>
     </VotingProvider>
     </CandidateProvider>
-    </EventProvider>
   );
 };
 

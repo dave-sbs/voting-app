@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { Text, TextInput, TouchableOpacity, View, Modal } from 'react-native';
 import { useVotingContext } from '../(context)/VotingContext';
-import { convertStoreNumbertoId } from '@/scripts/checkInAPI';
+import { convertStoreNumbertoId, isBoardMember } from '@/scripts/checkInAPI';
+import { useEventContext } from '../(context)/EventContext';
 
 const CheckInScreen = () => {
   const navigation = useNavigation<NavigationProp<any>>();
@@ -12,22 +13,46 @@ const CheckInScreen = () => {
     isLoading,
     voter, 
     checkInVoter,  } = useVotingContext();
+
+  const {
+    events,
+    fetchOpenEvents,
+  } = useEventContext();
   
   const [storeId, setStoreId] = useState('');
   const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  const [ openEvents ] = useState(events);
 
   const showErrorModal = (message: string) => {
     setErrorMessage(message);
     setIsErrorModalVisible(true);
   };
 
+  // Show error modal if there's an error from context
+  useEffect(() => {
+    try{
+      fetchOpenEvents();
+    } catch (err : any) {
+      console.error('Failed to fetch open events:', err);
+      showErrorModal('There are no open meetings available. Please create a new meeting');
+    }
+  }, []);
+
   /*
   Will need extra logic to check if event is open.
   */ 
   const handleSubmit = async () => {
       let memberId: string | null;
+
+      if (storeId) {
+        setStoreId(storeId);
+      }
+
       try {
+        // Use the store number to get the member ID
+        // Ensure member ID exists
           memberId = await convertStoreNumbertoId(storeId);
           if (memberId === null) {
               showErrorModal('Store number not found.');
@@ -39,9 +64,25 @@ const CheckInScreen = () => {
       }
   
       try {
-          await checkInVoter({ member_id: memberId, event_id: '8d44deea-8d13-49a9-85df-910489ce78e9' });
-          setStoreId(storeId);
-          navigation.navigate('(tabs)', { screen: 'voter' });
+          if (!openEvents) {
+              showErrorModal('There are no open meetings available. Please create a new meeting');
+              return;
+          } else {
+            // If it is a board meeting, ensure the voter is a board member
+            const isBoardMeeting = openEvents[0].event_name === 'BOARD-MEETING';
+            const isBoard = await isBoardMember(memberId);
+
+            if (isBoardMeeting && isBoard) {
+              await checkInVoter({ member_id: memberId, event_id: openEvents[0].event_id });
+              navigation.navigate('(tabs)', { screen: 'voter' });
+              return;
+            }
+            await checkInVoter({ member_id: memberId, event_id: openEvents[0].event_id });
+            if (storeId) {
+              setStoreId(storeId);
+            }
+            navigation.navigate('(tabs)', { screen: 'voter' });
+          }
       } catch (err: any) {
           showErrorModal(err || 'Check-in failed. Please try again.');
       }

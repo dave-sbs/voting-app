@@ -1,4 +1,4 @@
----------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Commit Message Prefixes:
 - "fix:" for bug fixes
@@ -10,31 +10,62 @@ Commit Message Prefixes:
 - "test:" for adding missing tests
 - "chore:" for maintenance tasks
 
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+January 16, 2025
+WYA
+[D] Transfering the Current Event Object to the Admin Context
+    [D] Need to add the current event to the Admin Context
 
-January 2, 2025
+Which components need the current event object?
+    - Voter Check In
+        UX
+        - Voters can only check in if there is an open
+        - If the meeting is a board meeting, they can only check in if there are a board member
+        - We don't expect a general and board meeting to be open at the same time
+
+    - Managing Active Candidates
+        - The admin will always first create an event or join an existing event to add candidates to the event
+        - The admin will then be able to add, update, and remove candidates from the event
+        - If the admin terminates an event, the data gets exported and the current event object is reset to null. At the same time, the current candidates list is reset to null.
+
+
+January 17, 2025
+[D] Finalizing the event termination UX for V1
+    [D] Terminate event, and get a log of summary of active candidates and check in data.
+
+    V2
+    [] Set up Google Drive export function
+    [] Finalize the export data schema
+    [] Ensure data integrity
+    [] Reset the active candidates and voting records from database
+
+Other bugs:
+[] The modal for adding a candidate has errors because I have two separate statements confirming addition of a candidate. One of them is a reflection of the actual db process, while the other is a reflection of the UI process. Need to remove the UI process statement.
+[] Event creation, joining, and termination don't utilize the isLoading and error states from the context file. Need to fix this.
+
+
 
 January 14, 2025
 WYA
 [] Design UX for event creation and termination
-    CREATION
-    - Event creation is very straightforward and manual.
-    - Admin will initially either join an existing event or create a new meeting
+    CREATION - DONE
+    [D] Event creation is very straightforward and manual. - DONE
+    [D] Admin will initially either join an existing event or create a new meeting - DONE
     - A new event means there is no data in the session
     - An existing event means there are active candidates and the voting process is happening, moreover, the admin can terminate the session
 
-    TERMINATION
+    TERMINATION - NEXT
     - Active sessions can either be manually terminated by the admin or automatically terminated after a certain amount of time
 
-        MANUAL
+        MANUAL - NEXT
         - If admin requests export of voting data, they get a notification that the session will be terminated.
             - Exports terminate the session
             - So provide other forms of data visualization and analysis dahsboards so that admins can get a sense of progress
 
-        AUTO
+        AUTO - FUTURE DISCUSSION
         - If the admin does not request export, the session will automatically terminate after a certain amount of time (24 hours)
 
-        EXPORTS
+        EXPORTS - NEXT
             - The following data will be exported:
                 - Checked In (Attendance) -- check_in table
                 - Vote Tally -- active_candidates table
