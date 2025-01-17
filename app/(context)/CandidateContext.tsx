@@ -15,24 +15,34 @@ import {
     clearActiveCandidates
 } from '@/scripts/candidateAPI'
 
+
+interface SummaryProps {
+    name: string,
+    vote_count: number,
+}
+
 interface CandidateContextProps {
     candidates: Candidate[] | null;
+    summary: SummaryProps[] | null;
     isLoading: boolean;
     error: string | null;
     fetchCandidates: () => Promise<void>;
     addCandidate: (candidate: Candidate) => Promise<void>;
     deleteCandidate: (candidate: Candidate) => Promise<void>;
     clearCandidates: () => Promise<void>;
+    summarizeData: () => Promise<void>;
 }
 
 const CandidateContext = createContext<CandidateContextProps>({
     candidates: null,
+    summary: null,
     isLoading: false,
     error: null,
     fetchCandidates: async() => undefined,
     addCandidate: async () => undefined,
     deleteCandidate:async () => undefined,
-    clearCandidates:async () => undefined
+    clearCandidates:async () => undefined,
+    summarizeData:async () => undefined
 });
 
 
@@ -42,6 +52,7 @@ interface CandidateProviderProps {
 
 export const CandidateProvider: React.FC<CandidateProviderProps> = ({ children }) => {
     const [candidates, setCandidates] = useState<Candidate[] | null>(null);
+    const [summary, setSummary] = useState<SummaryProps[] | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -107,6 +118,21 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({ children }
         }
     }, [fetchCandidates]);
 
+    const summarizeData = useCallback(async () => {
+        const activeCandidates = await getActiveCandidates();
+        // LOGGING THE SUMMARY PROCESS
+        console.log("SUMMARIZING DATA");
+        console.log(activeCandidates);
+        //
+        
+        const summarizedData = activeCandidates.map(candidate => ({
+            name: candidate.name,
+            vote_count: candidate.vote_count
+        }));
+
+        setSummary(summarizedData);
+        console.log('Summarized data:', summarizedData);
+    }, []);
 
     useEffect(() => {
         fetchCandidates();
@@ -116,12 +142,14 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({ children }
         <CandidateContext.Provider
             value={{
                 candidates,
+                summary,
                 isLoading,
                 error,
                 fetchCandidates,
                 addCandidate,
                 deleteCandidate,
                 clearCandidates,
+                summarizeData
             }}
         > 
             {children}

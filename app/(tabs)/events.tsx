@@ -53,7 +53,10 @@ import {
     getLastGeneralMeetingEvent,
     getLastBoardMeetingEvent,
 } from '@/scripts/eventsAPI';
+
 import { useEventContext } from '@/app/(context)/EventContext';
+import { useCandidateContext } from '@/app/(context)/CandidateContext';
+import { useVotingContext } from '../(context)/VotingContext';
 
 const EventScreen = () => {
     const {
@@ -66,10 +69,13 @@ const EventScreen = () => {
         addEvent,
         closeEvent
     } = useEventContext();
+    const { summary, summarizeData } = useCandidateContext();
+    const { fetchVoters, fetchCheckedIn } = useVotingContext();
 
     const [tempEventData, setTempEventData] = useState<Event | null>(null); // Will use this for degrading UI later.
+
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [modalType, setModalType] = useState<'create' | 'join'>('create');
+    const [modalType, setModalType] = useState<'create' | 'join' | 'terminate'>('create');
     const [openGeneralMeeting, setOpenGeneralMeeting] = useState<Event | null>(null);
     const [openBoardMeeting, setOpenBoardMeeting] = useState<Event | null>(null);
 
@@ -83,8 +89,6 @@ const EventScreen = () => {
         const checkOpenMeetings = async () => {
             const lastGeneral = await getLastGeneralMeetingEvent();
             const lastBoard = await getLastBoardMeetingEvent();
-            console.log('Last General Meeting:', lastGeneral[0]);
-            console.log('Last Board Meeting:', lastBoard[0]);
             setOpenGeneralMeeting(lastGeneral[0] && lastGeneral[0].is_open ? lastGeneral[0] : null);
             setOpenBoardMeeting(lastBoard[0] && lastBoard[0].is_open ? lastBoard[0] : null);
         };
@@ -93,7 +97,7 @@ const EventScreen = () => {
 
     const handleCreateEvent = async (eventType: 'GENERAL-MEETING' | 'BOARD-MEETING') => {
         try {
-            const newEvent = await addEvent({ event_name: eventType, event_date: new Date(), created_by: 'Admin', is_open: true });
+            const newEvent = await addEvent({ event_id: '', event_name: eventType, event_date: new Date(), created_by: 'Admin', is_open: true });
 
             if (!newEvent) {
                 throw new Error('Failed to create event');
@@ -117,6 +121,20 @@ const EventScreen = () => {
         }
     };
 
+    const handleTerminateEvent = async (event: Event) => {
+        try {
+            await summarizeData();
+            await fetchVoters();
+            await fetchCheckedIn();
+            await closeEvent(event);
+            setIsModalVisible(false);
+            console.log('Event terminated successfully.');
+            router.push('/');
+        } catch (error) {
+            console.error(`Failed to terminate ${event.event_name}:`, error);
+        }
+    };
+
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <SafeAreaView className='h-full bg-white'>
@@ -128,6 +146,9 @@ const EventScreen = () => {
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => { setModalType('join'); setIsModalVisible(true); }}>
                             <Text>Join an Existing Event</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => { setModalType('terminate'); setIsModalVisible(true); }}>
+                            <Text>Terminate an Existing Event</Text>
                         </TouchableOpacity>
                         <Modal visible={isModalVisible} animationType="slide" transparent={true}>
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}>
@@ -155,7 +176,7 @@ const EventScreen = () => {
                                                 <Text>First close already opened meetings</Text>
                                             )}
                                         </>
-                                    ) : (
+                                    ) : modalType === 'join' ? (
                                         <>
                                             <Text>Select Event to Join:</Text>
                                             {openGeneralMeeting && (
@@ -172,11 +193,28 @@ const EventScreen = () => {
                                                 <Text>No open meetings available</Text>
                                             )}
                                         </>
+                                    ) : (
+                                        <>
+                                            <Text>Select Event to Terminate:</Text> 
+                                            {openGeneralMeeting && (
+                                                <TouchableOpacity onPress={() => handleTerminateEvent(openGeneralMeeting)}>
+                                                    <Text>General Meeting</Text>
+                                                </TouchableOpacity>
+                                            )}
+                                            {openBoardMeeting && (
+                                                <TouchableOpacity onPress={() => handleTerminateEvent(openBoardMeeting)}>
+                                                    <Text>Board Meeting</Text>
+                                                </TouchableOpacity>
+                                            )}
+                                            {!openGeneralMeeting && !openBoardMeeting && (
+                                                <Text>No open meetings available</Text>
+                                            )}
+                                        </>
                                     )}
-                                    <TouchableOpacity onPress={() => setIsModalVisible(false)}>
-                                        <Text>Cancel</Text>
-                                    </TouchableOpacity>
                                 </View>
+                                <TouchableOpacity onPress={() => setIsModalVisible(false)}>
+                                    <Text>Cancel</Text>
+                                </TouchableOpacity>
                             </View>
                         </Modal>
                     </View>

@@ -32,7 +32,7 @@ interface EventContextProps {
     currEvent: Event | null;
     isLoading: boolean;
     error: string | null;
-    fetchOpenEvents: () => Promise<void>;
+    fetchOpenEvents: () => Promise<null>;
     checkInEvent: (event: Event) => Promise<void>;
     addEvent: (event: Event) => Promise<Event | null>;
     closeEvent: (event: Event) => Promise<void>;
@@ -57,7 +57,7 @@ const EventContext = createContext<EventContextProps>({
     currEvent: null,
     isLoading: false,
     error: null,
-    fetchOpenEvents: async() => undefined, 
+    fetchOpenEvents: async() => null, 
     checkInEvent: async() => undefined,
     addEvent: async() => null,  
     closeEvent: async() => undefined, 
@@ -103,9 +103,11 @@ export const EventProvider: React.FC<EventProviderProps> = ({ children }) => {
         try {
             const result = await getOpenEvents();
             setEvents(result);
+            return null;
         } catch (err: any) {
             console.error(err);
             setError(err.message || 'Failed to fetch events');
+            return null;
         } finally {
             setIsLoading(false);
         }

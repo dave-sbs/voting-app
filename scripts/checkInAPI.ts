@@ -14,6 +14,19 @@ export interface Voter {
 }
 
 
+export async function getAllCheckIns(): Promise<Voter[]> {
+    const { data: checkInData, error: checkInError } = await supabase
+        .from('check_in')
+        .select()
+
+    if (checkInError) {
+        throw checkInError;
+    }   
+
+    return checkInData as Voter[];
+}
+
+
 export async function getAllVoters(): Promise<Voter[]> {
     const { data: checkInData, error: checkInError } = await supabase
         .from('check_in')
@@ -64,6 +77,24 @@ export async function getStoreNumberfromId(memberId: string): Promise<string | n
 
     return null;    
 }   
+
+
+export async function isBoardMember(memberId: string): Promise<boolean | null> {
+    const { data: memberData, error: memberError } = await supabase
+        .from('organization_members')
+        .select('is_board_member')
+        .eq('member_id', memberId)
+        .single();
+
+    if (memberError && memberError.code !== 'PGRST116') {
+        throw memberError;
+    }    
+
+    if (memberData) {
+        return memberData.is_board_member;
+    }
+    return null;
+}
 
 
 export async function convertStoreNumbertoId(storeNumber: string): Promise<string | null> {

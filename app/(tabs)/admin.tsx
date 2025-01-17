@@ -48,7 +48,7 @@ const AdminScreen = () => {
                 <MinimumChoiceInput />
                 <MaximumChoiceInput />
                 <CandidateList />
-                {/* <UniqueVoteCount /> */}
+                <UniqueVoteCount />
                 <TallyTable />
               </View>
               

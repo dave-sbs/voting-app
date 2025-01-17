@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Image, TouchableOpacity, Text, Alert } from 'react-native';
+import { View, TextInput, Image, TouchableOpacity, Text, Modal } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
 import CardHeader from './CardHeader';
@@ -24,23 +24,30 @@ const CandidateForm = () => {
 
   const [name, setName] = useState('');
   const [image, setImage] = useState<ImageFile | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
 
   useEffect(() => {
     if (error) {
       console.error('Context Error:', error);
-      Alert.alert('Error', error);
+      showModal(error);
     }
   }, [error]);
+
+  const showModal = (message: string) => {
+    setModalMessage(message);
+    setModalVisible(true);
+  };
 
   const handleCandidateSubmit = async () => {
     if (!name || !image) {
       if (!name) {
         console.warn('Submission Error: Name is missing');
-        Alert.alert('Error', 'Please enter a name');
+        showModal('Please enter a name');
       }
       if (!image) {
         console.warn('Submission Error: Image is missing');
-        Alert.alert('Error', 'Please upload a picture');
+        showModal('Please upload a picture');
       }
       return;
     }
@@ -56,11 +63,11 @@ const CandidateForm = () => {
       console.log('Candidate added successfully:', { name, image: image.uri });
       setName('');
       setImage(null);
-      Alert.alert('Success', 'Candidate added successfully!');
+      showModal('Candidate added successfully!');
       fetchCandidates();
     } catch (err: any) {
       console.error('Failed to add candidate:', err);
-      Alert.alert('Error', err.message || 'Failed to add candidate');
+      showModal(err.message || 'Failed to add candidate');
     }
   };
 
@@ -68,10 +75,7 @@ const CandidateForm = () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
       console.warn('Camera roll permission denied');
-      Alert.alert(
-        'Permission needed',
-        'Sorry, we need camera roll permissions to make this work!'
-      );
+      showModal('Sorry, we need camera roll permissions to make this work!');
       return;
     }
 
@@ -149,6 +153,25 @@ const CandidateForm = () => {
           </Text>
         </TouchableOpacity>
       </View>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View className="flex-1 justify-center items-center bg-black bg-opacity-50">
+          <View className="bg-white p-5 rounded-lg">
+            <Text className="text-lg mb-3">{modalMessage}</Text>
+            <TouchableOpacity
+              onPress={() => setModalVisible(false)}
+              className="bg-blue-500 p-2 rounded"
+            >
+              <Text className="text-white text-center">Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };

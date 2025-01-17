@@ -1,4 +1,5 @@
 import { supabase } from '@/services/supabaseClient';
+import { clearActiveCandidates } from './candidateAPI';
 
 /**
  * -----------------------------
@@ -12,7 +13,7 @@ import { supabase } from '@/services/supabaseClient';
  */
 
 export interface Event {
-    event_id?: string;
+    event_id: string;
     event_date?: Date;            
     event_name: string;
     created_by: string;
@@ -169,6 +170,13 @@ export async function insertNewEvent(event: Event): Promise<Event[]> {
  * @param {string} eventName - Name of the event to terminate
  * @returns {Promise<Event[]>} Array containing the terminated event
  * @throws {Error} If there's an error terminating the event or if no open event exists
+ * 
+ * Need to add logic to reset active candidates, voting records, and check-in records. 
+ * First test the summary data function. 
+ * Then set up the Google Drive export function.
+ * Finalize the export data schema
+ * Ensure data integrity
+ * Then reset the active candidates and voting records from database
  */
 export async function terminateOpenEvent(eventName: string): Promise<Event[]> {
   const [lastBoardMeetingEvent, lastGeneralMeetingEvent] = await Promise.all([
