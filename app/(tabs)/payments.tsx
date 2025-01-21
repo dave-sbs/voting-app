@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -8,11 +8,13 @@ import {
   Modal,
   ScrollView,
 } from 'react-native';
-import Signature from 'react-native-signature-canvas'; 
-import { supabase } from '../../services/supabaseClient.js';
+import Signature from 'react-native-signature-canvas';
 
-import { insertNewEvent } from '../../scripts/eventsAPI';
-import { createPaymentRecord } from '../../scripts/paymentRecordsAPI';
+import {
+  uploadSignature,
+  createPayment,
+  createEvent
+} from '@/scripts/paymentRecordsAPI'; // adjust the path to match your setup
 
 interface RecordPaymentsProps {}
 
@@ -22,7 +24,7 @@ const RecordPayments: React.FC<RecordPaymentsProps> = () => {
   const [additionalComments, setAdditionalComments] = useState('');
   const [creationDate, setCreationDate] = useState(
     new Date().toISOString().split('T')[0]
-  ); 
+  );
 
   const [signatureBase64, setSignatureBase64] = useState<string | null>(null);
   const signatureRef = useRef<any>(null);
@@ -32,41 +34,16 @@ const RecordPayments: React.FC<RecordPaymentsProps> = () => {
   const [errorModalVisible, setErrorModalVisible] = useState(false);
   const [errorModalMessage, setErrorModalMessage] = useState('');
 
+  const style = `.m-signature-pad {box-shadow: none; border: none; }
+              .m-signature-pad--body {border: none;}
+              .m-signature-pad--footer {display: none; margin: 0px;}
+              `;
+
   const showErrorModal = (err: any) => {
     const message = err?.message || String(err);
     console.error('[RecordPayments] Error:', err);
     setErrorModalMessage(message);
     setErrorModalVisible(true);
-  };
-
-  const uploadSignatureToSupabase = async (base64Data: string): Promise<string> => {
-    try {
-      const dataUri = base64Data.startsWith('data:image/')
-        ? base64Data
-        : `data:image/png;base64,${base64Data.replace(/^data:image\/\w+;base64,/, '')}`;
-
-      const fileName = `signature_${Date.now()}_${storeNumber}.png`;
-      const { data, error } = await supabase.storage
-        .from('signature_bucket')
-        .upload(fileName, dataUri, { contentType: 'image/png' });
-
-      if (error) {
-        throw error;
-      }
-
-      const { data: publicUrlData } = supabase.storage
-        .from('signature_bucket')
-        .getPublicUrl(fileName);
-
-      if (!publicUrlData?.publicUrl) {
-        throw new Error('Unable to retrieve public URL for signature.');
-      }
-
-      return publicUrlData.publicUrl;
-    } catch (err: any) {
-      console.error('Error uploading signature:', err);
-      throw err;
-    }
   };
 
   const handleSignature = (signature: string) => {
@@ -78,7 +55,7 @@ const RecordPayments: React.FC<RecordPaymentsProps> = () => {
     if (signatureRef.current) {
       signatureRef.current.clearSignature();
     }
-    setSignatureBase64(null);
+    setSignatureBase64('');
   };
 
   const handleSubmit = async () => {
@@ -91,7 +68,8 @@ const RecordPayments: React.FC<RecordPaymentsProps> = () => {
     try {
       let signatureUrl = '';
       if (signatureBase64) {
-        signatureUrl = await uploadSignatureToSupabase(signatureBase64);
+        // Upload signature to Supabase
+        signatureUrl = await uploadSignature(signatureBase64, storeNumber);
       }
 
       const parsedPaymentAmount = parseFloat(paymentAmount);
@@ -99,19 +77,21 @@ const RecordPayments: React.FC<RecordPaymentsProps> = () => {
         throw new Error('Invalid payment amount');
       }
 
-      await createPaymentRecord({
-        store_number: storeNumber,
-        payment_amount: parsedPaymentAmount.toString(),
-        signature: signatureUrl,
-        creation_date: new Date().toISOString().split('T')[0],
-        additional_comments: additionalComments,
-      });
+      // Create the payment record in your DB
+      await createPayment(
+        storeNumber,
+        parsedPaymentAmount.toString(),
+        signatureUrl,
+        additionalComments
+      );
 
-      await insertNewEvent('AUTO', new Date(), 'System');
+      // Insert new event (if needed)
+      await createEvent();
 
       setErrorModalMessage('Payment record created successfully!');
       setErrorModalVisible(true);
 
+      // Reset form
       setStoreNumber('');
       setPaymentAmount('');
       setSignatureBase64(null);
@@ -124,96 +104,77 @@ const RecordPayments: React.FC<RecordPaymentsProps> = () => {
   };
 
   return (
-    <View style={{ flex: 1, padding: 16, backgroundColor: '#fff' }}>
-      <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 8 }}>
+    <View className="flex-1 p-4 bg-white">
+      <Text className="text-2xl font-bold mb-2">
         Record Payments
       </Text>
 
-      <Text>Store Number</Text>
+      <Text className='text-lg font-medium mb-2'>Transaction Date</Text>
       <TextInput
-        style={{
-          borderWidth: 1,
-          borderColor: '#ccc',
-          marginBottom: 12,
-          padding: 8,
-        }}
+        className="w-[500px] border-[1.75px] border-gray-300 rounded-md mb-3 text-lg pt-1 pb-4 px-2"
+        placeholder="YYYY-MM-DD"
+        placeholderTextColor="#a1a1a1"
+        value={creationDate}
+        onChangeText={setCreationDate}
+      />
+
+      <Text className='text-lg font-medium mb-2'>Store Number *</Text>
+      <TextInput
+        className="w-[500px] border-[1.75px] border-gray-300 rounded-md mb-3 text-lg pt-1 pb-4 px-2"
+        placeholder='Enter Store Number'
+        placeholderTextColor="#a1a1a1"
         keyboardType="numeric"
         value={storeNumber}
         onChangeText={setStoreNumber}
       />
 
-      <Text>Payment Amount</Text>
+      <Text className='text-lg font-medium mb-2'>Payment Amount *</Text>
       <TextInput
-        style={{
-          borderWidth: 1,
-          borderColor: '#ccc',
-          marginBottom: 12,
-          padding: 8,
-        }}
+        className="w-[500px] border-[1.75px] border-gray-300 rounded-md mb-3 text-lg pt-1 pb-4 px-2"
+        placeholder='Enter Payment Amount'
+        placeholderTextColor="#a1a1a1"
         keyboardType="numeric"
         value={paymentAmount}
         onChangeText={setPaymentAmount}
       />
 
-      <Text>Transaction Date</Text>
+      <Text className='text-lg font-medium mb-2'>Additional Comments</Text>
       <TextInput
-        style={{
-          borderWidth: 1,
-          borderColor: '#ccc',
-          marginBottom: 12,
-          padding: 8,
-        }}
-        value={creationDate}
-        onChangeText={setCreationDate}
-      />
-
-      <Text>Additional Comments</Text>
-      <TextInput
-        style={{
-          borderWidth: 1,
-          borderColor: '#ccc',
-          marginBottom: 12,
-          padding: 8,
-        }}
+        className="w-[750px] border-[1.75px] border-gray-300 rounded-md mb-3 text-lg pt-1 pb-4 px-2"
+        placeholder='Enter Additional Comments'
+        placeholderTextColor="#a1a1a1"
         value={additionalComments}
         onChangeText={setAdditionalComments}
         multiline
+        numberOfLines={5}
+        textAlignVertical="top"
+        style={{ height: 'auto', minHeight: 100 }}
       />
 
-      <Text style={{ marginBottom: 6 }}>Signature</Text>
-      {!signatureBase64 ? (
-        <View
-          style={{
-            height: 300,
-            borderWidth: 1,
-            borderColor: '#ccc',
-            marginBottom: 12,
-          }}
-        >
-          <Signature
+      <Text className='text-lg font-medium mb-2'>Signature *</Text>
+
+        <View className="border-[1.75px] border-gray-300 rounded-md bg-white w-full h-[400px] mb-4">
+         <Signature
             ref={signatureRef}
-            onOK={handleSignature}
-            onClear={handleClear}
             descriptionText="Sign here"
+            webStyle={style}
           />
         </View>
-      ) : (
-        <View style={{ marginBottom: 12 }}>
-          <Text style={{ color: 'green' }}>Signature captured!</Text>
-          <TouchableOpacity onPress={handleClear} style={{ marginTop: 4 }}>
-            <Text style={{ color: 'blue' }}>Clear Signature</Text>
-          </TouchableOpacity>
-        </View>
-      )}
 
+        <TouchableOpacity 
+        onPress={handleClear}
+        className='mb-4 p-4 bg-blue-600 rounded-md w-[150px]'
+        >
+            <Text className='text-white font-bold'>Clear Signature</Text>
+        </TouchableOpacity>
       {isLoading ? (
         <ActivityIndicator size="large" color="#000" />
       ) : (
         <TouchableOpacity
           onPress={handleSubmit}
-          style={{ backgroundColor: 'green', padding: 12, alignItems: 'center' }}
+          className="bg-green-500 p-3 items-center"
         >
-          <Text style={{ color: '#fff', fontWeight: 'bold' }}>Submit</Text>
+          <Text className="text-white font-bold">Submit</Text>
         </TouchableOpacity>
       )}
 
@@ -223,39 +184,19 @@ const RecordPayments: React.FC<RecordPaymentsProps> = () => {
         transparent={true}
         onRequestClose={() => setErrorModalVisible(false)}
       >
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            justifyContent: 'center',
-          }}
-        >
-          <View
-            style={{
-              margin: 20,
-              backgroundColor: '#fff',
-              borderRadius: 8,
-              padding: 16,
-              elevation: 5,
-            }}
-          >
-            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>
+        <View className="flex-1 bg-black bg-opacity-50 justify-center">
+          <View className="m-5 bg-white rounded-lg p-4 shadow-md">
+            <Text className="text-lg font-bold mb-2.5">
               Notice
             </Text>
-            <ScrollView style={{ maxHeight: 300 }}>
-              <Text style={{ color: '#333' }}>{errorModalMessage}</Text>
+            <ScrollView className="max-h-[300px]">
+              <Text className="text-gray-700">{errorModalMessage}</Text>
             </ScrollView>
             <TouchableOpacity
-              style={{
-                backgroundColor: 'green',
-                padding: 10,
-                alignItems: 'center',
-                marginTop: 16,
-                borderRadius: 4,
-              }}
+              className="bg-green-500 p-2.5 items-center mt-4 rounded"
               onPress={() => setErrorModalVisible(false)}
             >
-              <Text style={{ color: '#fff', fontWeight: 'bold' }}>OK</Text>
+              <Text className="text-white font-bold">OK</Text>
             </TouchableOpacity>
           </View>
         </View>
