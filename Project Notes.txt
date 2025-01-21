@@ -10,7 +10,50 @@ Commit Message Prefixes:
 - "test:" for adding missing tests
 - "chore:" for maintenance tasks
 
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+January 14, 2025
+WYA
+[D] Design UX for event creation and termination
+    CREATION - DONE
+    [D] Event creation is very straightforward and manual. - DONE
+    [D] Admin will initially either join an existing event or create a new meeting - DONE
+    - A new event means there is no data in the session
+    - An existing event means there are active candidates and the voting process is happening, moreover, the admin can terminate the session
+
+    TERMINATION - NEXT
+    - Active sessions can either be manually terminated by the admin or automatically terminated after a certain amount of time
+
+        MANUAL - NEXT
+        - If admin requests export of voting data, they get a notification that the session will be terminated.
+            - Exports terminate the session
+            - So provide other forms of data visualization and analysis dahsboards so that admins can get a sense of progress
+
+        AUTO - FUTURE DISCUSSION
+        - If the admin does not request export, the session will automatically terminate after a certain amount of time (24 hours)
+
+        EXPORTS - NEXT
+            - The following data will be exported:
+                - Checked In (Attendance) -- check_in table
+                - Vote Tally -- active_candidates table
+                - Unique Voters -- check_in table
+                - Payment Records -- payments table
+        
+[D] Design UI for event creation and termination
+    USER FLOW
+    - It would make sense for the admin page to initially direct to the Event Creation page
+    - Then the admin will be able to either join an existing event or create a new meeting
+        - For either option, there will be a dropdown of General Meetings and Board Meetings to choose from.
+    - A new event means there is no data in the session
+    - An existing event means there are active candidates and the voting process is happening, moreover, the admin can terminate the session
+
+    - After a session is terminated, provide a two hour window where admin can 'join' the session that was just closed and get analytics straight on the device. Once that window is over, remove all data from local state and reset the UI to the default state
+
+[D] Design UX for payments page
+    - Vendor payment
+    - FOA Incentives
+
+
 January 16, 2025
 WYA
 [D] Transfering the Current Event Object to the Admin Context
@@ -38,66 +81,27 @@ January 17, 2025
     [] Finalize the export data schema
     [] Ensure data integrity
     [] Reset the active candidates and voting records from database
+    [] Add UI on admin page to terminate an event
+    [] Add UI on admin page to view analytics of the event
 
 Other bugs:
 [] The modal for adding a candidate has errors because I have two separate statements confirming addition of a candidate. One of them is a reflection of the actual db process, while the other is a reflection of the UI process. Need to remove the UI process statement.
+[] When there are no open events, the sign in page redirects to an error screen, it should just show a modal and redirect back to the landing page.
 [] Event creation, joining, and termination don't utilize the isLoading and error states from the context file. Need to fix this.
 
-
-
-January 14, 2025
-WYA
-[] Design UX for event creation and termination
-    CREATION - DONE
-    [D] Event creation is very straightforward and manual. - DONE
-    [D] Admin will initially either join an existing event or create a new meeting - DONE
-    - A new event means there is no data in the session
-    - An existing event means there are active candidates and the voting process is happening, moreover, the admin can terminate the session
-
-    TERMINATION - NEXT
-    - Active sessions can either be manually terminated by the admin or automatically terminated after a certain amount of time
-
-        MANUAL - NEXT
-        - If admin requests export of voting data, they get a notification that the session will be terminated.
-            - Exports terminate the session
-            - So provide other forms of data visualization and analysis dahsboards so that admins can get a sense of progress
-
-        AUTO - FUTURE DISCUSSION
-        - If the admin does not request export, the session will automatically terminate after a certain amount of time (24 hours)
-
-        EXPORTS - NEXT
-            - The following data will be exported:
-                - Checked In (Attendance) -- check_in table
-                - Vote Tally -- active_candidates table
-                - Unique Voters -- check_in table
-                - Payment Records -- payments table
-        
-[] Design UI for event creation and termination
-    USER FLOW
-    - It would make sense for the admin page to initially direct to the Event Creation page
-    - Then the admin will be able to either join an existing event or create a new meeting
-        - For either option, there will be a dropdown of General Meetings and Board Meetings to choose from.
-    - A new event means there is no data in the session
-    - An existing event means there are active candidates and the voting process is happening, moreover, the admin can terminate the session
-
-    - After a session is terminated, provide a two hour window where admin can 'join' the session that was just closed and get analytics straight on the device. Once that window is over, remove all data from local state and reset the UI to the default state
-
-[] Design UX for payments page
-[] Design UI for payments page
+[] Signature on payments page is not rendering as I want it to.
     - The data entry containers need to be polished and keep in theme with the rest of the app
     - Need to fix the layout of the signature line.
+[] Tons of UI bugs on many pages. Need to fix downstream.
 
-- Vendor payment
-- FOA Incentives
-
+-----------------------------------------------------------------------------------------------------------------------------------------------
 
 [] Build App for Testing
     - Currently the build process is broken. Currently, the issue is in the payments page. The Supabase client import does not work. 
     - If we look at the other 'tab' pages. They are mainly just importing and rendering components. They don't directly access the Supabase client. So, let me try to convert the payments page to a function component and see if that fixes the issue. 
     - If that doesn't work, keep the function component and then try to create a context manager for it.  
 
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+-----------------------------------------------------------------------------------------------------------------------------------------------
 
 
 Project Notes
