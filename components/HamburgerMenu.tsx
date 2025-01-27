@@ -27,27 +27,31 @@ const HamburgerMenu = ({ sideChoice }: { sideChoice: 'left' | 'right' }) => {
     const router = useRouter();
 
     return (
-        <View style={{ position: 'absolute', [sideChoice]: 0, zIndex: 100, backgroundColor: 'white', paddingBottom: 8, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
-        {/* // <View className={`absolute ${sideChoice === 'left' ? 'left-0' : 'right-0'} z-10 bg-gray-300 rounded-b-md shadow-md`}> */}
+        <View style={{
+            position: 'absolute',
+            [sideChoice]: 0,
+            top: 0,
+            zIndex: 50,
+        }}>
             {!showMenu ? (
                 <TouchableOpacity
                     onPress={() => setShowMenu(true)}
                     activeOpacity={0.8}
-                    className="px-4 pt-2"
+                    className="px-4 pt-2 bg-white"
                 >
                     <Text className='text-6xl text-bold text-gray-800'>
                         ≡
                     </Text>
                 </TouchableOpacity>
             ) : (
-                <View className={`py-2 w-[280px] h-[200px] bg-gray-100 rounded-md shadow shadow-gray-200`}>
-                    <View className={`items-end justify-center px-8`}>
+                <View className="py-2 w-[280px] h-[200px] bg-gray-100 rounded-md shadow-lg">
+                    <View className="items-end justify-center px-8">
                         <TouchableOpacity
                             onPress={() => setShowMenu(false)}
                             activeOpacity={0.8}
                             className='border-0.5 border-slate-400 px-2 rounded-sm bg-red-500'
                         >
-                            <Text className='text-3xl font-bold text-gray-800'>X</Text>
+                            <Text className='text-2xl font-bold text-white'>X</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -58,7 +62,7 @@ const HamburgerMenu = ({ sideChoice }: { sideChoice: 'left' | 'right' }) => {
                                 router.push('/SignIn');
                             }}
                             activeOpacity={0.8}
-                            className={`bg-green-800 py-3 px-2 rounded-md w-[240px] justify-center items-center`}
+                            className="bg-green-800 py-3 px-2 rounded-md w-[240px] justify-center items-center"
                         >
                             <Text className='text-orange-500 font-bold text-xl'>Go to Admin Page</Text>
                         </TouchableOpacity>
@@ -71,7 +75,7 @@ const HamburgerMenu = ({ sideChoice }: { sideChoice: 'left' | 'right' }) => {
                                 router.push('/SummaryPageAuth');
                             }}
                             activeOpacity={0.8}
-                            className={`bg-green-800 py-3 px-2 mb-6 rounded-md w-[240px] justify-center items-center`}
+                            className="bg-green-800 py-3 px-2 mb-6 rounded-md w-[240px] justify-center items-center"
                         >
                             <Text className='text-orange-500 font-bold text-xl'>Go to Summary Page</Text>
                         </TouchableOpacity>

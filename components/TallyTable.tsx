@@ -26,17 +26,27 @@ const TallyTable = () => {
         <Text className='text-xl font-medium mb-4 text-blue-600'>Date of Vote:
           <Text className='text-xl font-semibold'>  {new Date().toLocaleDateString()}</Text>
         </Text>
-        <View className='border-b-2 w-[60%] md:w-[45%] border-black' />
+        <View className='border-b-2 w-[60%] border-black' />
+        <View className='flex-row'>
+            <View className='border-l-2 border-b-2 w-[5%] h-10 items-center justify-center' />
+            <View className='border-l-2 border-b-2 w-[35%] h-10 items-center justify-center'>
+                <Text className='text-lg font-bold text-blue-600'>FRANCHISEE NAME</Text>
+            </View>
+            <View className="border-l-2 border-b-2 border-r-2 w-[20%] items-center justify-center">
+                <Text className='text-lg font-bold text-blue-600'>VOTE COUNT</Text>
+            </View>
+        </View>
         <FlatList
           data={candidates}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <View className="flex-row">
-              <View className='border-l-2 border-b-2 w-[50%] md:w-[35%] h-10 pl-4 justify-center'>
-                <Text className='text-lg font-semibold'>{item.name}</Text>
+              <View className='border-l-2 border-b-2 w-[5%] h-10 items-center justify-center' />
+              <View className='border-l-2 border-b-2 w-[35%] h-10 justify-center items-center'>
+                  <Text className='text-lg font-semibold'>{item.name || 'Loading...'}</Text>
               </View>
-              <View className='border-l-2 border-b-2 border-r-2 w-[10%] items-center justify-center'>
-                <Text className='text-xl font-bold text-blue-600'>{item.vote_count}</Text>
+              <View className='border-l-2 border-b-2 border-r-2 w-[20%] items-center justify-center'>
+                  <Text className='text-lg font-semibold'>{item.vote_count || 0}</Text>
               </View>
             </View>
           )}

@@ -10,7 +10,7 @@ import UniqueVoteCount from '@/components/UniqueVoteCount';
 import SummaryComponent from '@/components/SummaryComponent';
 import MaximumChoiceInput from '@/components/MaximumChoiceInput';
 // import VoterList from '@/components/VoterList';
-// import VoterForm from '@/components/VoterForm';
+import VoterForm from '@/components/VoterForm';
 
 const AdminScreen = () => {
   const [ screen, setScreen ] = useState('candidates');
@@ -53,7 +53,7 @@ const AdminScreen = () => {
               </View>
               
               <View className={`flex-1 ${screen === 'voters' ? 'block' : 'hidden'}`}>
-                {/* <VoterForm /> */}
+                <VoterForm />
                 <UniqueVoteCount />
                 <SummaryComponent />
               </View>

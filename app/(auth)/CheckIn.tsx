@@ -32,12 +32,24 @@ const CheckInScreen = () => {
 
   // Show error modal if there's an error from context
   useEffect(() => {
-    try{
-      fetchOpenEvents();
-    } catch (err : any) {
-      console.error('Failed to fetch open events:', err);
-      showErrorModal('There are no open meetings available. Please create a new meeting');
-    }
+    const checkOpenEvents = async () => {
+      try {
+        await fetchOpenEvents();
+        if (!events || events.length === 0) {
+          showErrorModal('There are no open meetings available.');
+          setTimeout(() => {
+            navigation.navigate('index');
+          }, 2000);
+        }
+      } catch (err: any) {
+        console.error('Failed to fetch open events:', err);
+        showErrorModal('There are no open meetings available.');
+        setTimeout(() => {
+          navigation.navigate('index');
+        }, 2000);
+      }
+    };
+    checkOpenEvents();
   }, []);
 
   /*

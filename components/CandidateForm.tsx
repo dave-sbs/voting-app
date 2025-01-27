@@ -42,11 +42,9 @@ const CandidateForm = () => {
   const handleCandidateSubmit = async () => {
     if (!name || !image) {
       if (!name) {
-        console.warn('Submission Error: Name is missing');
         showModal('Please enter a name');
       }
       if (!image) {
-        console.warn('Submission Error: Image is missing');
         showModal('Please upload a picture');
       }
       return;
@@ -60,14 +58,12 @@ const CandidateForm = () => {
         vote_count: 0
       });
 
-      console.log('Candidate added successfully:', { name, image: image.uri });
       setName('');
       setImage(null);
-      showModal('Candidate added successfully!');
       fetchCandidates();
+      showModal('Candidate added successfully!');
     } catch (err: any) {
-      console.error('Failed to add candidate:', err);
-      showModal(err.message || 'Failed to add candidate');
+      showModal(err.message);
     }
   };
 
@@ -118,10 +114,11 @@ const CandidateForm = () => {
           <Text className="text-xl font-bold pb-2 pl-4">{name}</Text>
         </View>
 
-        <View className="pt-12 relative">
+        <View className={`relative ${name ? 'pt-12' : 'pt-2'}`}>
           <TextInput
-            className="bg-gray-100 p-4 rounded-md"
+            className="bg-gray-50 w-[50%] border-[1.75px] border-gray-300 rounded-md text-lg pt-3 mb-1 px-2 pb-3 items-center justify-center"
             placeholder="Enter candidate name"
+            placeholderTextColor="#a1a1a1"
             value={name}
             onChangeText={(text) => {
               console.log('Name changed:', text);
@@ -133,25 +130,26 @@ const CandidateForm = () => {
         <TouchableOpacity
           onPress={pickImage}
           activeOpacity={0.8}
-          className="bg-blue-800 rounded-md h-[40px] justify-center items-center mt-4 mb-4"
+          className="bg-gray-200 border-[1.5px] border-gray-700 rounded-md h-[40px] w-[260px] justify-center items-center mt-4 mb-4 p-2 py-2"
         >
-          <Text className="text-white font-bold">
+          <Text className="text-black text-lg font-semibold">
             {image ? 'Change Candidate Picture' : 'Upload Candidate Picture'}
           </Text>
         </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={handleCandidateSubmit}
-          disabled={isLoading}
-          activeOpacity={0.8}
-          className={`bg-green-800 rounded-md h-[40px] w-[240px] justify-center items-center mb-4 ${
-            isLoading ? 'opacity-50' : ''
-          }`}
-        >
-          <Text className="text-white font-bold">
-            {isLoading ? 'Adding Candidate...' : 'Add Candidate'}
-          </Text>
-        </TouchableOpacity>
+        <View className='w-full justify-center items-center'>
+          <TouchableOpacity
+            onPress={handleCandidateSubmit}
+            disabled={isLoading}
+            activeOpacity={0.8}
+            className={`bg-green-800 rounded-md h-[40px] w-[240px] justify-center items-center mb-4 mt-4 p-2 ${
+              isLoading ? 'opacity-50' : ''
+            }`}
+          >
+            <Text className="text-orange-400 text-lg font-semibold">
+              {isLoading ? 'Adding Candidate...' : 'Add Candidate'}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <Modal

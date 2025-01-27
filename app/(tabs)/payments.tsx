@@ -111,7 +111,7 @@ const RecordPayments: React.FC<RecordPaymentsProps> = () => {
 
       <Text className='text-lg font-medium mb-2'>Transaction Date</Text>
       <TextInput
-        className="w-[500px] border-[1.75px] border-gray-300 rounded-md mb-3 text-lg pt-1 pb-4 px-2"
+        className="w-[500px] border-[1.75px] border-gray-300 rounded-md mb-3 text-lg pt-3 pb-3 px-2 text-green-700 font-semibold"
         placeholder="YYYY-MM-DD"
         placeholderTextColor="#a1a1a1"
         value={creationDate}
@@ -120,7 +120,7 @@ const RecordPayments: React.FC<RecordPaymentsProps> = () => {
 
       <Text className='text-lg font-medium mb-2'>Store Number *</Text>
       <TextInput
-        className="w-[500px] border-[1.75px] border-gray-300 rounded-md mb-3 text-lg pt-1 pb-4 px-2"
+        className="w-[500px] border-[1.75px] border-gray-300 rounded-md mb-3 text-lg pt-3 pb-3 px-2"
         placeholder='Enter Store Number'
         placeholderTextColor="#a1a1a1"
         keyboardType="numeric"
@@ -130,7 +130,7 @@ const RecordPayments: React.FC<RecordPaymentsProps> = () => {
 
       <Text className='text-lg font-medium mb-2'>Payment Amount *</Text>
       <TextInput
-        className="w-[500px] border-[1.75px] border-gray-300 rounded-md mb-3 text-lg pt-1 pb-4 px-2"
+        className="w-[500px] border-[1.75px] border-gray-300 rounded-md mb-3 text-lg pt-3 pb-3 px-2"
         placeholder='Enter Payment Amount'
         placeholderTextColor="#a1a1a1"
         keyboardType="numeric"
@@ -140,7 +140,7 @@ const RecordPayments: React.FC<RecordPaymentsProps> = () => {
 
       <Text className='text-lg font-medium mb-2'>Additional Comments</Text>
       <TextInput
-        className="w-[750px] border-[1.75px] border-gray-300 rounded-md mb-3 text-lg pt-1 pb-4 px-2"
+        className="w-[750px] border-[1.75px] border-gray-300 rounded-md mb-3 text-lg pt-2 pb-3 px-2"
         placeholder='Enter Additional Comments'
         placeholderTextColor="#a1a1a1"
         value={additionalComments}
@@ -162,9 +162,8 @@ const RecordPayments: React.FC<RecordPaymentsProps> = () => {
 
         <TouchableOpacity 
         onPress={handleClear}
-        className='mb-6 p-2 items-center bg-blue-600 rounded-md w-[150px]'
-        >
-            <Text className='text-white text-lg font-bold'>Clear Signature</Text>
+        className='mb-6 p-2 px-4 items-center bg-gray-200 rounded-md w-[200px] border-[1.25px] border-gray-800'>
+            <Text className='text-gray-800 text-lg font-semibold'>Clear Signature</Text>
         </TouchableOpacity>
       {isLoading ? (
         <ActivityIndicator size="large" color="#000" />
@@ -173,7 +172,7 @@ const RecordPayments: React.FC<RecordPaymentsProps> = () => {
           onPress={handleSubmit}
           className="bg-green-700 py-3 items-center rounded-md"
         >
-          <Text className="text-white text-xl font-bold">Submit</Text>
+          <Text className="text-orange-500 text-xl font-semibold">Submit</Text>
         </TouchableOpacity>
       )}
 

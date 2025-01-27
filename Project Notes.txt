@@ -87,13 +87,13 @@ January 17, 2025
 
 
 Other bugs:
-[] The modal for adding a candidate has errors because I have two separate statements confirming addition of a candidate. One of them is a reflection of the actual db process, while the other is a reflection of the UI process. Need to remove the UI process statement.
+[D] The modal for adding a candidate has errors because I have two separate statements confirming addition of a candidate. One of them is a reflection of the actual db process, while the other is a reflection of the UI process. Need to remove the UI process statement.
 [] When there are no open events, the sign in page redirects to an error screen, it should just show a modal and redirect back to the landing page.
 [] Cannot allow creation of both general and board meetings at the same time. Need to disallow this. Otherwise, it would confuse the event recording system.
 
 
 January 27, 2025
-[] UI bugs
+[] UI bugs - finally figured out why I was getting so many issues. The tailwind config didn't have the right path to the components folder. It's been fixed!
     VOTER
     [D] I don't like the Select/Unselect UI for voters. The colors are not consistent with the rest of the app.
     [D] The hamburger menu is not sticking to the top of the screen, need to fix that
@@ -104,10 +104,13 @@ January 27, 2025
         [D] Overall UI look and feel is polished.
 
         CANDIDATES
-        [] Idk why but the Candidate page UI changed. The title colors are different, the colors of the buttons are different, the font is different, the layout is different.
+        [D] Idk why but the Candidate page UI changed. The title colors are different, the colors of the buttons are different, the font is different, the layout is different.
 
     PAYMENTS
         [] The payments buttons and whole page UI has been finalized. Need to test if the payment is being recorded correctly.
+
+    MODAL
+    [] Standardize the modal UI across the app. It's very inconsistent.
 -----------------------------------------------------------------------------------------------------------------------------------------------
 
 [] Build App for Testing
