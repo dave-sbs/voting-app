@@ -30,8 +30,8 @@ interface VotingContextProps {
 
   //Actions
   fetchCandidates: () => Promise<void>;
-  fetchVoters: () => Promise<void>;
-  fetchCheckedIn: () => Promise<void>;
+  fetchVoters: () => Promise<Voter[] | null>;
+  fetchCheckedIn: () => Promise<Voter[] | null>;
   checkInVoter: (creds: CheckInCredentials) => Promise<void>;
   selectCandidate: (candidate: Candidate) => void;
   deselectCandidate: (candidate: Candidate) => void;
@@ -48,8 +48,8 @@ const VotingContext = createContext<VotingContextProps>({
   isLoading: false,
   error: null,
   fetchCandidates: async () => undefined,
-  fetchVoters: async () => undefined,
-  fetchCheckedIn: async () => undefined,
+  fetchVoters: async () => null,
+  fetchCheckedIn: async () => null,
   checkInVoter: async () => undefined,
   selectCandidate: () => {},
   deselectCandidate: () => {},
@@ -102,9 +102,11 @@ export const VotingProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       const result = await getAllVoters();
       console.log(result);
       setUniqueVotes(result);
+      return result;
     } catch (err: any) {
       console.error(err);
       setError(err.message || 'Failed to fetch voters');
+      return null;
     } finally {
       setIsLoading(false);
     }
@@ -117,9 +119,11 @@ export const VotingProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       const checkIns = await getAllCheckIns();
       console.log(checkIns);
       setCheckedInVoters(checkIns);
+      return checkIns;
     } catch (err: any) {
       console.error(err);
       setError(err.message || 'Failed to fetch checked-in voters');
+      return null;
     } finally {
       setIsLoading(false);
     }

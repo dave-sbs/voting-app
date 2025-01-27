@@ -14,7 +14,7 @@ import { clearActiveCandidates } from './candidateAPI';
 
 export interface Event {
     event_id: string;
-    event_date?: Date;            
+    event_date: Date;            
     event_name: string;
     created_by: string;
     is_open: boolean;

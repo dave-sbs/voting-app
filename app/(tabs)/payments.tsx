@@ -34,7 +34,7 @@ const RecordPayments: React.FC<RecordPaymentsProps> = () => {
   const [errorModalVisible, setErrorModalVisible] = useState(false);
   const [errorModalMessage, setErrorModalMessage] = useState('');
 
-  const style = `.m-signature-pad {box-shadow: none; border: none; }
+  const style = `.m-signature-pad {box-shadow: none; width: 100%; height: 100%; margin: 0px; border-radius: 0px;}
               .m-signature-pad--body {border: none;}
               .m-signature-pad--footer {display: none; margin: 0px;}
               `;
@@ -152,8 +152,7 @@ const RecordPayments: React.FC<RecordPaymentsProps> = () => {
       />
 
       <Text className='text-lg font-medium mb-2'>Signature *</Text>
-
-        <View className="border-[1.75px] border-gray-300 rounded-md bg-white w-full h-[400px] mb-4">
+        <View className="border-[1.75px] border-gray-300 rounded-md w-full h-[300px] mb-2">
          <Signature
             ref={signatureRef}
             descriptionText="Sign here"
@@ -163,18 +162,18 @@ const RecordPayments: React.FC<RecordPaymentsProps> = () => {
 
         <TouchableOpacity 
         onPress={handleClear}
-        className='mb-4 p-4 bg-blue-600 rounded-md w-[150px]'
+        className='mb-6 p-2 items-center bg-blue-600 rounded-md w-[150px]'
         >
-            <Text className='text-white font-bold'>Clear Signature</Text>
+            <Text className='text-white text-lg font-bold'>Clear Signature</Text>
         </TouchableOpacity>
       {isLoading ? (
         <ActivityIndicator size="large" color="#000" />
       ) : (
         <TouchableOpacity
           onPress={handleSubmit}
-          className="bg-green-500 p-3 items-center"
+          className="bg-green-700 py-3 items-center rounded-md"
         >
-          <Text className="text-white font-bold">Submit</Text>
+          <Text className="text-white text-xl font-bold">Submit</Text>
         </TouchableOpacity>
       )}
 

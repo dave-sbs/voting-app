@@ -126,8 +126,8 @@ const VoterScreen = () => {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView className="h-full bg-white">
         <ScrollView>
+          <HamburgerMenu sideChoice="right" />
           <CardHeader title="Voting Page" />
-
           <Text className="pt-8 pb-2 px-12 text-2xl font-bold text-red-500">Reminders:</Text>
           <View className="border-l-4 ml-12 px-2">
             <Text className="text-2xl text-black font-normal">
@@ -139,9 +139,6 @@ const VoterScreen = () => {
           <Text className="pt-4 pb-6 px-12 text-2xl text-black font-normal">
             Press the button under the corresponding candidate of your choice.
           </Text>
-
-          <HamburgerMenu sideChoice="right" />
-
           <View className="w-full px-12">
             {/* Display any global error from the context (if desired) */}
             {error && (
@@ -176,7 +173,7 @@ const VoterScreen = () => {
                       <CandidateButton
                         title={isSelected ? 'Candidate Selected' : 'Select Candidate'}
                         handlePress={() => handleToggleCandidate(item)}
-                        color={isSelected ? 'bg-orange-400' : 'bg-black'}
+                        color={isSelected ? 'bg-green-700' : 'bg-gray-800'}
                         otherProps="mb-4"
                         isLoading={false}
                       />
