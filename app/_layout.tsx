@@ -6,6 +6,7 @@ import { VotingProvider } from './(context)/VotingContext';
 import { VoteChoiceProvider } from './(context)/VoteChoiceContext';
 import { CandidateProvider } from './(context)/CandidateContext';
 import { EventProvider } from './(context)/EventContext';
+import { MemberProvider } from './(context)/MemberContext';
 
 const RootLayout = () => {
   return (
@@ -13,6 +14,7 @@ const RootLayout = () => {
     <CandidateProvider>
     <VotingProvider>
     <EventProvider>
+    <MemberProvider>
     <VoteChoiceProvider>
       <Stack>
         <Stack.Screen
@@ -24,6 +26,7 @@ const RootLayout = () => {
         <Slot />
       </Stack>
     </VoteChoiceProvider>
+    </MemberProvider>
     </EventProvider>
     </VotingProvider>
     </CandidateProvider>

@@ -31,12 +31,14 @@ const CandidateList = () => {
         data={candidates}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <View className="px-4 flex-row items-center justify-between mb-2">
-            <Text className="text-lg font-semibold">{item.name}</Text>
-            <TouchableOpacity onPress={() => handleRemoveCandidate(item)}>
-              <Text className="text-md text-red-500">Remove</Text>
-            </TouchableOpacity>
-          </View>
+          <View className="pl-4 pr-80 flex-row items-center justify-between mb-2">
+            <Text className="text-xl font-semibold">{item.name}</Text>
+              <TouchableOpacity 
+              onPress={() => handleRemoveCandidate(item)
+              }>
+                <Text className="text-xl font-semibold text-red-500 mr-80">Remove</Text>
+              </TouchableOpacity>
+            </View>
         )}
       />
     </View>

@@ -47,9 +47,9 @@ const MinimumChoiceInput = () => {
             <TouchableOpacity
                     onPress={handleSubmit}
                     activeOpacity={0.8}
-                    className={`bg-green-800 p-1 rounded-md h-[40px] w-[240px] justify-center items-center mt-3 mb-4`}
+                    className={`bg-green-800 p-2 rounded-md h-[40px] w-[240px] justify-center items-center mt-3 mb-4`}
                 >
-                <Text className='text-orange-500 font-semibold text-lg'>
+                <Text className='text-orange-400 font-semibold text-lg'>
                     Save Changes
                 </Text>
             </TouchableOpacity>

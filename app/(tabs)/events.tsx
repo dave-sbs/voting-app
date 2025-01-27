@@ -42,21 +42,18 @@ import {
   Text,
   TouchableOpacity,
   Modal,
-  Alert
+  Alert,
+  ActivityIndicator
 } from 'react-native';
 import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
 import CardHeader from '@/components/CardHeader';
-
 import { useRouter } from 'expo-router';
-
 import { 
     Event,
     getLastGeneralMeetingEvent,
     getLastBoardMeetingEvent,
 } from '@/scripts/eventsAPI';
-
 import { useEventContext } from '@/app/(context)/EventContext';
 import { useCandidateContext } from '@/app/(context)/CandidateContext';
 import { useVotingContext } from '../(context)/VotingContext';
@@ -84,6 +81,12 @@ const EventScreen = () => {
     const [modalType, setModalType] = useState<'create' | 'join' | 'terminate'>('create');
     const [openGeneralMeeting, setOpenGeneralMeeting] = useState<Event | null>(null);
     const [openBoardMeeting, setOpenBoardMeeting] = useState<Event | null>(null);
+    const [statusMessage, setStatusMessage] = useState('');
+    
+    // Add state for feedback modal
+    const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+    const [feedbackMessage, setFeedbackMessage] = useState('');
+    const [feedbackType, setFeedbackType] = useState<'success' | 'error'>('success');
 
     const router = useRouter();
 
@@ -104,26 +107,35 @@ const EventScreen = () => {
     const handleCreateEvent = async (eventType: 'GENERAL-MEETING' | 'BOARD-MEETING') => {
         try {
             const newEvent = await addEvent({ event_id: '', event_name: eventType, event_date: new Date(), created_by: 'Admin', is_open: true });
-
             if (!newEvent) {
                 throw new Error('Failed to create event');
             }
-
             await checkInEvent(newEvent);
+            setFeedbackType('success');
+            setFeedbackMessage(`Successfully created ${eventType}`);
+            setShowFeedbackModal(true);
             setIsModalVisible(false);
-            router.push('/admin');
+            setTimeout(() => {
+                setShowFeedbackModal(false);
+                router.push('/admin');
+            }, 2000);
         } catch (error) {
-            console.error(`Failed to create ${eventType}:`, error);
+            setFeedbackType('error');
+            setFeedbackMessage(`Failed to create ${eventType}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            setShowFeedbackModal(true);
         }
     };
 
     const handleJoinEvent = async (event: Event) => {
         try {
             await checkInEvent(event);
+            setStatusMessage(`Successfully joined ${event.event_name}`);
+            setTimeout(() => {
             setIsModalVisible(false);
             router.push('/admin');
+            }, 2000);
         } catch (error) {
-            console.error(`Failed to join ${event.event_name}:`, error);
+            setStatusMessage(`Failed to join ${event.event_name}: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
     };
 
@@ -161,20 +173,17 @@ const EventScreen = () => {
             // Terminate Event
             await closeEvent(event);
             setIsModalVisible(false);
-            console.log('Event terminated and data exported successfully.');
-            
-            // Show success message
-            Alert.alert(
-                'Success',
-                'Event terminated and data exported to Google Drive successfully.',
-                [{ text: 'OK', onPress: () => router.push('/') }]
-            );
+            setFeedbackType('success');
+            setFeedbackMessage(`Successfully terminated ${event.event_name}`);
+            setShowFeedbackModal(true);
+            setTimeout(() => {
+                setShowFeedbackModal(false);
+                router.push('/');
+            }, 2000);
         } catch (error) {
-            console.error('Error terminating event:', error);
-            Alert.alert(
-                'Error',
-                `Failed to terminate event: ${error instanceof Error ? error.message : 'Unknown error'}`
-            );
+            setFeedbackType('error');
+            setFeedbackMessage(`Failed to terminate event: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            setShowFeedbackModal(true);
         } finally {
             setDriveLoading(false);
         }
@@ -183,33 +192,36 @@ const EventScreen = () => {
   return (
   <GestureHandlerRootView style={{ flex: 1 }}>
     <SafeAreaView className="h-full justify-center bg-white">
-      <ScrollView className="p-6">
-        <CardHeader title="Meetings" />
-        <View className="ml-4 mt-2">
+      <ScrollView className="py-6">
+        <CardHeader title="Meetings"/>
+        <View className="ml-4 mt-6">
           <TouchableOpacity
-            className="rounded-lg p-4 border px-6 border-gray-400 w-[500px] mb-4"
+            className={`rounded-lg p-4 border px-6 border-gray-400 w-[500px] mb-4 ${isLoading ? 'opacity-50' : ''}`}
             onPress={() => {
               setModalType('create')
               setIsModalVisible(true)
             }}
+            disabled={isLoading}
           >
             <Text className="font-semibold text-2xl">Create Meeting</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            className="rounded-lg p-4 border px-6 border-gray-400 w-[500px] mb-4"
+            className={`rounded-lg p-4 border px-6 border-gray-400 w-[500px] mb-4 ${isLoading ? 'opacity-50' : ''}`}
             onPress={() => {
               setModalType('join')
               setIsModalVisible(true)
             }}
+            disabled={isLoading}
           >
             <Text className="font-semibold text-2xl">Join Meeting</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            className="rounded-lg p-4 border px-6 border-gray-400 w-[500px] mb-4"
+            className={`rounded-lg p-4 border px-6 border-gray-400 w-[500px] mb-4 ${isLoading ? 'opacity-50' : ''}`}
             onPress={() => {
               setModalType('terminate')
               setIsModalVisible(true)
             }}
+            disabled={isLoading}
           >
             <Text className="font-semibold text-2xl">Terminate Meeting</Text>
           </TouchableOpacity>
@@ -217,15 +229,25 @@ const EventScreen = () => {
         <Modal visible={isModalVisible} animationType="fade" transparent={true}>
           <View className="flex-1 justify-center items-center bg-black/50">
             <View className="bg-white p-6 rounded-xl w-5/6 max-w-md border border-gray-100">
+              {error && (
+                <View className="bg-red-100 border border-red-400 rounded-lg p-3 mb-4">
+                  <Text className="text-red-700">{error}</Text>
+                </View>
+              )}
               {modalType === 'create' && (
                 <>
                   <Text className="text-xl font-semibold mb-4 text-gray-800">Create Meeting</Text>
                   {!openGeneralMeeting && (
                     <TouchableOpacity
-                      className="rounded-lg bg-green-700 p-3 px-5 mb-4 border border-gray-600"
+                      className={`rounded-lg bg-green-700 p-3 px-5 mb-4 border-0.5 border-gray-100 ${isLoading ? 'opacity-50' : ''}`}
                       onPress={() => handleCreateEvent('GENERAL-MEETING')}
+                      disabled={isLoading}
                     >
-                      <Text className="text-gray-200 font-semibold text-xl">Create General Meeting</Text>
+                      {isLoading ? (
+                        <ActivityIndicator color="#fff" />
+                      ) : (
+                        <Text className="text-gray-200 font-semibold text-xl">Create General Meeting</Text>
+                      )}
                     </TouchableOpacity>
                   )}
                   {openGeneralMeeting && (
@@ -235,10 +257,15 @@ const EventScreen = () => {
                   )}
                   {!openBoardMeeting && (
                     <TouchableOpacity
-                      className="rounded-lg bg-green-700 p-3 px-5 mb-4 border-0.5 border-gray-100"
+                      className={`rounded-lg bg-green-700 p-3 px-5 mb-4 border-0.5 border-gray-100 ${isLoading ? 'opacity-50' : ''}`}
                       onPress={() => handleCreateEvent('BOARD-MEETING')}
+                      disabled={isLoading}
                     >
-                      <Text className="text-gray-200 font-semibold text-xl">Create Board Meeting</Text>
+                      {isLoading ? (
+                        <ActivityIndicator color="#fff" />
+                      ) : (
+                        <Text className="text-gray-200 font-semibold text-xl">Create Board Meeting</Text>
+                      )}
                     </TouchableOpacity>
                   )}
                   {openBoardMeeting && (
@@ -253,18 +280,28 @@ const EventScreen = () => {
                   <Text className="text-xl font-semibold mb-4 text-gray-800">Join Meeting</Text>
                   {openGeneralMeeting && (
                     <TouchableOpacity
-                      className="bg-green-700 rounded-lg p-3 px-5 mb-4"
+                      className={`bg-green-700 rounded-lg p-3 px-5 mb-4 ${isLoading ? 'opacity-50' : ''}`}
                       onPress={() => handleJoinEvent(openGeneralMeeting)}
+                      disabled={isLoading}
                     >
-                      <Text className="text-gray-200 font-semibold text-xl">Join General Meeting</Text>
+                      {isLoading ? (
+                        <ActivityIndicator color="#fff" />
+                      ) : (
+                        <Text className="text-gray-200 font-semibold text-xl">Join General Meeting</Text>
+                      )}
                     </TouchableOpacity>
                   )}
                   {openBoardMeeting && (
                     <TouchableOpacity
-                      className="bg-green-700 rounded-lg p-3 px-5 mb-4"
+                      className={`bg-green-700 rounded-lg p-3 px-5 mb-4 ${isLoading ? 'opacity-50' : ''}`}
                       onPress={() => handleJoinEvent(openBoardMeeting)}
+                      disabled={isLoading}
                     >
-                      <Text className="text-gray-200 font-semibold text-xl">Join Board Meeting</Text>
+                      {isLoading ? (
+                        <ActivityIndicator color="#fff" />
+                      ) : (
+                        <Text className="text-gray-200 font-semibold text-xl">Join Board Meeting</Text>
+                      )}
                     </TouchableOpacity>
                   )}
                   {!openGeneralMeeting && !openBoardMeeting && (
@@ -279,18 +316,28 @@ const EventScreen = () => {
                   <Text className="text-xl font-semibold mb-4 text-gray-800">Terminate Meeting</Text>
                   {openGeneralMeeting && (
                     <TouchableOpacity
-                      className="bg-green-700 rounded-lg p-3 mb-4 border border-gray-100"
+                      className={`bg-green-700 rounded-lg p-3 mb-4 border border-gray-100 ${isLoading || driveLoading ? 'opacity-50' : ''}`}
                       onPress={() => handleTerminateEvent(openGeneralMeeting)}
+                      disabled={isLoading || driveLoading}
                     >
-                      <Text className="text-gray-200 font-semibold text-xl">Terminate General Meeting</Text>
+                      {(isLoading || driveLoading) ? (
+                        <ActivityIndicator color="#fff" />
+                      ) : (
+                        <Text className="text-gray-200 font-semibold text-xl">Terminate General Meeting</Text>
+                      )}
                     </TouchableOpacity>
                   )}
                   {openBoardMeeting && (
                     <TouchableOpacity
-                      className="bg-green-700 rounded-lg p-3 mb-4 border border-gray-100"
+                      className={`bg-green-700 rounded-lg p-3 mb-4 border border-gray-100 ${isLoading || driveLoading ? 'opacity-50' : ''}`}
                       onPress={() => handleTerminateEvent(openBoardMeeting)}
+                      disabled={isLoading || driveLoading}
                     >
-                      <Text className="text-gray-200 font-semibold text-xl">Terminate Board Meeting</Text>
+                      {(isLoading || driveLoading) ? (
+                        <ActivityIndicator color="#fff" />
+                      ) : (
+                        <Text className="text-gray-200 font-semibold text-xl">Terminate Board Meeting</Text>
+                      )}
                     </TouchableOpacity>
                   )}
                   {!openGeneralMeeting && !openBoardMeeting && (
@@ -300,19 +347,44 @@ const EventScreen = () => {
                   )}
                 </>
               )}
+              {statusMessage && (
+                <View className={`p-3 rounded-lg mb-4 ${statusMessage.includes('Successfully') ? 'bg-green-100' : 'bg-red-100'}`}>
+                  <Text className={statusMessage.includes('Successfully') ? 'text-green-700' : 'text-red-700'}>{statusMessage}</Text>
+                </View>
+              )}
               <TouchableOpacity
-                className="mt-2 bg-gray-100 rounded-lg p-3 border border-gray-700"
-                onPress={() => setIsModalVisible(false)}
+                className="bg-gray-200 rounded-lg p-3"
+                onPress={() => {
+                  setIsModalVisible(false)
+                  setStatusMessage('')
+                }}
+                disabled={isLoading || driveLoading}
               >
-                <Text className="text-gray-600 font-semibold text-xl text-center">Cancel</Text>
+                <Text className="text-center text-gray-800 font-semibold">Close</Text>
               </TouchableOpacity>
             </View>
           </View>
         </Modal>
+        
+        {/* Feedback Modal */}
+        <Modal visible={showFeedbackModal} animationType="fade" transparent={true}>
+          <View className="flex-1 justify-center items-center bg-black/50">
+            <View className={`bg-white p-6 rounded-xl w-5/6 max-w-md border ${feedbackType === 'success' ? 'border-green-500' : 'border-red-500'}`}>
+              <View className={`${feedbackType === 'success' ? 'bg-green-100' : 'bg-red-100'} p-4 rounded-lg`}>
+                <Text className={`text-xl font-semibold ${feedbackType === 'success' ? 'text-green-700' : 'text-red-700'}`}>
+                  {feedbackType === 'success' ? '✓ Success' : '✕ Error'}
+                </Text>
+                <Text className={`mt-2 ${feedbackType === 'success' ? 'text-green-600' : 'text-red-600'}`}>
+                  {feedbackMessage}
+                </Text>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </ScrollView>
-    </SafeAreaView>
-  </GestureHandlerRootView>
-);
+      </SafeAreaView>
+    </GestureHandlerRootView>
+  );
 }
 
 export default EventScreen;

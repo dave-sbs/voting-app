@@ -74,18 +74,13 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({ children }
     const addCandidate = useCallback(async (candidate: Candidate) => {
         setIsLoading(true);
         setError(null);
-        console.log("START")
         try {
-            console.log("ADDING CANDIDATE")
             await insertNewCandidate(candidate);
-            console.log("INSERTION COMPOLETED")
             await fetchCandidates();
         } catch (err: any) {
-            console.log("NOT SUCCESSFUL")
-            console.error(err);
-            setError(err.message || 'Failed to add candidates')
+            setError(err.message);
+            throw err; // Re-throw to let the form handle the error UI
         } finally {
-            console.log("COMPLETED ADDING CANDIDATE")
             setIsLoading(false);
         }
     }, [fetchCandidates]);

@@ -47,8 +47,7 @@ export async function insertNewCandidate(candidate: Candidate) {
     .single();
 
     if (existingCandidateError || !existingCandidate){
-        console.error(`Error fetching existing candidate (name: ${candidate.name})`)
-        throw existingCandidateError;
+        throw new Error(`Member "${candidate.name}" not found in organization. Please check the name and try again.`);
     }
 
     // Get the member_id
@@ -62,25 +61,23 @@ export async function insertNewCandidate(candidate: Candidate) {
     .single();
 
     if (candidateExists.data){
-        console.error('Candidate already exists in the database.')
-        return;
-    } else {
-        const { data: insertData, error: insertError } = await supabase
-        .from('active_candidates')
-        .insert([
-            {
-                member_id: candidateMemberId,
-                member_name: candidate.name,
-                profile_picture: candidate.profile_picture,
-                vote_count: candidate.vote_count,
-            },
-        ]);
+        throw new Error(`${candidate.name} is already registered as a candidate.`);
+    }
 
-        if (insertError) {
-            console.error('Error adding candidate:', insertError);
-            throw insertError;
-        }
-    };
+    const { data: insertData, error: insertError } = await supabase
+    .from('active_candidates')
+    .insert([
+        {
+            member_id: candidateMemberId,
+            member_name: candidate.name,
+            profile_picture: candidate.profile_picture,
+            vote_count: candidate.vote_count,
+        },
+    ]);
+
+    if (insertError) {
+        throw new Error(`Failed to add candidate: ${insertError.message}`);
+    }
 }
 
 

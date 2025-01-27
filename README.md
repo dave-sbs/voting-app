@@ -1,6 +1,8 @@
-# Voting Project
+## 7-Eleven Administrative App
 
-A modern, mobile-first voting application built with React Native and Expo, designed to streamline the voting process with secure authentication, real-time updates, and payment tracking capabilities.
+While I'm cleaning up my design system, I still want to share my experiments and learning process with the designs. https://www.figma.com/design/FRmtJPPoAjxVDT2UkECtIR/Taye-App-Design?node-id=0-1&p=f&t=p2updOWNKp6zJrub-0
+
+A modern, mobile-first voting application built with React Native and Expo, designed to streamline the voting process with secure authentication, real-time updates, and payment tracking capabilities. What started as a simple voting app has evolved into a product that automates a lot more of the tedious tasks the board members used to carry out. 
 
 ## Features
 
@@ -39,43 +41,6 @@ voting-project/
 └── assets/               # Static assets (images, fonts, etc.)
 ```
 
-## Getting Started
-
-1. **Prerequisites**
-   - Node.js (v14 or higher)
-   - npm or yarn
-   - Expo CLI
-   - iOS Simulator or Android Emulator (for mobile development)
-
-2. **Installation**
-   ```bash
-   # Clone the repository
-   git clone [repository-url]
-
-   # Install dependencies
-   npm install
-
-   # Start the development server
-   npm start
-   ```
-
-3. **Environment Setup**
-   - Create a `.env` file in the root directory
-   - Configure necessary environment variables
-
-## Running the App
-
-- **iOS**: `npm run ios`
-- **Android**: `npm run android`
-- **Web**: `npm run web`
-
-## Testing
-
-Run the test suite:
-```bash
-npm test
-```
-
 ## Project Dependencies
 
 Key dependencies include:
@@ -85,15 +50,3 @@ Key dependencies include:
 - @supabase/supabase-js
 - nativewind
 - typescript
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
