@@ -1,50 +1,99 @@
-# Welcome to your Expo app 👋
+# Voting Project
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A modern, mobile-first voting application built with React Native and Expo, designed to streamline the voting process with secure authentication, real-time updates, and payment tracking capabilities.
 
-## Get started
+## Features
 
-1. Install dependencies
+- Secure user authentication
+- Real-time voting system
+- Payment tracking and management
+- Mobile-responsive design
+- Cross-platform compatibility (iOS, Android)
+- Signature capture functionality
+- Offline data persistence
 
-   ```bash
-   npm install
-   ```
+## Tech Stack
 
-2. Start the app
+- **Frontend Framework**: React Native with Expo
+- **Navigation**: Expo Router
+- **State Management**: React Hooks & Context
+- **Database**: Supabase
+- **Authentication**: Expo Auth Session
+- **Styling**: NativeWind (TailwindCSS for React Native)
+- **Testing**: Jest
+- **Type Safety**: TypeScript
 
-   ```bash
-    npx expo start
-   ```
+## Project Structure
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+voting-project/
+├── app/                    # Main application screens and navigation
+│   └── (tabs)/            # Tab-based navigation screens
+├── components/            # Reusable UI components
+├── constants/             # App-wide constants and configurations
+├── hooks/                 # Custom React hooks
+├── scripts/              # Utility scripts and data
+├── services/             # API and external service integrations
+├── server/               # Backend server configuration
+├── tests/                # Test suites
+└── assets/               # Static assets (images, fonts, etc.)
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Getting Started
 
-## Learn more
+1. **Prerequisites**
+   - Node.js (v14 or higher)
+   - npm or yarn
+   - Expo CLI
+   - iOS Simulator or Android Emulator (for mobile development)
 
-To learn more about developing your project with Expo, look at the following resources:
+2. **Installation**
+   ```bash
+   # Clone the repository
+   git clone [repository-url]
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+   # Install dependencies
+   npm install
 
-## Join the community
+   # Start the development server
+   npm start
+   ```
 
-Join our community of developers creating universal apps.
+3. **Environment Setup**
+   - Create a `.env` file in the root directory
+   - Configure necessary environment variables
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Running the App
+
+- **iOS**: `npm run ios`
+- **Android**: `npm run android`
+- **Web**: `npm run web`
+
+## Testing
+
+Run the test suite:
+```bash
+npm test
+```
+
+## Project Dependencies
+
+Key dependencies include:
+- expo
+- react-native
+- @react-navigation
+- @supabase/supabase-js
+- nativewind
+- typescript
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

@@ -13,7 +13,9 @@ const App = () => {
 
   return (
     <SafeAreaView className='flex-1 h-full bg-white'>
-      <HamburgerMenu sideChoice='left'/>
+      <View className='mt-12 ml-2'>
+        <HamburgerMenu sideChoice='left'/>
+      </View>
       <View className='items-center p-8 w-full h-1/4'>
           <Image source={require('../assets/images/7Eleven.png')} className='w-2/3 h-2/3' resizeMode='contain' />
       </View>

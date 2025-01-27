@@ -30,7 +30,7 @@ interface CandidateContextProps {
     addCandidate: (candidate: Candidate) => Promise<void>;
     deleteCandidate: (candidate: Candidate) => Promise<void>;
     clearCandidates: () => Promise<void>;
-    summarizeData: () => Promise<void>;
+    summarizeData: () => Promise<SummaryProps[] | null>;
 }
 
 const CandidateContext = createContext<CandidateContextProps>({
@@ -42,7 +42,7 @@ const CandidateContext = createContext<CandidateContextProps>({
     addCandidate: async () => undefined,
     deleteCandidate:async () => undefined,
     clearCandidates:async () => undefined,
-    summarizeData:async () => undefined
+    summarizeData:async () => null,
 });
 
 
@@ -123,15 +123,14 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({ children }
         // LOGGING THE SUMMARY PROCESS
         console.log("SUMMARIZING DATA");
         console.log(activeCandidates);
-        //
-        
+
         const summarizedData = activeCandidates.map(candidate => ({
             name: candidate.name,
             vote_count: candidate.vote_count
         }));
 
         setSummary(summarizedData);
-        console.log('Summarized data:', summarizedData);
+        return summarizedData;
     }, []);
 
     useEffect(() => {
