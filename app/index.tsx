@@ -13,7 +13,7 @@ const App = () => {
 
   return (
     <SafeAreaView className='flex-1 h-full bg-white'>
-      <View className='mt-12 ml-2'>
+      <View className='mt-6 ml-2 mb-8'>
         <HamburgerMenu sideChoice='left'/>
       </View>
       <View className='items-center p-8 w-full h-1/4'>
@@ -21,7 +21,7 @@ const App = () => {
       </View>
       <View className="items-center justify-center">
         <View className='justify-center items-center'>
-          <Text className="text-5xl font-bold mt-16 mb-4 text-orange-400">Welcome to the Voting App</Text>
+          <Text className="text-5xl font-bold mt-12 mb-4 text-orange-500">Welcome to the Voting App</Text>
           <View className='mt-20'>
             <TouchableOpacity
               onPress={() => navigation.navigate('(auth)', { screen: 'CheckIn' })}

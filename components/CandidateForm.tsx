@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Image, TouchableOpacity, Text, Modal } from 'react-native';
+import { View, TextInput, Image, TouchableOpacity, Text, Modal, ActivityIndicator } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
 import CardHeader from './CardHeader';
@@ -114,11 +114,11 @@ const CandidateForm = () => {
           <Text className="text-xl font-bold pb-2 pl-4">{name}</Text>
         </View>
 
-        <View className={`relative ${name ? 'pt-12' : 'pt-2'}`}>
+        <View className={`relative ${name ? 'pt-4' : 'pt-2'}`}>
           <TextInput
-            className="bg-gray-50 w-[50%] border-[1.75px] border-gray-300 rounded-md text-lg pt-3 mb-1 px-2 pb-3 items-center justify-center"
+            className="w-[50%] border-[1.25px] border-gray-200 rounded-md text-md mb-1 p-3 items-center justify-center"
             placeholder="Enter candidate name"
-            placeholderTextColor="#a1a1a1"
+            placeholderTextColor="#6b7280"
             value={name}
             onChangeText={(text) => {
               console.log('Name changed:', text);
@@ -145,8 +145,8 @@ const CandidateForm = () => {
               isLoading ? 'opacity-50' : ''
             }`}
           >
-            <Text className="text-orange-400 text-lg font-semibold">
-              {isLoading ? 'Adding Candidate...' : 'Add Candidate'}
+            <Text className="text-orange-500 text-lg font-semibold">
+              {isLoading ? <ActivityIndicator size="small" color="#475569" /> : 'Add Candidate'}
             </Text>
           </TouchableOpacity>
         </View>
