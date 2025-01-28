@@ -137,7 +137,7 @@ const CheckInScreen = () => {
               onPress={() => setIsErrorModalVisible(false)}
               className="bg-green-800 py-2 px-4 rounded-md self-end"
             >
-              <Text className="text-orange-400 font-bold">OK</Text>
+              <Text className="text-orange-500 font-bold">OK</Text>
             </TouchableOpacity>
           </View>
         </View>

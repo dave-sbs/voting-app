@@ -15,6 +15,7 @@ import {
   createPayment,
   createEvent
 } from '@/scripts/paymentRecordsAPI'; // adjust the path to match your setup
+import CardHeader from '@/components/CardHeader';
 
 interface RecordPaymentsProps {}
 
@@ -104,101 +105,111 @@ const RecordPayments: React.FC<RecordPaymentsProps> = () => {
   };
 
   return (
-    <View className="flex-1 p-4 bg-white">
-      <Text className="text-2xl font-bold mb-2">
-        Record Payments
-      </Text>
-
-      <Text className='text-lg font-medium mb-2'>Transaction Date</Text>
-      <TextInput
-        className="w-[500px] border-[1.75px] border-gray-300 rounded-md mb-3 text-lg pt-3 pb-3 px-2 text-green-700 font-semibold"
-        placeholder="YYYY-MM-DD"
-        placeholderTextColor="#a1a1a1"
-        value={creationDate}
-        onChangeText={setCreationDate}
-      />
-
-      <Text className='text-lg font-medium mb-2'>Store Number *</Text>
-      <TextInput
-        className="w-[500px] border-[1.75px] border-gray-300 rounded-md mb-3 text-lg pt-3 pb-3 px-2"
-        placeholder='Enter Store Number'
-        placeholderTextColor="#a1a1a1"
-        keyboardType="numeric"
-        value={storeNumber}
-        onChangeText={setStoreNumber}
-      />
-
-      <Text className='text-lg font-medium mb-2'>Payment Amount *</Text>
-      <TextInput
-        className="w-[500px] border-[1.75px] border-gray-300 rounded-md mb-3 text-lg pt-3 pb-3 px-2"
-        placeholder='Enter Payment Amount'
-        placeholderTextColor="#a1a1a1"
-        keyboardType="numeric"
-        value={paymentAmount}
-        onChangeText={setPaymentAmount}
-      />
-
-      <Text className='text-lg font-medium mb-2'>Additional Comments</Text>
-      <TextInput
-        className="w-[750px] border-[1.75px] border-gray-300 rounded-md mb-3 text-lg pt-2 pb-3 px-2"
-        placeholder='Enter Additional Comments'
-        placeholderTextColor="#a1a1a1"
-        value={additionalComments}
-        onChangeText={setAdditionalComments}
-        multiline
-        numberOfLines={5}
-        textAlignVertical="top"
-        style={{ height: 'auto', minHeight: 100 }}
-      />
-
-      <Text className='text-lg font-medium mb-2'>Signature *</Text>
-        <View className="border-[1.75px] border-gray-300 rounded-md w-full h-[300px] mb-2">
-         <Signature
-            ref={signatureRef}
-            descriptionText="Sign here"
-            webStyle={style}
+    <View className='flex-1 bg-white'>
+      <CardHeader title="Record Payments" />
+      <View className="flex-col gap-4 p-4">
+        <View>
+          <Text className='text-lg font-medium mb-2'>Transaction Date</Text>
+          <TextInput
+            className="border-[1.25px] rounded-md border-gray-200 p-3 w-[400px] text-green-800 font-semibold"
+            placeholder="YYYY-MM-DD"
+            placeholderTextColor="#6b7280"
+            value={creationDate}
+            onChangeText={setCreationDate}
           />
         </View>
 
-        <TouchableOpacity 
-        onPress={handleClear}
-        className='mb-6 p-2 px-4 items-center bg-gray-200 rounded-md w-[200px] border-[1.25px] border-gray-800'>
-            <Text className='text-gray-800 text-lg font-semibold'>Clear Signature</Text>
-        </TouchableOpacity>
-      {isLoading ? (
-        <ActivityIndicator size="large" color="#000" />
-      ) : (
-        <TouchableOpacity
-          onPress={handleSubmit}
-          className="bg-green-700 py-3 items-center rounded-md"
-        >
-          <Text className="text-orange-500 text-xl font-semibold">Submit</Text>
-        </TouchableOpacity>
-      )}
+        <View>
+          <Text className='text-lg font-medium mb-2'>Store Number *</Text>
+          <TextInput
+            className="border-[1.25px] rounded-md border-gray-200 text-black p-3 w-[400px]"
+            placeholder='Enter Store Number'
+            placeholderTextColor="#6b7280"
+            keyboardType="numeric"
+            value={storeNumber}
+            onChangeText={setStoreNumber}
+          />
+        </View>
 
-      <Modal
-        visible={errorModalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setErrorModalVisible(false)}
-      >
-        <View className="flex-1 bg-black bg-opacity-50 justify-center">
-          <View className="m-5 bg-white rounded-lg p-4 shadow-md">
-            <Text className="text-lg font-bold mb-2.5">
-              Notice
-            </Text>
-            <ScrollView className="max-h-[300px]">
-              <Text className="text-gray-700">{errorModalMessage}</Text>
-            </ScrollView>
-            <TouchableOpacity
-              className="bg-green-500 p-2.5 items-center mt-4 rounded"
-              onPress={() => setErrorModalVisible(false)}
-            >
-              <Text className="text-white font-bold">OK</Text>
+        <View>
+          <Text className='text-lg font-medium mb-2'>Payment Amount *</Text>
+          <TextInput
+            className="border-[1.25px] rounded-md border-gray-200 text-black p-3 w-[400px]"
+            placeholder='Enter Payment Amount'
+            placeholderTextColor="#6b7280"
+            keyboardType="numeric"
+            value={paymentAmount}
+            onChangeText={setPaymentAmount}
+          />
+        </View>
+
+        <View>
+          <Text className='text-lg font-medium mb-2'>Additional Comments</Text>
+          <TextInput
+            className="border-[1.25px] rounded-md border-gray-200 text-black p-3 w-[600px]"
+            placeholder='Enter Additional Comments'
+            placeholderTextColor="#6b7280"
+            value={additionalComments}
+            onChangeText={setAdditionalComments}
+            multiline
+            numberOfLines={5}
+            textAlignVertical="top"
+            style={{ height: 'auto', minHeight: 100 }}
+          />
+        </View>
+
+        <View>
+          <Text className='text-lg font-medium mb-2'>Signature *</Text>
+            <View className="border-[0.25px] border-gray-200 rounded-md w-full h-[300px] mb-2">
+            <Signature
+                ref={signatureRef}
+                descriptionText="Sign here"
+                webStyle={style}
+              />
+            </View>
+
+            <TouchableOpacity 
+            onPress={handleClear}
+            className='mb-6 p-2 px-4 items-center bg-gray-200 rounded-md w-[200px] border-[1.25px] border-gray-700'>
+                <Text className='text-gray-800 text-lg font-semibold'>Clear Signature</Text>
             </TouchableOpacity>
           </View>
-        </View>
-      </Modal>
+
+        {isLoading ? (
+          <ActivityIndicator size="large" color="#475569" />
+        ) : (
+          <TouchableOpacity
+            onPress={handleSubmit}
+            className="bg-green-800 py-3 items-center rounded-md"
+          >
+            <Text className="text-orange-500 text-xl font-semibold">Submit</Text>
+          </TouchableOpacity>
+        )}
+
+        <Modal
+          visible={errorModalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => setErrorModalVisible(false)}
+        >
+          <View className="flex-1 bg-black bg-opacity-50 justify-center">
+            <View className="m-5 bg-white rounded-lg p-4 shadow-md">
+              <Text className="text-lg font-bold mb-2.5">
+                Notice
+              </Text>
+              <ScrollView className="max-h-[300px]">
+                <Text className="text-gray-700">{errorModalMessage}</Text>
+              </ScrollView>
+              <TouchableOpacity
+                className="bg-green-500 p-2.5 items-center mt-4 rounded"
+                onPress={() => setErrorModalVisible(false)}
+              >
+                <Text className="text-white font-bold">OK</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      </View>
     </View>
   );
 };

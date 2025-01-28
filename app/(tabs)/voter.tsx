@@ -173,7 +173,7 @@ const VoterScreen = () => {
                       <CandidateButton
                         title={isSelected ? 'Candidate Selected' : 'Select Candidate'}
                         handlePress={() => handleToggleCandidate(item)}
-                        color={isSelected ? 'bg-green-700' : 'bg-gray-800'}
+                        color={isSelected ? 'bg-green-800' : 'bg-gray-800'}
                         otherProps="mb-4"
                         isLoading={false}
                       />
@@ -217,7 +217,7 @@ const VoterScreen = () => {
                 onPress={() => setIsModalVisible(false)}
                 className="bg-green-800 py-2 px-4 rounded-md self-end"
               >
-                <Text className="text-orange-400 font-bold">OK</Text>
+                <Text className="text-orange-500 font-bold">OK</Text>
               </TouchableOpacity>
             </View>
           </View>

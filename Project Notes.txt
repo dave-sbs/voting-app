@@ -93,14 +93,14 @@ Other bugs:
 
 
 January 27, 2025
-[] UI bugs - finally figured out why I was getting so many issues. The tailwind config didn't have the right path to the components folder. It's been fixed!
+[D] UI bugs - finally figured out why I was getting so many issues. The tailwind config didn't have the right path to the components folder. It's been fixed!
     VOTER
     [D] I don't like the Select/Unselect UI for voters. The colors are not consistent with the rest of the app.
     [D] The hamburger menu is not sticking to the top of the screen, need to fix that
 
     ADMIN
         EVENTS
-        [] The events buttons need to utilize the isLoading and error states from the context file. Need to fix this.
+        [D] The events buttons need to utilize the isLoading and error states from the context file. Need to fix this.
         [D] Overall UI look and feel is polished.
 
         CANDIDATES

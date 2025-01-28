@@ -129,7 +129,6 @@ const EventScreen = () => {
     const handleJoinEvent = async (event: Event) => {
         try {
             await checkInEvent(event);
-            setStatusMessage(`Successfully joined ${event.event_name}`);
             setTimeout(() => {
             setIsModalVisible(false);
             router.push('/admin');
@@ -203,6 +202,8 @@ const EventScreen = () => {
             }}
             disabled={isLoading}
           >
+
+            {/* Choose Action Buttons */}
             <Text className="font-semibold text-2xl">Create Meeting</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -234,17 +235,19 @@ const EventScreen = () => {
                   <Text className="text-red-700">{error}</Text>
                 </View>
               )}
+
+              {/* Create Meeting Variants */}
               {modalType === 'create' && (
                 <>
                   <Text className="text-xl font-semibold mb-4 text-gray-800">Create Meeting</Text>
                   {!openGeneralMeeting && (
                     <TouchableOpacity
-                      className={`rounded-lg bg-green-700 p-3 px-5 mb-4 border-0.5 border-gray-100 ${isLoading ? 'opacity-50' : ''}`}
+                      className={`rounded-lg bg-green-800 p-3 px-5 mb-4 border-0.5 border-gray-100 ${isLoading ? 'opacity-50' : ''}`}
                       onPress={() => handleCreateEvent('GENERAL-MEETING')}
                       disabled={isLoading}
                     >
                       {isLoading ? (
-                        <ActivityIndicator color="#fff" />
+                        <ActivityIndicator color="#475569" />
                       ) : (
                         <Text className="text-gray-200 font-semibold text-xl">Create General Meeting</Text>
                       )}
@@ -257,12 +260,12 @@ const EventScreen = () => {
                   )}
                   {!openBoardMeeting && (
                     <TouchableOpacity
-                      className={`rounded-lg bg-green-700 p-3 px-5 mb-4 border-0.5 border-gray-100 ${isLoading ? 'opacity-50' : ''}`}
+                      className={`rounded-lg bg-green-800 p-3 px-5 mb-4 border-0.5 border-gray-100 ${isLoading ? 'opacity-50' : ''}`}
                       onPress={() => handleCreateEvent('BOARD-MEETING')}
                       disabled={isLoading}
                     >
                       {isLoading ? (
-                        <ActivityIndicator color="#fff" />
+                        <ActivityIndicator color="#475569" />
                       ) : (
                         <Text className="text-gray-200 font-semibold text-xl">Create Board Meeting</Text>
                       )}
@@ -275,17 +278,19 @@ const EventScreen = () => {
                   )}
                 </>
               )}
+
+              {/* Join Meeting Variants */}
               {modalType === 'join' && (
                 <>
                   <Text className="text-xl font-semibold mb-4 text-gray-800">Join Meeting</Text>
                   {openGeneralMeeting && (
                     <TouchableOpacity
-                      className={`bg-green-700 rounded-lg p-3 px-5 mb-4 ${isLoading ? 'opacity-50' : ''}`}
+                      className={`bg-green-800 rounded-lg p-3 px-5 mb-4 ${isLoading ? 'opacity-50' : ''}`}
                       onPress={() => handleJoinEvent(openGeneralMeeting)}
                       disabled={isLoading}
                     >
                       {isLoading ? (
-                        <ActivityIndicator color="#fff" />
+                        <ActivityIndicator color="#475569" />
                       ) : (
                         <Text className="text-gray-200 font-semibold text-xl">Join General Meeting</Text>
                       )}
@@ -293,12 +298,12 @@ const EventScreen = () => {
                   )}
                   {openBoardMeeting && (
                     <TouchableOpacity
-                      className={`bg-green-700 rounded-lg p-3 px-5 mb-4 ${isLoading ? 'opacity-50' : ''}`}
+                      className={`bg-green-800 rounded-lg p-3 px-5 mb-4 ${isLoading ? 'opacity-50' : ''}`}
                       onPress={() => handleJoinEvent(openBoardMeeting)}
                       disabled={isLoading}
                     >
                       {isLoading ? (
-                        <ActivityIndicator color="#fff" />
+                        <ActivityIndicator color="#475569" />
                       ) : (
                         <Text className="text-gray-200 font-semibold text-xl">Join Board Meeting</Text>
                       )}
@@ -311,17 +316,19 @@ const EventScreen = () => {
                   )}
                 </>
               )}
+
+              {/* Terminate Meeting Variants */}
               {modalType === 'terminate' && (
                 <>
                   <Text className="text-xl font-semibold mb-4 text-gray-800">Terminate Meeting</Text>
                   {openGeneralMeeting && (
                     <TouchableOpacity
-                      className={`bg-green-700 rounded-lg p-3 mb-4 border border-gray-100 ${isLoading || driveLoading ? 'opacity-50' : ''}`}
+                      className={`bg-green-800 rounded-lg p-3 mb-4 border border-gray-100 ${isLoading || driveLoading ? 'opacity-50' : ''}`}
                       onPress={() => handleTerminateEvent(openGeneralMeeting)}
                       disabled={isLoading || driveLoading}
                     >
                       {(isLoading || driveLoading) ? (
-                        <ActivityIndicator color="#fff" />
+                        <ActivityIndicator color="#475569" />
                       ) : (
                         <Text className="text-gray-200 font-semibold text-xl">Terminate General Meeting</Text>
                       )}
@@ -329,12 +336,12 @@ const EventScreen = () => {
                   )}
                   {openBoardMeeting && (
                     <TouchableOpacity
-                      className={`bg-green-700 rounded-lg p-3 mb-4 border border-gray-100 ${isLoading || driveLoading ? 'opacity-50' : ''}`}
+                      className={`bg-green-800 rounded-lg p-3 mb-4 border border-gray-100 ${isLoading || driveLoading ? 'opacity-50' : ''}`}
                       onPress={() => handleTerminateEvent(openBoardMeeting)}
                       disabled={isLoading || driveLoading}
                     >
                       {(isLoading || driveLoading) ? (
-                        <ActivityIndicator color="#fff" />
+                        <ActivityIndicator color="#475569" />
                       ) : (
                         <Text className="text-gray-200 font-semibold text-xl">Terminate Board Meeting</Text>
                       )}
@@ -349,7 +356,7 @@ const EventScreen = () => {
               )}
               {statusMessage && (
                 <View className={`p-3 rounded-lg mb-4 ${statusMessage.includes('Successfully') ? 'bg-green-100' : 'bg-red-100'}`}>
-                  <Text className={statusMessage.includes('Successfully') ? 'text-green-700' : 'text-red-700'}>{statusMessage}</Text>
+                  <Text className={statusMessage.includes('Successfully') ? 'text-green-800' : 'text-red-700'}>{statusMessage}</Text>
                 </View>
               )}
               <TouchableOpacity
@@ -371,7 +378,7 @@ const EventScreen = () => {
           <View className="flex-1 justify-center items-center bg-black/50">
             <View className={`bg-white p-6 rounded-xl w-5/6 max-w-md border ${feedbackType === 'success' ? 'border-green-500' : 'border-red-500'}`}>
               <View className={`${feedbackType === 'success' ? 'bg-green-100' : 'bg-red-100'} p-4 rounded-lg`}>
-                <Text className={`text-xl font-semibold ${feedbackType === 'success' ? 'text-green-700' : 'text-red-700'}`}>
+                <Text className={`text-xl font-semibold ${feedbackType === 'success' ? 'text-green-800' : 'text-red-700'}`}>
                   {feedbackType === 'success' ? '✓ Success' : '✕ Error'}
                 </Text>
                 <Text className={`mt-2 ${feedbackType === 'success' ? 'text-green-600' : 'text-red-600'}`}>
