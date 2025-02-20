@@ -12,7 +12,8 @@ import {
   CheckInCredentials,
   getNamefromId,
   getStoreNumberfromId,
-  getAllCheckIns
+  getAllCheckIns,
+  resetCheckInTable,
 } from '@/scripts/API/checkInAPI';
 
 import { getActiveCandidates } from '@/scripts/API/candidateAPI';
@@ -44,6 +45,7 @@ interface VotingContextProps {
   selectCandidate: (candidate: Candidate) => void;
   deselectCandidate: (candidate: Candidate) => void;
   castVotes: () => Promise<void>;
+  resetCheckInTable: () => Promise<void>;
 };
 
 
@@ -61,7 +63,8 @@ const VotingContext = createContext<VotingContextProps>({
   checkInVoter: async () => undefined,
   selectCandidate: () => {},
   deselectCandidate: () => {},
-  castVotes: async () => undefined
+  castVotes: async () => undefined,
+  resetCheckInTable: async () => undefined
 });
 
 interface VotingProviderProps{
@@ -169,9 +172,9 @@ export const VotingProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     }
   }, []);
 
-    /* 
-    Selecting and Deselcting candidates in the local state
-    */
+  /* 
+  Selecting and Deselcting candidates in the local state
+  */
   const selectCandidate = useCallback((candidate: Candidate) => {
     setCandidateChoices((prev) => {
       if (prev.find((c) => c.id === candidate.id)) {
@@ -209,6 +212,24 @@ export const VotingProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     }
   }, [voter, candidateChoices]);
 
+  const resetCheckIn = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await resetCheckInTable();
+      setVoter(null);
+      setUniqueVotes([]);
+      setCheckedInVoters([]);
+    } catch (err: any) {
+      console.error('resetCheckIn error:', err);
+      const message = err?.message || 'Failed to reset check-in table.';
+      setError(message);
+      throw new Error(message);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchCandidates();
   }, []);
@@ -227,7 +248,8 @@ export const VotingProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     checkInVoter,
     selectCandidate,
     deselectCandidate,
-    castVotes
+    castVotes,
+    resetCheckInTable: resetCheckIn
   };
 
   return (

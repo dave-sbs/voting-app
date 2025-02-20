@@ -9,6 +9,8 @@ import React, {
 
 import { 
     Event, 
+    getLastGeneralMeetingEvent, 
+    getLastBoardMeetingEvent,
     getOpenEvents,
     insertNewEvent,
     terminateOpenEvent,
@@ -34,6 +36,8 @@ interface EventContextProps {
     error: string | null;
     fetchOpenEvents: () => Promise<null>;
     checkInEvent: (event: Event) => Promise<void>;
+    getLastGeneralMeeting: () => Promise<Event[] | null>;
+    getLastBoardMeeting: () => Promise<Event[] | null>;
     addEvent: (event: Event) => Promise<Event | null>;
     closeEvent: (event: Event) => Promise<void>;
   }
@@ -49,6 +53,8 @@ interface EventContextProps {
  * isLoading: Boolean for loading state
  * error: Error message
  * fetchOpenEvents: Function to fetch events
+ * getLastGeneralMeeting: Function to fetch last general meeting details
+ * getLastBoardMeeting: Function to fetch last board meeting details
  * addEvent: Function to add a new event
  * closeEvent: Function to close an open event
  */
@@ -59,6 +65,8 @@ const EventContext = createContext<EventContextProps>({
     error: null,
     fetchOpenEvents: async() => null, 
     checkInEvent: async() => undefined,
+    getLastGeneralMeeting: async() => null,
+    getLastBoardMeeting: async() => null,
     addEvent: async() => null,  
     closeEvent: async() => undefined, 
 });
@@ -127,6 +135,52 @@ export const EventProvider: React.FC<EventProviderProps> = ({ children }) => {
 
     /**
      * ---------------------------
+     * GET LAST GENERAL MEETING
+     * ---------------------------
+     * 
+     * Fetches details of the last general meeting
+     * @returns {Promise<Event[] | null>}
+     */
+    const getLastGeneralMeeting = useCallback(async (): Promise<Event[] | null> => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            const result = await getLastGeneralMeetingEvent();
+            return result;
+        } catch (err: any) {
+            console.error(err);
+            setError(err.message || 'Failed to fetch last general meeting details');
+            return null;
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
+
+    /**
+     * ---------------------------
+     * GET LAST BOARD MEETING
+     * ---------------------------
+     * 
+     * Fetches details of the last board meeting
+     * @returns {Promise<Event[] | null>}
+     */
+    const getLastBoardMeeting = useCallback(async (): Promise<Event[] | null> => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            const result = await getLastBoardMeetingEvent();
+            return result;
+        } catch (err: any) {
+            console.error(err);
+            setError(err.message || 'Failed to fetch last board meeting details');
+            return null;
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
+    
+    /**
+     * ---------------------------
      * ADD EVENT
      * ---------------------------
      * 
@@ -155,7 +209,7 @@ export const EventProvider: React.FC<EventProviderProps> = ({ children }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [fetchOpenEvents]);
+  }, []);
 
 
     /**
@@ -179,7 +233,7 @@ export const EventProvider: React.FC<EventProviderProps> = ({ children }) => {
         } finally {
             setIsLoading(false);
         }
-    }, [fetchOpenEvents]);
+    }, []);
 
     useEffect(() => {
         fetchOpenEvents();
@@ -193,6 +247,8 @@ export const EventProvider: React.FC<EventProviderProps> = ({ children }) => {
                 isLoading,
                 error,
                 fetchOpenEvents,
+                getLastGeneralMeeting,
+                getLastBoardMeeting,
                 checkInEvent,
                 addEvent,
                 closeEvent
