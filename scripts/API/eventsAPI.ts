@@ -253,20 +253,3 @@ export async function getEventById(
   if (error) throw new Error(error.message);
   return data as Event[];
 }
-
-
-/**
- * -------------------------------
- * 8. CLEAR ALL CHECK IN LOGS FOR EVENT
- * -------------------------------
- */
-export async function clearCheckedInMembers() {
-  const { data: resetData, error: resetError } = await supabase
-  .from('check_in')
-  .delete()
-
-  if(resetError) {
-    console.error('Error resetting table', resetError);
-    throw resetError;
-  }
-}

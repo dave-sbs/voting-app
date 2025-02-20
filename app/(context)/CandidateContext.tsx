@@ -30,7 +30,7 @@ interface CandidateContextProps {
     fetchCandidates: () => Promise<void>;
     addCandidate: (candidate: Candidate) => Promise<void>;
     deleteCandidate: (candidate: Candidate) => Promise<void>;
-    clearCandidates: () => Promise<void>;
+    clearCandidatesTable: () => Promise<void>;
     summarizeData: () => Promise<SummaryProps[] | null>;
 }
 
@@ -43,7 +43,7 @@ const CandidateContext = createContext<CandidateContextProps>({
     fetchCandidates: async() => undefined,
     addCandidate: async () => undefined,
     deleteCandidate:async () => undefined,
-    clearCandidates:async () => undefined,
+    clearCandidatesTable:async () => undefined,
     summarizeData:async () => null,
 });
 
@@ -105,12 +105,13 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({ children }
     }, [fetchCandidates]);
 
     // Clear all candidates
-    const clearCandidates = useCallback(async () => {
+    const clearCandidatesTable = useCallback(async () => {
         setIsLoading(true);
         setError(null);
         try{
             await clearActiveCandidates();
             await fetchCandidates();
+            setCandidates([]);
         } catch(err: any) {
             console.error(err);
             setError(err.message || `Failed to clear table`);
@@ -158,7 +159,7 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({ children }
                 fetchCandidates,
                 addCandidate,
                 deleteCandidate,
-                clearCandidates,
+                clearCandidatesTable,
                 summarizeData
             }}
         > 

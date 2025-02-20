@@ -82,13 +82,23 @@ export async function insertNewCandidate(candidate: Candidate) {
 
 
 export async function clearActiveCandidates() {
-    const { data: resetData, error: resetError } = await supabase
-    .from('active_candidates')
-    .delete()
-    
-    if(resetError) {
-        console.error('Error resetting table', resetError);
-        throw resetError;
+    try {
+        const { data: allCandidates, error: fetchError } = await supabase
+            .from('active_candidates')
+            .select('member_id');
+
+        if (fetchError) throw fetchError;
+
+        const { data: resetData, error: resetError } = await supabase
+            .from('active_candidates')
+            .delete()
+            .in('member_id', allCandidates.map(c => c.member_id));
+
+        if (resetError) throw resetError;
+        console.log('Active candidates table cleared successfully');
+    } catch (error) {
+        console.error('Error clearing active candidates table:', error);
+        throw error;
     }
 };
 

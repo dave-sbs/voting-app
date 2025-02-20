@@ -115,6 +115,22 @@ export async function convertStoreNumbertoId(storeNumber: string): Promise<strin
     return null;
 }
 
+export async function resetCheckInTable() {
+    try {
+        const { data, error } = await supabase
+            .from('check_in')
+            .delete()
+            .neq('check_in_id', '00000000-0000-0000-0000-000000000000');
+
+        if (error) throw error;
+
+        console.log('Check-in table reset successfully');
+        return { success: true, message: 'Check-in table reset successfully' };
+    } catch (error) {
+        console.error('Error resetting check-in table:', error);
+        return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+    }
+}
 
 export async function checkIn({ member_id, event_id }: CheckInCredentials): Promise<Voter> {
     // Check if member exists

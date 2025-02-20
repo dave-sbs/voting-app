@@ -62,20 +62,28 @@ import { useVotingContext } from '../(context)/VotingContext';
 
 const EventScreen = () => {
     const {
-        events,
-        currEvent,
         isLoading, 
         error,
         fetchOpenEvents,
+        getLastGeneralMeeting,
+        getLastBoardMeeting,
         checkInEvent,
         addEvent,
         closeEvent,
     } = useEventContext();
-    const { summary, summarizeData } = useCandidateContext();
-    const { fetchVoters, fetchCheckedIn } = useVotingContext();
+    const { 
+      summary, 
+      summarizeData, 
+      clearCandidatesTable
+    } = useCandidateContext();
+    const { 
+      fetchVoters, 
+      fetchCheckedIn,
+      resetCheckInTable
+    } = useVotingContext();
 
     const [tempEventData, setTempEventData] = useState<Event | null>(null); // Will use this for degrading UI later.
-
+    const [currEventState, setCurrEventState] = useState<'open' | 'closed'>('open');
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [driveLoading, setDriveLoading] = useState(false);
     const [modalType, setModalType] = useState<'create' | 'join' | 'terminate'>('create');
@@ -91,18 +99,16 @@ const EventScreen = () => {
     const router = useRouter();
 
     useEffect(() => {
-        fetchOpenEvents();
-    }, []);
-
-    useEffect(() => {
         const checkOpenMeetings = async () => {
-            const lastGeneral = await getLastGeneralMeetingEvent();
-            const lastBoard = await getLastBoardMeetingEvent();
+            const lastGeneral = await getLastGeneralMeeting();
+            const lastBoard = await getLastBoardMeeting();
+            if (!lastGeneral || !lastBoard) return;
             setOpenGeneralMeeting(lastGeneral[0] && lastGeneral[0].is_open ? lastGeneral[0] : null);
             setOpenBoardMeeting(lastBoard[0] && lastBoard[0].is_open ? lastBoard[0] : null);
         };
         checkOpenMeetings();
-    }, [events]);
+        fetchOpenEvents();
+    }, [currEventState]);
 
     const handleCreateEvent = async (eventType: 'GENERAL-MEETING' | 'BOARD-MEETING') => {
         try {
@@ -141,16 +147,10 @@ const EventScreen = () => {
     const handleTerminateEvent = async (event: Event) => {
         try {
             setDriveLoading(true);
-
             // Summary Data
-            const summaryData = await summarizeData(); // Active candidates and vote count
-            const votersData = await fetchVoters(); // Unique voters
-            const attendanceData = await fetchCheckedIn(); // Attendance
-            
-            // console.log(summaryData);
-            // console.log(votersData);
-            // console.log(attendanceData);
-            // console.log(event)
+            const summaryData = await summarizeData(); 
+            const votersData = await fetchVoters(); 
+            const attendanceData = await fetchCheckedIn(); 
 
             if (!summaryData || !votersData || !attendanceData) {
                 throw new Error('Failed to fetch required data for export');
@@ -194,9 +194,6 @@ const EventScreen = () => {
                 throw error;
             }
             
-            // Update event status in your database
-            // Add your database update logic here
-
             setDriveLoading(false);
             setFeedbackType('success');
             setIsModalVisible(false);
@@ -207,6 +204,9 @@ const EventScreen = () => {
             }, 2000);
             // Terminate Event
             await closeEvent(event);
+            await clearCandidatesTable();
+            await resetCheckInTable();
+            setCurrEventState('closed');
         } catch (error) {
             setFeedbackType('error');
             setFeedbackMessage(`Failed to terminate event: ${error instanceof Error ? error.message : 'Unknown error'}`);

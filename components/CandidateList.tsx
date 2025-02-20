@@ -9,7 +9,7 @@ import { Candidate } from '@/scripts/API/candidateAPI';
 
 
 const CandidateList = () => {
-  const { candidates, isLoading, error, fetchCandidates, deleteCandidate, clearCandidates } = useCandidateContext();
+  const { candidates, isLoading, error, fetchCandidates, deleteCandidate, clearCandidatesTable: clearCandidates } = useCandidateContext();
 
   useEffect(() => {
     if (error) {
