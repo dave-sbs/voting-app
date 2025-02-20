@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode, useCa
 import { 
   Candidate,
   submitVote,
-} from '@/scripts/votingAPI';
+} from '@/scripts/API/votingAPI';
 
 import {
   Voter, 
@@ -11,10 +11,18 @@ import {
   getAllVoters,
   CheckInCredentials,
   getNamefromId,
+  getStoreNumberfromId,
   getAllCheckIns
-} from '@/scripts/checkInAPI';
+} from '@/scripts/API/checkInAPI';
 
-import { getActiveCandidates } from '@/scripts/candidateAPI';
+import { getActiveCandidates } from '@/scripts/API/candidateAPI';
+
+interface memberData {
+  name: string | null;
+  store_number: string | null;
+  check_in_time: string;
+}
+
 
 interface VotingContextProps {
   // State
@@ -30,8 +38,8 @@ interface VotingContextProps {
 
   //Actions
   fetchCandidates: () => Promise<void>;
-  fetchVoters: () => Promise<Voter[] | null>;
-  fetchCheckedIn: () => Promise<Voter[] | null>;
+  fetchVoters: () => Promise<memberData[] | null>;
+  fetchCheckedIn: () => Promise<memberData[] | null>;
   checkInVoter: (creds: CheckInCredentials) => Promise<void>;
   selectCandidate: (candidate: Candidate) => void;
   deselectCandidate: (candidate: Candidate) => void;
@@ -67,6 +75,8 @@ export const VotingProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [checkedInVoters, setCheckedInVoters] = useState<Voter[]>([]);
 
+
+
   // Client-side chosen Candidates
   const [candidateChoices, setCandidateChoices] = useState<Candidate[]>([]);
 
@@ -93,16 +103,22 @@ export const VotingProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 
 
   /*
-  *  Access the Check In table and retrieve all rows with has_voted property True
+  * Voters: Returns all members that have voted
   */
   const fetchVoters = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const result = await getAllVoters();
-      console.log(result);
-      setUniqueVotes(result);
-      return result;
+      const allVoters = await getAllVoters();
+      setUniqueVotes(allVoters);
+
+      const votersDataCleaned = await Promise.all(allVoters.map(async (voter) => ({
+        name: await getNamefromId(voter.member_id),
+        store_number: await getStoreNumberfromId(voter.member_id),
+        check_in_time: new Date(voter.check_in_time).toLocaleDateString()
+      })));
+
+      return votersDataCleaned;
     } catch (err: any) {
       console.error(err);
       setError(err.message || 'Failed to fetch voters');
@@ -110,16 +126,25 @@ export const VotingProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     } finally {
       setIsLoading(false);
     }
-  },[]);
+  }, []);
 
+  /*
+  * Attendance: Returns all members that have checked in
+  */
   const fetchCheckedIn = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
       const checkIns = await getAllCheckIns();
-      console.log(checkIns);
       setCheckedInVoters(checkIns);
-      return checkIns;
+
+      const attendanceDataCleaned = await Promise.all(checkIns.map(async (checkedInPerson) => ({
+        name: await getNamefromId(checkedInPerson.member_id),
+        store_number: await getStoreNumberfromId(checkedInPerson.member_id),
+        check_in_time: new Date(checkedInPerson.check_in_time).toLocaleDateString()
+      })));
+
+      return attendanceDataCleaned;
     } catch (err: any) {
       console.error(err);
       setError(err.message || 'Failed to fetch checked-in voters');

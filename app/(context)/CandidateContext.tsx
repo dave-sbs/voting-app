@@ -13,14 +13,15 @@ import {
     insertNewCandidate,
     removeCandidate,
     clearActiveCandidates
-} from '@/scripts/candidateAPI'
+} from '@/scripts/API/candidateAPI'
 
-
+// Interface for summary data
 interface SummaryProps {
     name: string,
     vote_count: number,
 }
 
+// Props for the CandidateContext
 interface CandidateContextProps {
     candidates: Candidate[] | null;
     summary: SummaryProps[] | null;
@@ -33,6 +34,7 @@ interface CandidateContextProps {
     summarizeData: () => Promise<SummaryProps[] | null>;
 }
 
+// Create the CandidateContext with default values
 const CandidateContext = createContext<CandidateContextProps>({
     candidates: null,
     summary: null,
@@ -45,17 +47,19 @@ const CandidateContext = createContext<CandidateContextProps>({
     summarizeData:async () => null,
 });
 
-
+// Props for the CandidateProvider component
 interface CandidateProviderProps {
     children: ReactNode;
 }
 
+// CandidateProvider component
 export const CandidateProvider: React.FC<CandidateProviderProps> = ({ children }) => {
     const [candidates, setCandidates] = useState<Candidate[] | null>(null);
     const [summary, setSummary] = useState<SummaryProps[] | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    // Fetch candidates from the API
     const fetchCandidates = useCallback(async () => {
         setIsLoading(true);
         setError(null);
@@ -68,9 +72,9 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({ children }
         } finally {
             setIsLoading(false);
         }
-    }, 
-    []);
+    }, []);
 
+    // Add a new candidate
     const addCandidate = useCallback(async (candidate: Candidate) => {
         setIsLoading(true);
         setError(null);
@@ -85,6 +89,7 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({ children }
         }
     }, [fetchCandidates]);
 
+    // Delete a candidate
     const deleteCandidate = useCallback(async (candidate: Candidate) => {
         setIsLoading(true);
         setError(null);
@@ -99,6 +104,7 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({ children }
         }
     }, [fetchCandidates]);
 
+    // Clear all candidates
     const clearCandidates = useCallback(async () => {
         setIsLoading(true);
         setError(null);
@@ -113,21 +119,31 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({ children }
         }
     }, [fetchCandidates]);
 
+    // Summarize voting data
+    // Returns Candidate Name + Vote Count data
     const summarizeData = useCallback(async () => {
-        const activeCandidates = await getActiveCandidates();
-        // LOGGING THE SUMMARY PROCESS
-        console.log("SUMMARIZING DATA");
-        console.log(activeCandidates);
-
-        const summarizedData = activeCandidates.map(candidate => ({
-            name: candidate.name,
-            vote_count: candidate.vote_count
-        }));
-
-        setSummary(summarizedData);
-        return summarizedData;
+        setIsLoading(true);
+        setError(null);
+        try{
+            const activeCandidates = await getActiveCandidates();
+            
+            const summarizedData = activeCandidates.map(candidate => ({
+                name: candidate.name,
+                vote_count: candidate.vote_count
+            }));
+    
+            setSummary(summarizedData);
+            return summarizedData;
+        } catch (err: any) {
+            console.error(err)
+            setError(err.message || `Failed to fetch candidate data`)
+            return null
+        } finally {
+            setIsLoading(false);
+        }
     }, []);
 
+    // Fetch candidates on component mount
     useEffect(() => {
         fetchCandidates();
     }, [fetchCandidates]);
@@ -151,6 +167,7 @@ export const CandidateProvider: React.FC<CandidateProviderProps> = ({ children }
     );
 };
 
+// Custom hook to use the CandidateContext
 export function useCandidateContext() {
     return useContext(CandidateContext);
 }

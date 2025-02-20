@@ -77,19 +77,22 @@ January 17, 2025
     [D] Terminate event, and get a log of summary of active candidates and check in data.
 
     V2
-    [] Set up Google Drive export function
-    [] Finalize the export data schema
+    [D] Set up Google Drive export function
+    [D] Finalize the export data schema
     [] Ensure data integrity
     [] Reset the active candidates and voting records from database
     [] Add UI on admin page to terminate an event
     [] Add UI on admin page to view analytics of the event
+    [] Host Express server
+    [] Create a Payments folder and add auto upload to drive when payment is recorded
 
 
 
 Other bugs:
 [D] The modal for adding a candidate has errors because I have two separate statements confirming addition of a candidate. One of them is a reflection of the actual db process, while the other is a reflection of the UI process. Need to remove the UI process statement.
 [] When there are no open events, the sign in page redirects to an error screen, it should just show a modal and redirect back to the landing page.
-[] Cannot allow creation of both general and board meetings at the same time. Need to disallow this. Otherwise, it would confuse the event recording system.
+    [] Works 50% of the time. Not sure why the useEffect() triggers only on certain occassions.
+[D] Cannot allow creation of both general and board meetings at the same time. Need to disallow this. Otherwise, it would confuse the event recording system.
 
 
 January 27, 2025
@@ -111,9 +114,14 @@ January 27, 2025
 
     MODAL
     [] Standardize the modal UI across the app. It's very inconsistent.
+
+
+
+February 20, 2025
+[] Supabase Logs out after 5-10 days of inactivity, if it 'pauses' then I have to manually go in and restart it which is a problem. Look into work arounds
 -----------------------------------------------------------------------------------------------------------------------------------------------
 
-[] Build App for Testing
+[D] Build App for Testing
     - Currently the build process is broken. Currently, the issue is in the payments page. The Supabase client import does not work. 
     - If we look at the other 'tab' pages. They are mainly just importing and rendering components. They don't directly access the Supabase client. So, let me try to convert the payments page to a function component and see if that fixes the issue. 
     - If that doesn't work, keep the function component and then try to create a context manager for it.  

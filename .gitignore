@@ -36,7 +36,9 @@ supabaseSecret.js
 # typescript
 *.tsbuildinfo
 
-app-example
-
 # sensitive files
 voters.json
+
+# Drive service key
+voting-app-service.json
+

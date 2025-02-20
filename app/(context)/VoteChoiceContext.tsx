@@ -1,6 +1,6 @@
 // VoteChoiceContext.tsx
 import React, { createContext, useEffect, useState, useContext } from 'react';
-import { getVoteChoices, setMaxChoice, setMinChoice } from '@/scripts/voteChoiceAPI';
+import { getVoteChoices, setMaxChoice, setMinChoice } from '@/scripts/API/voteChoiceAPI';
 
 interface VoteChoiceType {
   minChoice: number;

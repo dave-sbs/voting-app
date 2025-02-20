@@ -13,7 +13,7 @@ import {
     addOrganizationMember,
     removeOrganizationMember,
     updateBoardMemberStatus
-} from '@/scripts/memberAPI';
+} from '@/scripts/API/memberAPI';
 
 interface MemberContextProps {
     members: Member[] | null;

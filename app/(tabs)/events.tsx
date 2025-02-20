@@ -53,7 +53,7 @@ import {
     Event,
     getLastGeneralMeetingEvent,
     getLastBoardMeetingEvent,
-} from '@/scripts/eventsAPI';
+} from '@/scripts/API/eventsAPI';
 import { useEventContext } from '@/app/(context)/EventContext';
 import { useCandidateContext } from '@/app/(context)/CandidateContext';
 import { useVotingContext } from '../(context)/VotingContext';
@@ -146,43 +146,74 @@ const EventScreen = () => {
             const summaryData = await summarizeData(); // Active candidates and vote count
             const votersData = await fetchVoters(); // Unique voters
             const attendanceData = await fetchCheckedIn(); // Attendance
+            
+            // console.log(summaryData);
+            // console.log(votersData);
+            // console.log(attendanceData);
+            // console.log(event)
 
             if (!summaryData || !votersData || !attendanceData) {
                 throw new Error('Failed to fetch required data for export');
             }
 
-            // Convert event_date to proper Date object if it's a string
-            const eventDate = event.event_date instanceof Date ? event.event_date : new Date(event.event_date);
+            // Prepare the export data
+            const exportData = {
+                eventInfo: {
+                    name: event.event_name,
+                    date: event.event_date,
+                    status: event.created_by
+                },
+                summary: summaryData,
+                voters: votersData,
+                attendance: attendanceData
+            };
 
-            // // Export to Google Drive
-            // const exportSuccess = await exportEventDataToGoogleDrive(
-            //     eventDate,
-            //     event.event_name,
-            //     {
-            //         attendance: attendanceData,
-            //         uniqueVoters: votersData,
-            //         activeCandidates: summaryData
-            //     }
-            // );
+            console.log('Sending data to export endpoint:', exportData);
+            
+            try {
+                // Send data to export endpoint
+                const response = await fetch('http://localhost:3000/export', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify(exportData)
+                });
 
-            // if (!exportSuccess) {
-            //     throw new Error('Failed to verify Google Drive export');
-            // }
+                console.log('Response status:', response.status);
+                console.log('Response headers:', Object.fromEntries(response.headers.entries()));
 
-            // Terminate Event
-            await closeEvent(event);
-            setIsModalVisible(false);
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Server error response:', errorText);
+                    throw new Error(`Server responded with ${response.status}: ${errorText}`);
+                }
+            } catch (error) {
+                console.error('Fetch error details:', error);
+                throw error;
+            }
+            
+            // Update event status in your database
+            // Add your database update logic here
+
+            setDriveLoading(false);
             setFeedbackType('success');
+            setIsModalVisible(false);
             setFeedbackMessage(`Successfully terminated ${event.event_name}`);
             setShowFeedbackModal(true);
             setTimeout(() => {
                 setShowFeedbackModal(false);
-                router.push('/');
             }, 2000);
+            // Terminate Event
+            await closeEvent(event);
         } catch (error) {
             setFeedbackType('error');
             setFeedbackMessage(`Failed to terminate event: ${error instanceof Error ? error.message : 'Unknown error'}`);
             setShowFeedbackModal(true);
+            setTimeout(() => {
+                setShowFeedbackModal(false);
+            }, 2500);
         } finally {
             setDriveLoading(false);
         }
@@ -240,38 +271,51 @@ const EventScreen = () => {
               {modalType === 'create' && (
                 <>
                   <Text className="text-xl font-semibold mb-4 text-gray-800">Create Meeting</Text>
-                  {!openGeneralMeeting && (
-                    <TouchableOpacity
-                      className={`rounded-lg bg-green-800 p-3 px-5 mb-4 border-0.5 border-gray-100 ${isLoading ? 'opacity-50' : ''}`}
-                      onPress={() => handleCreateEvent('GENERAL-MEETING')}
-                      disabled={isLoading}
-                    >
-                      {isLoading ? (
-                        <ActivityIndicator color="#475569" />
-                      ) : (
-                        <Text className="text-gray-200 font-semibold text-xl">Create General Meeting</Text>
-                      )}
-                    </TouchableOpacity>
-                  )}
-                  {openGeneralMeeting && (
+                  {!openGeneralMeeting ? (
+                    openBoardMeeting ? (
+                      <View className='rounded-lg bg-red-600 p-3 px-5 mb-4 border-2 border-gray-300'>
+                          <Text className="text-gray-100 font-semibold text-xl">To Create General Meeting,</Text>
+                          <Text className='text-gray-100 font-semibold text-xl pt-1'>Please Close Board Meeting First</Text>
+                      </View>
+                    ) : (
+                      <TouchableOpacity
+                        className={`rounded-lg bg-green-800 p-3 px-5 mb-4 border-0.5 border-gray-100 ${isLoading ? 'opacity-50' : ''}`}
+                        onPress={() => handleCreateEvent('GENERAL-MEETING')}
+                        disabled={isLoading}
+                      >
+                        {isLoading ? (
+                          <ActivityIndicator color="#475569" />
+                        ) : (
+                          <Text className="text-gray-200 font-semibold text-xl">Create General Meeting</Text>
+                        )}
+                      </TouchableOpacity>
+                    )
+                  ) : (
                     <View className='rounded-lg bg-red-600 p-3 px-5 mb-4 border-2 border-gray-300'>
                         <Text className="text-gray-100 font-semibold text-xl">General Meeting is Ongoing</Text>
                     </View>
                   )}
-                  {!openBoardMeeting && (
-                    <TouchableOpacity
-                      className={`rounded-lg bg-green-800 p-3 px-5 mb-4 border-0.5 border-gray-100 ${isLoading ? 'opacity-50' : ''}`}
-                      onPress={() => handleCreateEvent('BOARD-MEETING')}
-                      disabled={isLoading}
-                    >
-                      {isLoading ? (
-                        <ActivityIndicator color="#475569" />
-                      ) : (
-                        <Text className="text-gray-200 font-semibold text-xl">Create Board Meeting</Text>
-                      )}
-                    </TouchableOpacity>
-                  )}
-                  {openBoardMeeting && (
+                  
+                  {!openBoardMeeting ? (
+                    openGeneralMeeting ? (
+                      <View className='rounded-lg bg-red-600 p-3 px-5 mb-4 border-2 border-gray-300'>
+                          <Text className="text-gray-100 font-semibold text-xl">To Create Board Meeting,</Text>
+                          <Text className='text-gray-100 font-semibold text-xl pt-1'>Please Close General Meeting First</Text>
+                      </View>
+                    ) : (
+                      <TouchableOpacity
+                        className={`rounded-lg bg-green-800 p-3 px-5 mb-4 border-0.5 border-gray-100 ${isLoading ? 'opacity-50' : ''}`}
+                        onPress={() => handleCreateEvent('BOARD-MEETING')}
+                        disabled={isLoading}
+                      >
+                        {isLoading ? (
+                          <ActivityIndicator color="#475569" />
+                        ) : (
+                          <Text className="text-gray-200 font-semibold text-xl">Create Board Meeting</Text>
+                        )}
+                      </TouchableOpacity>
+                    )
+                  ) : (
                     <View className='rounded-lg bg-red-600 p-3 px-5 mb-4 border-2 border-gray-300'>
                         <Text className="text-gray-100 font-semibold text-xl">Board Meeting is Ongoing</Text>
                     </View>
@@ -374,8 +418,8 @@ const EventScreen = () => {
         </Modal>
         
         {/* Feedback Modal */}
-        <Modal visible={showFeedbackModal} animationType="fade" transparent={true}>
-          <View className="flex-1 justify-center items-center bg-black/50">
+        <Modal visible={showFeedbackModal} animationType="slide" transparent={true}>
+          <View className="flex-1 justify-center items-center bg-black bg-opacity-50">
             <View className={`bg-white p-6 rounded-xl w-5/6 max-w-md border ${feedbackType === 'success' ? 'border-green-500' : 'border-red-500'}`}>
               <View className={`${feedbackType === 'success' ? 'bg-green-100' : 'bg-red-100'} p-4 rounded-lg`}>
                 <Text className={`text-xl font-semibold ${feedbackType === 'success' ? 'text-green-800' : 'text-red-700'}`}>

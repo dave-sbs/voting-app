@@ -12,7 +12,7 @@ import {
     getOpenEvents,
     insertNewEvent,
     terminateOpenEvent,
-} from "@/scripts/eventsAPI";
+} from "@/scripts/API/eventsAPI";
 
 /**
  * ---------------------------
@@ -171,8 +171,8 @@ export const EventProvider: React.FC<EventProviderProps> = ({ children }) => {
         setIsLoading(true);
         setError(null);
         try {
+            console.log(event.event_name)
             await terminateOpenEvent(event.event_name);
-            await fetchOpenEvents();
         } catch (err: any) {
             console.error(err);
             setError(err.message || 'Failed to close event');
