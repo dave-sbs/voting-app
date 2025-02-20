@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { Text, TextInput, TouchableOpacity, View, Modal } from 'react-native';
 import { useVotingContext } from '../(context)/VotingContext';
-import { convertStoreNumbertoId, isBoardMember } from '@/scripts/checkInAPI';
+import { convertStoreNumbertoId, isBoardMember } from '@/scripts/API/checkInAPI';
 import { useEventContext } from '../(context)/EventContext';
 
 const CheckInScreen = () => {
@@ -22,6 +22,7 @@ const CheckInScreen = () => {
   const [storeId, setStoreId] = useState('');
   const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [openMeetingsExist, setOpenMeetingsExist] = useState(true);
 
   const [ openEvents ] = useState(events);
 
@@ -35,15 +36,16 @@ const CheckInScreen = () => {
     const checkOpenEvents = async () => {
       try {
         await fetchOpenEvents();
-        if (!events || events.length === 0) {
+        if (!events || events.length === 0 || openMeetingsExist === false) {
           showErrorModal('There are no open meetings available.');
+          setOpenMeetingsExist(false);
           setTimeout(() => {
             navigation.navigate('index');
           }, 2000);
         }
       } catch (err: any) {
-        console.error('Failed to fetch open events:', err);
-        showErrorModal('There are no open meetings available.');
+        showErrorModal('Failed to fetch open events');
+        setOpenMeetingsExist(false);
         setTimeout(() => {
           navigation.navigate('index');
         }, 2000);

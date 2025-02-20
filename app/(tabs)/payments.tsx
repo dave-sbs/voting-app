@@ -14,7 +14,7 @@ import {
   uploadSignature,
   createPayment,
   createEvent
-} from '@/scripts/paymentRecordsAPI'; // adjust the path to match your setup
+} from '@/scripts/API/paymentRecordsAPI'; // adjust the path to match your setup
 import CardHeader from '@/components/CardHeader';
 
 interface RecordPaymentsProps {}

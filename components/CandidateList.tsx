@@ -5,7 +5,7 @@ import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import CardHeader from './CardHeader';
 
 import { useCandidateContext } from '@/app/(context)/CandidateContext';
-import { Candidate } from '@/scripts/candidateAPI';
+import { Candidate } from '@/scripts/API/candidateAPI';
 
 
 const CandidateList = () => {

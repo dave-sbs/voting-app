@@ -4,7 +4,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import CardHeader from '@/components/CardHeader';
 import SecondaryButton from '@/components/SecondaryButton';
 
-import { getNamefromId, getStoreNumberfromId } from '@/scripts/checkInAPI';
+import { getNamefromId, getStoreNumberfromId } from '@/scripts/API/checkInAPI';
 
 import { useVotingContext } from '@/app/(context)/VotingContext';
 

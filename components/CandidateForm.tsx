@@ -15,7 +15,6 @@ interface ImageFile {
 
 const CandidateForm = () => {
   const {
-    candidates,
     isLoading,
     error,
     fetchCandidates,

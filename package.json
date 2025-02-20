@@ -23,6 +23,7 @@
     "@react-navigation/bottom-tabs": "^7.0.0",
     "@react-navigation/native": "^7.0.0",
     "@supabase/supabase-js": "^2.46.1",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "expo": "~52.0.11",
     "expo-auth-session": "^6.0.2",
@@ -39,6 +40,7 @@
     "expo-symbols": "~0.2.0",
     "expo-system-ui": "~4.0.4",
     "expo-web-browser": "~14.0.1",
+    "express": "^4.21.2",
     "google-auth-library": "^9.4.1",
     "googleapis": "^129.0.0",
     "nativewind": "^4.1.23",
@@ -58,6 +60,7 @@
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@react-native-community/cli": "latest",
+    "@types/express": "^5.0.0",
     "@types/jest": "^29.5.12",
     "@types/react": "~18.3.12",
     "@types/react-test-renderer": "^18.3.0",
