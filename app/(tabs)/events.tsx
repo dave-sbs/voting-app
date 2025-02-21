@@ -170,13 +170,19 @@ const EventScreen = () => {
 
             console.log('Sending data to export endpoint:', exportData);
             
+            /**
+             * WHY DO WE MAKE A FETCH REQUEST? To establish the first communication with the endpoint?
+             * 
+             * WHAT TO SPECIFY IN THE HEADERS?
+             */
             try {
                 // Send data to export endpoint
-                const response = await fetch('http://localhost:3000/export', {
+                const response = await fetch('https://voting-server-2xieus3rt-dave-sbs-projects.vercel.app/api/export', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json',
+                        // 'Content-Length': new TextEncoder().encode(JSON.stringify(exportData)).length.toString(),
+                        'X-Vercel-Forwarded-For': window.location.hostname
                     },
                     body: JSON.stringify(exportData)
                 });
@@ -185,15 +191,15 @@ const EventScreen = () => {
                 console.log('Response headers:', Object.fromEntries(response.headers.entries()));
 
                 if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error('Server error response:', errorText);
-                    throw new Error(`Server responded with ${response.status}: ${errorText}`);
+                    console.error('Server error response:', response.statusText);
+                    throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
                 }
             } catch (error) {
                 console.error('Fetch error details:', error);
                 throw error;
             }
             
+            // Display Modal with Message
             setDriveLoading(false);
             setFeedbackType('success');
             setIsModalVisible(false);
@@ -202,6 +208,7 @@ const EventScreen = () => {
             setTimeout(() => {
                 setShowFeedbackModal(false);
             }, 2000);
+
             // Terminate Event
             await closeEvent(event);
             await clearCandidatesTable();

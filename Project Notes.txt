@@ -79,11 +79,11 @@ January 17, 2025
     V2
     [D] Set up Google Drive export function
     [D] Finalize the export data schema
-    [] Ensure data integrity
-    [] Reset the active candidates and voting records from database
+    [D] Ensure data integrity
+    [D] Reset the active candidates and voting records from database
+    [D] Host Express server
     [] Add UI on admin page to terminate an event
     [] Add UI on admin page to view analytics of the event
-    [] Host Express server
     [] Create a Payments folder and add auto upload to drive when payment is recorded
 
 
