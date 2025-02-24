@@ -7,10 +7,11 @@ import TallyTable from '../../components/TallyTable';
 import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import UniqueVoteCount from '@/components/UniqueVoteCount';
-import SummaryComponent from '@/components/SummaryComponent';
+import VotingSummaryComponent from '@/components/VotingSummaryComponent';
 import MaximumChoiceInput from '@/components/MaximumChoiceInput';
-// import VoterList from '@/components/VoterList';
 import VoterForm from '@/components/VoterForm';
+import AttendanceSummaryComponent from '@/components/AttendanceSummaryComponent';
+
 
 const AdminScreen = () => {
   const [ screen, setScreen ] = useState('candidates');
@@ -55,7 +56,8 @@ const AdminScreen = () => {
               <View className={`flex-1 ${screen === 'voters' ? 'block' : 'hidden'}`}>
                 <VoterForm />
                 <UniqueVoteCount />
-                <SummaryComponent />
+                <VotingSummaryComponent />
+                <AttendanceSummaryComponent />
               </View>
 
               </View>

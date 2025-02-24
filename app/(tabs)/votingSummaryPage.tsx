@@ -14,7 +14,7 @@ interface Voter {
     hasVoted: boolean;
 }
 
-const summaryPage = () => {
+const votingSummaryPage = () => {
 
     const { isLoading, error, uniqueVotes, fetchVoters } = useVotingContext();
 
@@ -109,4 +109,4 @@ const summaryPage = () => {
   )
 }
 
-export default summaryPage
+export default votingSummaryPage

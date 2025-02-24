@@ -12,6 +12,19 @@ Commit Message Prefixes:
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
 
+FEB 21, 2025
+- Trade Show 
+- Christmas Party 
+- Board Meeting
+- General Meeting
+
+
+- Holiday Payment
+- Vendor Payment
+    - Vendor Name
+
+
+
 January 14, 2025
 WYA
 [D] Design UX for event creation and termination

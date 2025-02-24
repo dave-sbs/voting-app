@@ -19,7 +19,7 @@ interface MemberContextProps {
     members: Member[] | null;
     isLoading: boolean;
     error: string | null;
-    fetchMembers: () => Promise<void>;
+    fetchMembers: () => Promise<Member[] | null>;
     addMember: (name: string, storeNumber: string) => Promise<void>;
     removeMember: (name: string, storeNumber: string) => Promise<void>;
     updateBoardStatus: (name: string, storeNumber: string, isBoardMember: boolean) => Promise<void>;
@@ -29,7 +29,7 @@ const MemberContext = createContext<MemberContextProps>({
     members: null,
     isLoading: false,
     error: null,
-    fetchMembers: async () => undefined,
+    fetchMembers: async () => null,
     addMember: async () => undefined,
     removeMember: async () => undefined,
     updateBoardStatus: async () => undefined,
@@ -50,9 +50,11 @@ export const MemberProvider: React.FC<MemberProviderProps> = ({ children }) => {
         try {
             const result = await getOrganizationMembers();
             setMembers(result);
+            return result;
         } catch (err: any) {
             console.error(err);
             setError(err.message || 'Failed to fetch members');
+            return null;
         } finally {
             setIsLoading(false);
         }
